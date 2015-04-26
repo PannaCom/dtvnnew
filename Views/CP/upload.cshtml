@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "upload";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+<script src="/Scripts/jquery-2.1.1.js"></script>
+<script src="/Scripts/jquery-ui-1.8.24.js"></script>
+<h2>upload</h2>
+
+    <form id="form1" runat="server">
+        
+        <input type="file" ID="FileUpload" runat="server" multiple="multiple" />
+        <br />
+        <br />
+        <input type="button" ID="Button1" runat="server" value="Upload" onclick="uploadProcess();"/>
+        <br />
+        <br />
+        <div id="progressbar" class="progressbar" style="background-color:#0094ff;width:100%;">
+            <div id="progresslabel" class="progressbarlabel" style="background-color:#f00;width:1%;"></div>
+        </div>
+        <div id="divImgGallery"></div>
+    </form>
+        
+       
+        <script>
+            var long;
+            var lat;           
+            var i = 0;
+            //Image upload
+            function uploadProcess() {
+                var formdata = new FormData(); //FormData object
+                var fileInput = document.getElementById('FileUpload');
+                //Iterating through each files selected in fileInput
+                for (i = 0; i < fileInput.files.length; i++) {
+                    //Appending each file to FormData object
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+                //Creating an XMLHttpRequest and sending
+                var xhr = new XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var progress = Math.round(evt.loaded * 100 / evt.total);
+                        $("#progressbar").progressbar("value", progress);
+                    }
+                }, false);
+                xhr.open('POST', '/CP/UploadProcess');
+                xhr.send(formdata);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        //alert(xhr.responseText);
+                        //$('#UploadTarget').html(xhr.responseText);
+                        updateDivImgGallery(xhr.responseText);
+                    }
+                }
+                //xhr.onprogress = function () {
+                    //i = i + 1;
+                    //document.getElementById('process').innerHTML = i+"/10000";
+                    //document.getElementById('process').innerHTML = 'value' + e.loaded + "/" + e.total;
+                //}
+                return false;
+            }
+            function updateDivImgGallery(content) {
+                document.getElementById('divImgGallery').innerHTML += content;
+            }
+            $("#progressbar").progressbar({
+                max: 100,
+                change: function (evt, ui) {
+                    $("#progresslabel").text($("#progressbar").progressbar("value") + "%");
+                    $("#progresslabel").css({ "width": $("#progressbar").progressbar("value")});
+                },
+                complete: function (evt, ui) {
+                    $("#progresslabel").text("File upload successful!");
+                }
+            });
+            evt.preventDefault();
+            
+        </script>
+        

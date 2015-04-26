@@ -1,0 +1,1085 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml;
+using System.Web;
+using System.Text.RegularExpressions;
+using System.Collections;
+using System.Net;
+using System.IO;
+using youknow.Views;
+namespace youknow
+{
+    class Rss
+    {
+        public string Url;
+        public int catid;
+        public int domain;
+        public string maindomain;
+        public static int _Max_Topic_KeyWord_Length_ = 4;
+      
+        public struct ItemXml
+        {
+            public long id;//id của tin đó
+            public string title;//Tên của tin tức
+            public string link;//link của tin
+            public string des;//tóm tắt tin
+            public string date;//ngày đăng tin
+            public string image;//ảnh của tin
+            public int catid;//tin thuộc chuyên mục nào
+            public int domain;//tin lấy từ domain nào?
+            public string maindomain;//domain chính của tin này là gì? lấy ở đâu.
+            public string token;//Mã hóa link của tin,base64
+            public bool show;//
+            public string source;//Nguồn lấy tin
+            public int ranking;//Điểm của tin 
+            public string keyword;//Các từ khóa của tin
+            public int datetimeid;//Convert datetime sang dạng integer để dễ sắp xếp.
+            public int totalcomment;//Tổng số comment của tin
+            public int topicid;//Tin thuộc chủ đề nào.
+            public string fullContent;//Nội dung tin
+            public int hasContent;//Nội dung tin
+            public string timeDiff;//Khoang cach thoi gian
+        }
+        public ItemXml[] arrItem = null;
+        public viewNewsManager[] arrNewsManager = null;
+        public viewNewsMobileAppManager[] arrNewsMobileAppManager = null;
+        public viewTrendsManager[] arrTrendsManager = null;
+        public int Length = 0;
+        public Rss(string url,int domain,string maindomain,int catid,int type)
+        {
+            this.Url = url;
+            this.catid = catid;
+            this.domain = domain;
+            this.maindomain = maindomain;
+            
+            Length = 0;
+            if (type == 1)
+            {
+                arrItem = new ItemXml[10000];
+                getAllItem(url);
+            }
+            else if (type == 2)
+            {
+                arrItem = new ItemXml[10000];
+                readXml(url);
+            }
+            else if (type == 3)
+            {
+                arrItem = new ItemXml[10000];
+                readTopNewsXml(url);
+            }
+            else if (type == 4)
+            {
+                arrItem = new ItemXml[10000];
+                readTopCommentXml(url);
+            }
+            else if (type == 5)
+            {
+                arrItem = new ItemXml[10000];
+                readTopNewWeekly(url);
+            }
+            else if (type == 6)
+            {
+                arrItem = new ItemXml[10000];
+                readNewestNew(url);
+            }
+            else if (type == 7) readNewsManager(url);
+            else if (type == 8) readTrends(url);
+            else if (type == 9) readNewsMobileAppManager(url);
+        }
+       
+        public void Clear()
+        {
+            arrItem = null;
+            Length = 0;
+        }
+       
+        public string getImageSrc(string content)
+        {
+            string matchString = Regex.Match(content, "<img.*?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase).Groups[1].Value;
+
+            return matchString;
+        }
+        public String removeHtmlTag(String s)
+        {
+            return Regex.Replace(s, "\\<[^>]*>", "");
+            //s = s.Replace("\\<[^>]*>", "");
+
+        }
+        public static string removeSpecialChar(string input)
+        {
+            input = input.Replace("-", "").Replace(":", "").Replace(",", "").Replace("_", "").Replace("'", "").Replace("\"", "").Replace(";", "").Replace("”","");
+            return input;
+        }
+        public string removeBr(string s)
+        {
+            s = s.Replace("\r\n", " ");
+            s = s.Replace("  ", " ");
+            s = s.Trim();
+            return s;
+        }
+        //Doc Rss
+        private void getAllItem(string Url)
+        {
+            string nowDate=DateTime.Now.ToString();
+            //Fetch the subscribed RSS Feed
+            XmlDocument RSSXml = new XmlDocument();
+            //long oldTime = DateTime.Now.Ticks;
+            //String HtmlContent = getContent(Url);
+            //long newTime = DateTime.Now.Ticks;
+            //long diff1=0,diff2 = 0;
+            //diff1 = newTime - oldTime;
+            
+            try
+            {
+                //oldTime = DateTime.Now.Ticks;
+                RSSXml.Load(Url);
+                //newTime = DateTime.Now.Ticks;
+                //diff2 = newTime - oldTime;
+                //RSSXml.LoadXml(HtmlContent);
+            }
+            catch (Exception ex) {
+                return;
+            }
+
+            //if (Url.Contains("doisongphapluat")) {
+            //    int abc = 0;
+            //}
+            XmlNodeList RSSNodeList = RSSXml.SelectNodes("rss/channel/item");
+            XmlNode RSSDesc = RSSXml.SelectSingleNode("rss/channel/title");
+
+            //StringBuilder sb = new StringBuilder();
+
+            foreach (XmlNode RSSNode in RSSNodeList)
+            {
+                XmlNode RSSSubNode;
+                RSSSubNode = RSSNode.SelectSingleNode("title");
+                string title = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("link");
+                string link = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("description");
+                string desc = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("pubDate");
+                string date = RSSSubNode != null ? RSSSubNode.InnerText : "";
+                // Kiểm tra nếu ngày gửi quá lâu thì không lấy
+
+                if (Uti.dateDiff(date, nowDate)>4) continue;
+
+                //RSSSubNode = RSSNode.SelectSingleNode("domain");
+                //string domain = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                //RSSSubNode = RSSNode.SelectSingleNode("maindomain");
+                //string maindomain = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                //RSSSubNode = RSSNode.SelectSingleNode("catid");
+                //string catid = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+
+                if (title!=null && title != "")
+                {
+                    link = link.Trim();
+                    title = title.Trim();
+                        //Guid.NewGuid().ToString();
+                    arrItem[Length].title = title.Trim();
+                    arrItem[Length].link = link.Trim();
+                    string token = Config.EncodeStr(link.Trim());
+                    arrItem[Length].image = getImageSrc(desc);
+                    if (Url.Contains("laodong.com.vn")) {
+                        arrItem[Length].image = arrItem[Length].image.ToLower();
+                        if (arrItem[Length].image.Contains(".jpg")) 
+                            arrItem[Length].image = arrItem[Length].image.Substring(0, arrItem[Length].image.LastIndexOf(".jpg") + 4);
+                        else 
+                        if (arrItem[Length].image.Contains(".bmp")) arrItem[Length].image = arrItem[Length].image.Substring(0, arrItem[Length].image.LastIndexOf(".bmp") + 4);
+
+                    }
+                    arrItem[Length].des = removeBr(removeHtmlTag(desc));                    
+                    arrItem[Length].catid = this.catid;
+                    if (date == null || date == "")// || Uti.dateDiff(date, nowDate) == 0
+                    {
+                        arrItem[Length].date = DateTime.Now.ToString();
+                    }
+                    else
+                    {
+                        arrItem[Length].date = date;//DateTime.Now.ToString();
+                            //Uti.toUTCTime(date);
+                    }
+                    arrItem[Length].datetimeid = Uti.datetimeidfromdate(arrItem[Length].date);
+                    arrItem[Length].domain = this.domain;
+                    arrItem[Length].maindomain = this.maindomain;
+                    arrItem[Length].token = token;//sinh ngay nhien token
+                    arrItem[Length].show = true;
+                    Length++;
+                }
+            }
+            Array.Resize(ref arrItem, Length);
+        }//void
+        private string encode(string val) { 
+            //return Convert.ToBase64String(
+            return "";
+        }
+        //doc tu file 1.xml, 2.xml
+        private void readXml(string Url)
+        {
+            //Fetch the subscribed RSS Feed
+            XmlDocument RSSXml = new XmlDocument();
+            try
+            {
+                RSSXml.Load(Url);
+            }
+            catch (Exception ex) {
+                return;
+            }
+
+            XmlNodeList RSSNodeList = RSSXml.SelectNodes("channel/item");
+            XmlNode RSSDesc = RSSXml.SelectSingleNode("channel/title");
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (XmlNode RSSNode in RSSNodeList)
+            {
+                XmlNode RSSSubNode;
+                RSSSubNode = RSSNode.SelectSingleNode("title");
+                string title = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("link");
+                string link = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("description");
+                string desc = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("source");
+                string source = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("ranking");
+                string ranking = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+                RSSSubNode = RSSNode.SelectSingleNode("keyword");
+                string keyword = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("image");
+                string image = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("date");
+                string date = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("maindomain");
+                string maindomain = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("token");
+                string token = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("totalcomment");
+                string totalcomment = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+                if (totalcomment == null || totalcomment == "") totalcomment = "0";
+                //RSSSubNode = RSSNode.SelectSingleNode("catid");
+                //string catid = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                if (title != null && title != "")
+                {
+                    arrItem[Length].title = title;
+                    arrItem[Length].link = link;
+                    arrItem[Length].des = desc;
+                    if (date == null || date == "") 
+                                 arrItem[Length].date = DateTime.Now.ToString(); 
+                            else 
+                                 arrItem[Length].date = date;
+                    //if (catid!="") arrItem[Length].catid = int.Parse(catid);
+                    //if (domain != "")  arrItem[Length].domain = int.Parse(domain);
+                    if (image != "") arrItem[Length].image = image;
+                    arrItem[Length].catid = this.catid;
+                    arrItem[Length].domain = this.domain;
+                    arrItem[Length].maindomain = maindomain;
+                    arrItem[Length].source = source;
+                    arrItem[Length].token = token;
+                    arrItem[Length].show = true;
+                    if (ranking!="") arrItem[Length].ranking = Int32.Parse(ranking);
+                    arrItem[Length].keyword = keyword;
+                    arrItem[Length].totalcomment = Int32.Parse(totalcomment);
+                    Length++;
+                }
+            }
+            Array.Resize(ref arrItem, Length);
+        }//void
+        public void writeToXml(ItemXml[] arr,int length,int domain,string maindomain, int catid,string filename) {
+            //string physicalPath = HttpContext.Server.MapPath("");
+            Hashtable removeDuplicateLink = new Hashtable();
+            Hashtable removeDuplicateTitle = new Hashtable();
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.Encoding = Encoding.UTF8;
+            int minRaking = 0;// Uti.getMinRanking();
+            string xmlDoc = filename;
+
+            using (XmlWriter writer = XmlWriter.Create(xmlDoc, settings))
+            {   
+                writer.WriteStartDocument();
+                writer.WriteStartElement("channel");
+                for (int i = 0; i < length; i++)
+                    if (arr[i].ranking >= minRaking && arr[i].title != null && arr[i].title.Trim() != "" && !removeDuplicateLink.ContainsKey(arr[i].link.Trim()) && !removeDuplicateTitle.ContainsKey(arr[i].title.Trim()))
+                {
+                    string token = Config.EncodeStr(arr[i].link);
+                        //Guid.NewGuid().ToString();
+                    //writer.WriteElementString("title", catid.ToString()); //writer.WriteEndElement();
+                    //writer.WriteAttributeString("id", "p3");
+                    writer.WriteStartElement("item");
+                    writer.WriteElementString("title", arr[i].title);
+                    writer.WriteElementString("description", arr[i].des);
+                    writer.WriteElementString("image", arr[i].image);
+                    writer.WriteElementString("link", arr[i].link.Trim());
+                    writer.WriteElementString("totalcomment", arr[i].totalcomment.ToString());
+                    string date;
+                    if (arr[i].date != "") {
+                        try
+                        {
+                            date = DateTime.Parse(arr[i].date).ToString();//ToUniversalTime().
+                        }
+                        catch (Exception ex) {
+                            date = DateTime.Now.ToString();//ToUniversalTime().
+                        }
+                    }
+                    else date = DateTime.Now.ToString();//ToUniversalTime().
+                    writer.WriteElementString("date", date);
+                    writer.WriteElementString("domain", arr[i].domain.ToString());
+                    writer.WriteElementString("maindomain", arr[i].maindomain);
+                    writer.WriteElementString("catid", catid.ToString());
+                    writer.WriteElementString("token", arr[i].token);
+                    writer.WriteElementString("source", arr[i].source);
+                    writer.WriteElementString("ranking", arr[i].ranking.ToString());
+                    writer.WriteElementString("keyword", arr[i].keyword.ToString());
+                    writer.WriteEndElement();                    
+                    removeDuplicateLink.Add(arr[i].link.Trim(), "1");
+                    removeDuplicateTitle.Add(arr[i].title.Trim(), "1");
+                }
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
+        }
+        
+        //doc tu file topComment.xml
+        private void readTopCommentXml(string Url)
+        {
+            //Fetch the subscribed RSS Feed
+            XmlDocument RSSXml = new XmlDocument();
+            try
+            {
+                RSSXml.Load(Url);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+            XmlNodeList RSSNodeList = RSSXml.SelectNodes("channel/item");
+            XmlNode RSSDesc = RSSXml.SelectSingleNode("channel/title");
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (XmlNode RSSNode in RSSNodeList)
+            {
+                XmlNode RSSSubNode;
+
+                RSSSubNode = RSSNode.SelectSingleNode("id");
+                string id = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+
+                RSSSubNode = RSSNode.SelectSingleNode("title");
+                string title = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("link");
+                string link = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("total");
+                string total = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+                
+
+                RSSSubNode = RSSNode.SelectSingleNode("token");
+                string token = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("maindomain");
+                string maindomain = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                if (title != null && title != "")
+                {
+                    arrItem[Length].id = int.Parse(id);
+                    arrItem[Length].title = title;
+                    arrItem[Length].link = link;
+                    arrItem[Length].token = token;                    
+                    arrItem[Length].totalcomment = int.Parse(total);
+                    arrItem[Length].maindomain = maindomain;
+                    Length++;
+                }
+            }
+        }//void
+        //doc tu file TopNewWeekly.xml
+        private void readTopNewWeekly(string Url)
+        {
+            //Fetch the subscribed RSS Feed
+            XmlDocument RSSXml = new XmlDocument();
+            try
+            {
+                RSSXml.Load(Url);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+            XmlNodeList RSSNodeList = RSSXml.SelectNodes("channel/item");
+            XmlNode RSSDesc = RSSXml.SelectSingleNode("channel/title");
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (XmlNode RSSNode in RSSNodeList)
+            {
+                XmlNode RSSSubNode;
+
+                RSSSubNode = RSSNode.SelectSingleNode("id");
+                string id = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+
+                RSSSubNode = RSSNode.SelectSingleNode("title");
+                string title = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("link");
+                string link = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("ranking");
+                string ranking = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+
+                RSSSubNode = RSSNode.SelectSingleNode("datetimeid");
+                string datetimeid = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("maindomain");
+                string maindomain = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("topicid");
+                string topicid = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("hasContent");
+                string hasContent = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                if (title != null && title != "")
+                {
+                    arrItem[Length].id = int.Parse(id);
+                    arrItem[Length].title = title;
+                    arrItem[Length].link = link;
+                    arrItem[Length].ranking = int.Parse(ranking);
+                    arrItem[Length].maindomain = maindomain;
+                    arrItem[Length].datetimeid = int.Parse(datetimeid);
+                    if (topicid != "")
+                    {
+                        arrItem[Length].topicid = int.Parse(topicid);
+                    }
+                    if (hasContent != "")
+                    {
+                        arrItem[Length].hasContent = int.Parse(hasContent);
+                    }  
+                    Length++;
+                }
+            }
+            Array.Resize(ref arrItem, Length);
+        }//void
+        //doc tu file TopNewWeekly.xml
+        private void readNewestNew(string Url)
+        {
+            //Fetch the subscribed RSS Feed
+            XmlDocument RSSXml = new XmlDocument();
+            try
+            {
+                RSSXml.Load(Url);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+            XmlNodeList RSSNodeList = RSSXml.SelectNodes("channel/item");
+            XmlNode RSSDesc = RSSXml.SelectSingleNode("channel/title");
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (XmlNode RSSNode in RSSNodeList)
+            {
+                XmlNode RSSSubNode;
+
+                RSSSubNode = RSSNode.SelectSingleNode("id");
+                string id = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("image");
+                string image = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("title");
+                string title = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("link");
+                string link = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("ranking");
+                string ranking = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+
+                RSSSubNode = RSSNode.SelectSingleNode("datetime");
+                string datetime = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("timeDiff");
+                string timeDiff = RSSSubNode != null ? RSSSubNode.InnerText : "";
+               
+
+                RSSSubNode = RSSNode.SelectSingleNode("hasContent");
+                string hasContent = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("catid");
+                string catid = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("maindomain");
+                string maindomain = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                if (title != null && title != "")
+                {
+                    arrItem[Length].id = int.Parse(id);
+                    arrItem[Length].title = title;
+                    arrItem[Length].link = link;
+                    arrItem[Length].ranking = int.Parse(ranking);                   
+                    arrItem[Length].date = datetime;
+                    arrItem[Length].timeDiff = timeDiff;
+                    arrItem[Length].image = image;  
+                    if (hasContent != "")
+                    {
+                        arrItem[Length].hasContent = int.Parse(hasContent);
+                    }
+                    if (catid != "")
+                    {
+                        arrItem[Length].catid = int.Parse(catid);
+                    }
+                    arrItem[Length].maindomain = maindomain;
+                    Length++;
+                }
+            }
+            Array.Resize(ref arrItem, Length);
+        }//void
+        //doc tu file HotNew.xml, New.xml, Cat*.Xml
+        private void readNewsManager(string Url)
+        {
+            //Fetch the subscribed RSS Feed
+            XmlDocument RSSXml = new XmlDocument();
+            try
+            {
+                RSSXml.Load(Url);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+            XmlNodeList RSSNodeList = RSSXml.SelectNodes("channel/item");
+            XmlNode RSSDesc = RSSXml.SelectSingleNode("channel/title");
+
+            StringBuilder sb = new StringBuilder();
+            Length = 0;
+            arrNewsManager = new viewNewsManager[1000];
+            foreach (XmlNode RSSNode in RSSNodeList)
+            {
+                XmlNode RSSSubNode;
+
+                RSSSubNode = RSSNode.SelectSingleNode("id");
+                string id = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("title");
+                string title = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("source");
+                string source = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("date");
+                string date = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("datetimeid");
+                string datetimeid = RSSSubNode != null ? RSSSubNode.InnerText : DateTime.Now.ToString();
+
+
+                RSSSubNode = RSSNode.SelectSingleNode("ranking");
+                string ranking = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+                RSSSubNode = RSSNode.SelectSingleNode("link");
+                string link = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+
+                RSSSubNode = RSSNode.SelectSingleNode("image");
+                string image = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("totalcomment");
+                string totalcomment = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("maindomain");
+                string maindomain = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("uplikes");
+                string uplikes = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+                RSSSubNode = RSSNode.SelectSingleNode("downlikes");
+                string downlikes = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+                RSSSubNode = RSSNode.SelectSingleNode("topicid");
+                string topicid = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+                RSSSubNode = RSSNode.SelectSingleNode("catid");
+                string catid = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("hasContent");
+                string hasContent = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("nameRelated");
+                string nameRelated = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("topicidRelated");
+                string topicidRelated = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+                RSSSubNode = RSSNode.SelectSingleNode("idRelated");
+                string idRelated = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("linkRelated");
+                string linkRelated = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("maindomainRelated");
+                string maindomainRelated = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("rankingRelated");
+                string rankingRelated = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("hasContentRelated");
+                string hasContentRelated = RSSSubNode != null ? RSSSubNode.InnerText : "";
+                
+
+                if (id != null && id != "")
+                {
+                    arrNewsManager[Length] = new viewNewsManager();
+                    arrNewsManager[Length].id = Int32.Parse(id);
+                    arrNewsManager[Length].title = title;
+                    arrNewsManager[Length].source = source;
+                    arrNewsManager[Length].date = DateTime.Parse(date);
+                    arrNewsManager[Length].datetimeid = Int32.Parse(datetimeid);
+                    arrNewsManager[Length].ranking = Int32.Parse(ranking);
+                    arrNewsManager[Length].link = link;
+                    arrNewsManager[Length].image = image;
+                    if (totalcomment != "") arrNewsManager[Length].totalcomment = Int32.Parse(totalcomment);
+                    arrNewsManager[Length].image = image;
+                    arrNewsManager[Length].maindomain = maindomain;
+                    arrNewsManager[Length].uplikes = Int32.Parse(uplikes);
+                    arrNewsManager[Length].downlikes = Int32.Parse(downlikes);
+                    if (topicid!="") arrNewsManager[Length].topicid = Int32.Parse(topicid);
+                    arrNewsManager[Length].catid = Int32.Parse(catid);
+                    arrNewsManager[Length].hasContent = Int32.Parse(hasContent);
+                    arrNewsManager[Length].nameRelated = nameRelated;
+                    if (topicidRelated != "") arrNewsManager[Length].topicidRelated = Int32.Parse(topicidRelated);
+                    if (idRelated != "") arrNewsManager[Length].idRelated = Int32.Parse(idRelated);
+                    arrNewsManager[Length].linkRelated = linkRelated;
+                    arrNewsManager[Length].maindomainRelated = maindomainRelated;
+                    if (rankingRelated != "") arrNewsManager[Length].rankingRelated = Int32.Parse(rankingRelated);
+                    if (hasContentRelated != "") arrNewsManager[Length].hasContentRelated = Int32.Parse(hasContentRelated);
+                    Length++;
+                }
+            }
+            Array.Resize(ref arrNewsManager, Length);
+        }//void
+        //doc tu file mHotNew.xml, mNew.xml, mCat*.Xml
+        private void readNewsMobileAppManager(string Url)
+        {
+            //Fetch the subscribed RSS Feed
+            XmlDocument RSSXml = new XmlDocument();
+            try
+            {
+                RSSXml.Load(Url);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+            XmlNodeList RSSNodeList = RSSXml.SelectNodes("channel/item");
+            XmlNode RSSDesc = RSSXml.SelectSingleNode("channel/title");
+
+            StringBuilder sb = new StringBuilder();
+            Length = 0;
+            arrNewsMobileAppManager = new viewNewsMobileAppManager[1000];
+            foreach (XmlNode RSSNode in RSSNodeList)
+            {
+                XmlNode RSSSubNode;
+
+                RSSSubNode = RSSNode.SelectSingleNode("id");
+                string id = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("title");
+                string title = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("date");
+                string date = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("ranking");
+                string ranking = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+                RSSSubNode = RSSNode.SelectSingleNode("link");
+                string link = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+
+                RSSSubNode = RSSNode.SelectSingleNode("image");
+                string image = RSSSubNode != null ? RSSSubNode.InnerText : "";
+                
+
+                RSSSubNode = RSSNode.SelectSingleNode("maindomain");
+                string maindomain = RSSSubNode != null ? RSSSubNode.InnerText : "";
+                
+
+                RSSSubNode = RSSNode.SelectSingleNode("topicid");
+                string topicid = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+                RSSSubNode = RSSNode.SelectSingleNode("catid");
+                string catid = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("timediff");
+                string timediff = RSSSubNode != null ? RSSSubNode.InnerText : ""; 
+
+
+                if (id != null && id != "")
+                {
+                    arrNewsMobileAppManager[Length] = new viewNewsMobileAppManager();
+                    arrNewsMobileAppManager[Length].id = Int32.Parse(id);
+                    arrNewsMobileAppManager[Length].title = title;
+
+                    arrNewsMobileAppManager[Length].date = DateTime.Parse(date);
+
+                    arrNewsMobileAppManager[Length].ranking = Int32.Parse(ranking);
+                    arrNewsMobileAppManager[Length].link = link;
+                    arrNewsMobileAppManager[Length].image = image;
+
+                    arrNewsMobileAppManager[Length].image = image;
+                    arrNewsMobileAppManager[Length].maindomain = maindomain;
+
+                    if (topicid != "") arrNewsMobileAppManager[Length].topicid = Int32.Parse(topicid);
+                    arrNewsMobileAppManager[Length].catid = Int32.Parse(catid);
+                    arrNewsMobileAppManager[Length].timediff = Int32.Parse(timediff);                    
+                   
+                    Length++;
+                }
+            }
+            Array.Resize(ref arrNewsMobileAppManager, Length);
+        }//void
+        //doc tu file Trends.Xml
+        private void readTrends(string Url)
+        {
+            //Fetch the subscribed RSS Feed
+            XmlDocument RSSXml = new XmlDocument();
+            try
+            {
+                RSSXml.Load(Url);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+            XmlNodeList RSSNodeList = RSSXml.SelectNodes("channel/item");
+            XmlNode RSSDesc = RSSXml.SelectSingleNode("channel/title");
+
+            StringBuilder sb = new StringBuilder();
+            Length = 0;
+            arrTrendsManager = new viewTrendsManager[1000];
+            foreach (XmlNode RSSNode in RSSNodeList)
+            {
+                XmlNode RSSSubNode;
+
+                RSSSubNode = RSSNode.SelectSingleNode("title");
+                string title = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("keyword");
+                string keyword = RSSSubNode != null ? RSSSubNode.InnerText : "";
+                
+
+                RSSSubNode = RSSNode.SelectSingleNode("datetimeid");
+                string datetimeid = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("id");
+                string id = RSSSubNode != null ? RSSSubNode.InnerText : DateTime.Now.ToString();
+
+
+                RSSSubNode = RSSNode.SelectSingleNode("name");
+                string name = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+                RSSSubNode = RSSNode.SelectSingleNode("link");
+                string link = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+
+                RSSSubNode = RSSNode.SelectSingleNode("image");
+                string image = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("maindomain");
+                string maindomain = RSSSubNode != null ? RSSSubNode.InnerText : "";               
+
+                RSSSubNode = RSSNode.SelectSingleNode("hasContent");
+                string hasContent = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+
+                
+
+
+                if (id != null && id != "")
+                {
+                    arrTrendsManager[Length] = new viewTrendsManager();
+                    arrTrendsManager[Length].keyword = keyword;
+                    arrTrendsManager[Length].title = title;
+                    arrTrendsManager[Length].datetimeid = Int32.Parse(datetimeid);
+                    arrTrendsManager[Length].id = Int32.Parse(id);
+                    arrTrendsManager[Length].name = name;
+                    arrTrendsManager[Length].link = link;
+                    arrTrendsManager[Length].image = image;
+                    arrTrendsManager[Length].maindomain = maindomain;
+                    if (hasContent != null && hasContent!="") arrTrendsManager[Length].hasContent = Byte.Parse(hasContent);                   
+                    Length++;
+                }
+            }
+            Array.Resize(ref arrTrendsManager, Length);
+        }//void
+        //doc tu file dailyHot.xml
+        private void readTopNewsXml(string Url)
+        {
+            //Fetch the subscribed RSS Feed
+            XmlDocument RSSXml = new XmlDocument();
+            try
+            {
+                RSSXml.Load(Url);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+            XmlNodeList RSSNodeList = RSSXml.SelectNodes("channel/item");
+            XmlNode RSSDesc = RSSXml.SelectSingleNode("channel/title");
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (XmlNode RSSNode in RSSNodeList)
+            {
+                XmlNode RSSSubNode;
+                RSSSubNode = RSSNode.SelectSingleNode("title");
+                string title = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("link");
+                string link = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("image");
+                string image = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("ranking");
+                string ranking = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("description");
+                string description = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("token");
+                string token = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("date");
+                string date = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                RSSSubNode = RSSNode.SelectSingleNode("totalcomment");
+                string totalcomment = RSSSubNode != null ? RSSSubNode.InnerText : "0";
+                if (totalcomment == null || totalcomment == "") totalcomment = "0";
+
+                RSSSubNode = RSSNode.SelectSingleNode("maindomain");
+                string maindomain = RSSSubNode != null ? RSSSubNode.InnerText : "";
+
+                if (title != null && title != "")
+                {
+                    arrItem[Length].title = title;
+                    arrItem[Length].link = link;
+                    arrItem[Length].des = description;
+                    arrItem[Length].date = date;
+                    if (image != "") arrItem[Length].image = image;
+                    arrItem[Length].token = token;
+                    if (ranking != "") arrItem[Length].ranking = Int32.Parse(ranking);
+                    arrItem[Length].totalcomment = Int32.Parse(totalcomment);
+                    arrItem[Length].maindomain = maindomain;
+                    Length++;
+                }
+            }
+            Array.Resize(ref arrItem, Length);
+        }//void
+        //return true if at least one word is related of 2 words
+        public static bool Related2Word(string s1, string s2)
+        {
+            string[] arr = s1.Split(' ');
+            int c = 0;
+            s2 = " " + s2 + " ";
+            for (int k = 0; k < arr.Length; k++)
+                if (s2.IndexOf(" " + arr[k] + " ") >= 0)
+                {
+                    c = c + 1;
+                }
+            if (c >= 2) return true;
+            return false;
+        }
+        private bool isTheRealKeyWord(string input)
+        {
+            return ",AT,ON,IN,THE,THIS,THERE,THAT,OF,HOW,AND,WHAT,DO YOU,HOW TO,ARE YOU,AND THE,AND MORE,AND A,AND IN,AT THE,AT,BACK AT,DO THE,OF THE,OF A,OR A,IN THE,IN A,IN,ON,ON THE,ON A,OF OTHER,IS A,IS THE,IS NOT,IS THIS,FOR THE,FOR A,FOR,FROM THE,HAVE THE,TO BE,TO THE,TO GET,WITH A,WITH THE,WHAT A,WHAT TO,".IndexOf("," + input.ToUpper().Trim() + ",") < 0;
+        }
+       
+        public static string getThePieceOfTwoString(string s1, string s2)
+        {
+            s1 = removeSpecialChar(s1).ToLower().Trim();
+            s2 = removeSpecialChar(s2).ToLower().Trim();
+            
+            if (s1.Length > s2.Length)
+            {
+                string tp = s1;
+                s1 = s2;
+                s2 = tp;
+            }
+            s1 = s1.Trim();
+            s2 = s2.Trim();
+            if (!Related2Word(s1, s2)) return "";
+            int L = s1.Length;
+            int N = s2.Length;
+            if (L == 0 || N == 0) return "";
+            string result = "";
+            int minLengOfWord = _Max_Topic_KeyWord_Length_;
+            string[] arrTemp = null;
+            s2 = " " + s2 + " ";
+            while (minLengOfWord >= 2)
+            {
+                arrTemp = s1.Split(' ');
+                result = "";
+                // Lay tung tu ra mot roi so sanh
+                for (int k = 0; k <= arrTemp.Length - minLengOfWord; k++)
+                {
+                    result = "";
+                    for (int l = k; l < k + minLengOfWord; l++) result += arrTemp[l] + " ";
+                    if (realLength(result) >= 2 && s2.IndexOf(" " + result.Trim() + " ") >= 0)
+                    {
+                        return result.Trim();
+                    }
+                    else result = "";
+                }
+                minLengOfWord--;
+            }
+            return "";
+        }
+        public static string XauConChungDaiNhat(string s1, string s2)
+        {
+            s1 = removeSpecialChar(s1).ToLower().Trim();
+            s2 = removeSpecialChar(s2).ToLower().Trim();
+
+            //if (s1.Length > s2.Length)
+            //{
+            //    string tp = s1;
+            //    s1 = s2;
+            //    s2 = tp;
+            //}
+            //s1 = s1.Trim();
+            //s2 = s2.Trim();
+            string[] xau1 = s1.Split(' ');
+            string[] xau2 = s2.Split(' ');
+            int L = xau1.Length;
+            int N = xau2.Length;
+            if (L == 0 || N == 0) return "";            
+            int[,] max=new int[L+1,N+1];
+            int Len=L>N?N:L;
+            int i=0, j = 0;
+            for(i=0;i<L;i++){
+                for(j=0;j<N;j++){
+                    if (xau1[i]==xau2[j]){
+                        if (i==0 || j==0) max[i,j]=1; else max[i,j]=max[i-1,j-1]+1;
+                    }else{
+                        if (i == 0 || j == 0) max[i, j] = 0; else max[i, j] = max[i - 1, j] > max[i, j - 1] ? max[i - 1, j] : max[i, j - 1];
+                    }
+                }
+            }
+            i=L-1;
+            j=N-1;
+            string rs="";
+            while(i>0 && j>0){
+                if (max[i,j]==max[i-1,j-1]+1 && xau1[i]==xau2[j]){                    
+                        rs=xau1[i]+" "+rs;
+                        i--;
+                        j--;
+                    
+                }else{
+                    if (max[i,j]==max[i,j-1]) j--; else
+                        if (max[i, j] == max[i - 1, j]) i--;
+                        else if (max[i, j] == max[i - 1, j-1]) {i--;j--;}
+                }
+            }
+            if (xau1[i] == xau2[j])
+            {
+                rs = xau1[i] + " " + rs;
+            }
+            return rs.Trim();
+        }
+        public static int realLength(string input)
+        {
+            string[] arr = input.Split(' ');
+            int count = 0;
+            for (int k = 0; k < arr.Length; k++)
+                if (!arr[k].Trim().Equals("")) count++;
+            return count;
+        }
+        //getCOntent
+        public static String getContent(String url)
+        {
+            String htmlCode = "";
+            Random r = new Random();
+            string[] myAngent = {"Mozilla/2.2",
+                       "Mozilla/2.0b4",
+                       "Mozilla/1.7.3",
+                       "Namoroka/3.6.6pre",
+                       "Netscape/9.1.0285",
+                       "Netscape/9.0RC1",
+                       "Opera/12.14",
+                       "Chrome/32.0.1667.0",
+                       "Chrome/32.0.1664.3",
+                       "Chrome/28.0.1467.0",
+                       "Chrome/28.0.1467.0",
+                       "Chrome/23.0.1271.6",
+                       "AOL/9.7"};
+            try
+            {
+                bool conti = true;
+                byte stry = 0;
+                WebResponse myResponse;
+                StreamReader sr;
+                do
+                {
+                    try
+                    {
+                        conti = false;
+                        HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(url);
+                        myRequest.Method = "GET";
+                        myRequest.Timeout = 15000;
+                        myRequest.UserAgent = myAngent[r.Next(0, myAngent.Length)];
+                        myResponse = myRequest.GetResponse();
+                        sr = new StreamReader(myResponse.GetResponseStream(), System.Text.Encoding.UTF8);
+                        htmlCode = sr.ReadToEnd();
+                        sr.Close();
+                        myResponse.Close();
+
+                    }
+                    catch (Exception err1)
+                    {
+                        conti = true;
+                        stry++;
+                    }
+                } while (conti && stry < 3);
+            }
+            catch (Exception err)
+            {
+                return "";
+            }
+
+            return htmlCode;
+        }
+    }//class
+}

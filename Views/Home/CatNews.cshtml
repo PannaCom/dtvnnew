@@ -1,0 +1,164 @@
+﻿@model youknow.Views.ModelClassViewNewsManager
+@{
+   
+    ViewBag.Url = youknow.Uti.getCatNameFromIdNoMark(ViewBag.catid);
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int currentNo = 0;
+    int noNewsItem = -1;
+
+    string title = "";
+    string titleNoMark = "";
+    string strCare = "Quan tâm";
+    int catid = 0;
+    int i = 0;
+    int preID = -1;// Model.ieViewNews.ElementAt(0).id;
+    int lastID = preID;
+
+    string filterHaveRead = "";
+    string image = "";
+    string href = "";
+    int totalPoint;
+    string style = "";
+    string urllink = "";
+    if (ViewBag.haveRead != null)
+    {
+        filterHaveRead = ViewBag.haveRead;
+    }
+}
+<div id="content">        
+        <div class="container">            
+            <div class="col-md-6 padding-l-0" id="left-col">
+                <div class="list-post">
+                    @foreach (youknow.Views.viewNewsManager item in Model.ieViewNews)                
+                    {
+                        if (preID!=item.id){
+                            //if (filterHaveRead != "" && (filterHaveRead.Contains(item.id + ",")))
+                            //{
+                            //    preID = item.id;
+                            //    continue;
+
+                            //}
+                            currentNo++;
+                            title = System.Web.HttpUtility.HtmlDecode(item.title);
+                            titleNoMark = youknow.Uti.unicodeToNoMark(title);
+                            urllink = "href=/" + youknow.Uti.unicodeToNoMark(title + " " + youknow.Uti.smDomainNew(item.maindomain) + " " + youknow.Uti.getCatNameFromId(item.catid)) + "-" + item.id;
+                            preID=item.id;
+                            totalPoint = (int)item.ranking;//(int)item.uplikes + 
+                            if (currentNo >= youknow.Config.PageSizeLoad) { style = "style=display:none;"; }
+                            
+                            if (item.hasContent == 1)
+                            {
+                                href = "href=/" + titleNoMark+"-"+item.id;
+                            }
+                            else
+                            {
+                                href = "href=" + item.link + " target=\"_blank\"";
+                            }
+                            image=item.image;
+                            if (image.Equals(""))
+                            {                               
+                                image = "/Images/logo.png";
+                            }
+                            if (item.catid==0){
+                            <text>
+                            <div class="top-post-item" >
+                                <div class="post-item-img-box">
+                                    <a @urllink title="@title">
+                                        <img class="post-item-img" src="@image" alt="@title" />
+                                    </a>
+                                    <div class="vote-system">
+                                        <span class="vote-button" onclick='LikeNews(@item.id,1,@totalPoint);'>
+                                            +1<i class="fa fa-thumbs-up fa-1"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="post-item-info">
+                                    <a @urllink title="@title" class="link-post-item" >
+                                        <h3 class="post-item-title">@Html.Raw(@title)</h3>
+                                    </a>
+                                    <span class="meta-post">
+                                        <span class="time">@youknow.Uti.getDiffTimeFromNow(@item.date.ToString())</span> | <span class="source-news">@item.maindomain.Replace("http://", "").Replace("www.", "")</span>
+                                    </span>
+                                    <p class="post-item-description">@Html.Raw(@youknow.Uti.smoothDes(@item.des))</p>
+                                </div>
+                                <div class="clear-fix"></div>
+                            </div><!-- end .post-item -->
+                            </text>
+                            }else{
+                                <text>
+                                    <div class="post-item" id="item_@currentNo" @style>
+                                        <a @urllink title="@title" class="link-post-item" >
+                                            <h3 class="post-item-title">@Html.Raw(@title)</h3>
+                                        </a>
+                                        <div class="post-item-img-box">
+                                            <a @urllink title="@title">
+                                                <img class="post-item-img" src="@image" alt="@title"/>
+                                            </a>
+                                            <div class="vote-system">
+                                                <span class="vote-button" onclick='LikeNews(@item.id,1,@totalPoint);'>
+                                                    +1<i class="fa fa-thumbs-up fa-1"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="post-item-info">
+                                            <span class="meta-post">
+                                                <span class="time">@youknow.Uti.getDiffTimeFromNow(@item.date.ToString())</span> | <span class="source-news">@item.maindomain.Replace("http://www.","").Replace("www.","")</span>
+                                            </span>
+                                            <p class="post-item-description">@Html.Raw(@youknow.Uti.smoothDes(@item.des))</p>
+                                        </div>
+                                        <div class="clear-fix"></div>
+                                    </div><!-- end .post-item -->
+                                </text>
+                            }
+                        }
+                    }
+                </div><!-- end .list-post  -->
+                <button type="button" class="btn btn-primary" id="loadMore">Xem thêm</button>
+                <div class="clear-fix"></div>
+            </div>
+            <div class="col-md-4 padding-0" id="mid-col">
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <!-- right banner -->
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:300px;height:250px"
+                     data-ad-client="ca-pub-6575239088642506"
+                     data-ad-slot="8243327678"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                <a href="http://solution.com.vn/" title="Việt Nam Solution thiết kế thi công quảng cáo" target="_blank">
+                    <img src="http://diemtinvietnam.vn/Images/Adv/solution2.gif" alt="Việt Nam Solution thiết kế thi công quảng cáo" style="width:100%; margin-bottom:15px" />
+                </a>                  
+                <div><script type="text/javascript" src="http://paragonads.vn/www/delivery/pa_ad.js"></script> 
+                <div><script type="text/javascript" src="http://e.eclick.vn/delivery/zone/1958.js"></script></div>                
+                    <script type="text/javascript"> 
+                        PA_ShowAd(545); 
+                    </script>
+                </div>
+                <embed width="300" src="/Images/cakholangvudai.swf" quality="high" type="application/x-shockwave-flash" wmode="transparent" allowscriptaccess="always">
+                <div class="box-list-event" id="divHaveRead">
+                    <h3 class="title-event">Đọc nhiều nhất</h3>
+                    <ul class="list-event" id="ulHaveRead">
+                    </ul>
+                    <div class="clear-fix"></div>
+                </div>
+                
+                <div class="clear-fix"></div>
+            </div>
+
+            <div class="col-md-2 padding-r-0" id="right-col">
+                
+            </div>
+
+        </div>
+
+    </div>  
+<script>
+    
+    $("#menu" + @ViewBag.catid).addClass("active");    
+    //if ($.cookie('haveRead') != null){
+    //getTopRead();
+    getTopReadCat(@ViewBag.catid);
+   
+</script>

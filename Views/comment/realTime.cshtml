@@ -1,0 +1,427 @@
+﻿@model youknow.Views.ModelClassViewCommentRealtime
+@{
+    //ViewBag.Title = "Đọc tin ";
+    Layout = "~/Views/Shared/_LayoutDetail.cshtml";
+    string title="";
+    string maindomain = "";
+    string des="";
+    string link = "";
+    string linktoken = "";
+    string content = "";
+    string username = "";
+    long? minId = long.MaxValue;
+    DateTime convertedDate;
+    DateTime localDate;
+    string image = "";
+    string userTokenReply = "";
+    int line = 0;
+}
+<script src="~/Scripts/OpenLayers.js" type="text/javascript"></script>     
+<script>
+    var oldIdNews=-1;
+    var newIdNews=0;
+    var minId=[];//Với mỗi tin, lấy ra các comment mới nhất, mảng minId giữ lại các id nhỏ nhất của các comment thuộc tin đó, khi người dùng click vào dựa vào minId của tin đó để load các comment khác trước đó.
+    var totalCurrentComment=[];//Với mỗi Tin, load ra các comment đến đâu, ghi lại tổng số comment đã load được đến đó.
+    //Lấy ra số likes của mỗi comment.
+    function getTotalLike(id) {
+        var lenDomain = 0;
+
+        //Creating an XMLHttpRequest and sending
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/comment/getTotalLike?idcomment=' + id);
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                if (xhr.responseText!="0")
+                    document.getElementById("totalLike_" + id).innerHTML = xhr.responseText;
+            }
+        }
+
+    }
+    //Lấy ra tên của user dựa trên usertoken đã mã hóa.->Dịch ngược.
+    function getUserNameFromToken(id,usertoken) {
+        var lenDomain = 0;
+        
+        //Creating an XMLHttpRequest and sending
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/comment/getUserNameFromToken?usertoken=' + usertoken);
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                if (xhr.responseText!="0")
+                    document.getElementById("UserNameReply_" + id).innerHTML = xhr.responseText;
+            }
+        }
+    }
+    function checkSubmit(event,idNews,title){
+        
+        if (isSending) return;
+        if(event && event.keyCode == 13)
+        {
+            //alert("gui di"+token+" "+link+" "+title);
+                
+            updateComment(idNews,title);
+        }
+    }
+    //Đếm số comment của tin tức này
+    function getTotalComment(idNews){
+        var lenDomain = 0;
+        var formdata2 = new FormData(); //FormData object
+        formdata2.append("idNews", idNews);
+        //Creating an XMLHttpRequest and sending
+        var xhr = new XMLHttpRequest();            
+        xhr.open('POST', '/comment/getTotalComment');
+        xhr.send(formdata2);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                if (xhr.responseText!="0")
+                    document.getElementById("totalComment_"+idNews).innerHTML = xhr.responseText+" bình luận.";
+            }
+        }
+    }
+    var minIdComment=1000000;
+    //Lấy ra các comment của tin có id là idNews
+    //, mỗi lần lấy ghi lại giá trị nhỏ nhất của id để load các id 
+    // khi người dùng click vào dựa vào đó load tiếp các id comment khác của tin này
+    function getNewsComment(idNews) {
+        if (!totalCurrentComment[idNews]){
+            totalCurrentComment[idNews]=0;
+        }
+        if(idNews!=oldIdNews)  {
+            oldIdNews=idNews;
+            minIdComment=minId[idNews];
+            if (minIdComment<=0 || !minIdComment) minIdComment=100000000;
+
+        } 
+        var request = OpenLayers.Request.GET({
+            url: "/comment/getNewsComment",
+            params: { idNews: idNews,lastestid:minIdComment},
+            callback: function (data) {
+                var news = '{"news":' + data.responseText + '}';
+                var json_parsed = $.parseJSON(news);
+                //alert(news);
+                var diff = 0;
+                var today = new Date();
+                //alert(today);
+                var str_time;
+
+                for (var i =0 ; i <json_parsed.news.length; i++) {
+                    if (json_parsed.news[i]) {
+                        var n = json_parsed.news[i];
+                        //alert(n.datetime);
+                        try{
+                            diff = getMinuteDiff(new Date(n.datetime).toUTCString(), today.toUTCString());
+                            if (diff > 60) 
+                                str_time = " gửi " + Math.round(diff / 60) + " giờ trước";
+                            else
+                                str_time = " gửi " + diff+ " phút trước";
+                        } catch (err) {
+                            diff = 0;
+                        }
+                        if (n.id<minIdComment) minIdComment=n.id;
+                        
+                        if (n.fullName==null) n.fullName=n.email;
+                        //$('#dvComment').html('<div class=\"alert alert-info\"><span class=\"label label-success\">'+n.fullName + ':</span>' + n.contents + '(' + str_time + ')<span id="totalLike_' + n.id + '" class="label label-info pull-right"></span><a onclick="likeComment(' + n.id + ');"><span class="badge pull-right">Thích</span></a></div>'+$('#dvComment').html());
+                        var strUserTokenReply="";
+                        if (n.usertokenreplyid != null) {
+                            strUserTokenReply = "<span class=\"userchat\" id=UserNameReply_"+n.id+"></span>: ";
+                            getUserNameFromToken(n.id,n.usertokenreplyid);
+                        }
+                        var content = "<div class=bgheader4><div class=chatLine1><span class=userchat2>" + n.fullName + "</span></div><div class=chatLine2><span class=chatcontent>" + strUserTokenReply + n.contents + " <span class=chattime>" + str_time + "</span></span> <a onclick=\"replyComment(" + idNews + "," + n.id + ",'" + n.fullName + "','" + n.usertoken + "');\" style=\"cursor:pointer\"><span class=userchat3>Trả lời</span></a>&nbsp;<a onclick=\"likeComment(" + n.id + ");\" style=\"cursor:pointer\"><span class=userchat3>Thích&nbsp;<span id=\"totalLike_" + n.id + "\" class=chatcontent2></span></span></a></div></div>";
+                        //"<div class=\"alert alert-info\"><span class=\"label label-success\">" + n.fullName + "</span> " + strUserTokenReply +n.contents + " " + str_time + " <a onclick=\"replyComment(" + n.id + ",'" + n.fullName + "','" + n.usertoken + "');\"><span class=\"badge pull-right\">Trả lời</span></a><a onclick=\"likeComment(" + n.id + ");\"><span class=\"badge pull-right\">Thích<span id=\"totalLike_" + n.id + "\" class=\"label label-info pull-right\"></span></span></a></div>"; 
+                        $('#dvComment_'+idNews).html(content+$('#dvComment_'+idNews).html());
+                        getTotalLike(n.id);
+                        totalCurrentComment[idNews]++;
+                        //$('#dvComment').append('<div class=\"alert alert-info\">'+n.fullName+': ' + n.contents + '</div>');
+                        //var elem = document.getElementById('dvComment');// just to scroll down the line 
+                        //elem.scrollTop = elem.scrollHeight;
+                    }//if
+                }//for
+                minId[idNews]=minIdComment;
+                //alert("a="+minIdComment);
+                $("#viewPreviousComment_"+idNews).html("<a onclick=\"getNewsComment("+idNews+","+minIdComment+");\" style=\"cursor:pointer\"><span class=\"userchat\">"+totalCurrentComment[idNews]+"/</span><span class=\"userchat\" id=\"totalComment_"+idNews+"\"></span><img src=\"/Images/xblt.jpg\" border=\"0\"></a></div>");
+                getTotalComment(idNews);
+            }//tra ve call back
+        });//request
+    }
+    var isSending=false;
+    //document.getElementById("cmtContent").focus();
+    //document.title ="@Html.Raw(@title)";
+        
+    function getMinuteDiff(date1, date2) {
+        try{
+            //Get 1 day in milliseconds
+            var one_minute=1000*60;
+            //alert(date1 + "-" + date2);
+            var a = new Date(date1);
+            var b = new Date(date2);
+            //alert(a + "-" + b);
+            // Convert both dates to milliseconds
+            var date1_ms = a.getTime();
+            var date2_ms = b.getTime();
+            //alert(date1_ms + "-" + date2_ms);
+            //return 2;
+            // Calculate the difference in milliseconds
+            var difference_ms = date2_ms - date1_ms;
+            //alert(difference_ms);
+            //return difference_ms;
+            // Convert back to days and return
+            return Math.round(difference_ms / one_minute);
+        }catch(err){
+            return 0;
+        }
+    }
+    var checkFlushBig;
+    function updateComment(idNews,title) {
+        if (isSending) return;
+        var isLogin = '@ViewBag.userToken';
+            var contents = $("#cmtContent_"+idNews).val();
+            if (isLogin == '') {
+                alert("Bạn phải đăng ký làm thành viên để bình luận tin tức!");
+                window.location = "/Account/Login?returnUrl=/comment/readNews/"+idNews+"/?title"+title;
+                return;
+            }
+            if (contents.trim() == "") {
+                alert("Nhập nội dung!");
+                return;
+            }
+            if (contents.trim().length<=1) {
+                alert("Nội dung quá ngắn!");
+                return;
+            }
+            if (contents.trim().length>=1000) {
+                alert("Nội dung quá dài!");
+                return;
+            }
+            var tempContent=" "+contents+" ";
+            var badWord=["địt mẹ ","đm ","lồn ","buồi ","cặc ","dái ","đéo ","éo ","địt "];
+            for(var l=0;l<badWord.length;l++){
+                if(tempContent.indexOf(badWord[l])>=0){
+                    alert("Nội dung bình luận có chứa từ không phù hợp với thuần phong mỹ tục và xã hội Việt Nam. Xin bình luận lịch sự và trí tuệ!");
+                    return;
+                }
+            }
+
+            isSending=true;
+            //$("#cmtContent").attr("placeholder","Đang gửi...");
+            $("#sendingStatus_"+idNews).html("Đang gửi...");
+            var lenDomain = 0;
+            var formdata = new FormData(); //FormData object
+            var idReply=document.getElementById("idReply").value;
+            var userTokenReply=document.getElementById("userTokenReply").value;
+            var userNameReply=document.getElementById("userNameReply").value;
+            //alert(idReply+userTokenReply+userNameReply);
+            //return;
+            formdata.append("contents", contents);
+            formdata.append("idNews", idNews);
+            formdata.append("usertoken", '@ViewBag.userToken');
+            if (idReply!=""){
+                formdata.append("idReply", idReply);
+                formdata.append("userTokenReply", userTokenReply);
+            }else{
+                formdata.append("idReply", 0);
+                formdata.append("userTokenReply", "");
+            }
+            //Creating an XMLHttpRequest and sending
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/comment/InsertComment');
+            xhr.send(formdata);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var id=xhr.responseText;
+                    //$('#UploadTarget').html(xhr.responseText);
+                    //$('#dvComment').append('<br><@ViewBag.userToken>:' + contents + '<br>');
+                    //alert(id);
+                    chat.server.joinRoom(idNews,'@ViewBag.userName','@ViewBag.userToken',contents,title,id,idReply,userTokenReply,userNameReply);
+                    isSending=false;
+                    //$("#cmtContent").attr("placeholder","Gửi bình luận");
+                    $("#cmtContent_"+idNews).val("");
+                    $("#sendingStatus_"+idNews).html("Gửi thành công!");
+                }
+            }
+            xhr.onprogress = function () {
+                //document.getElementById('process').innerHTML = 'value' + e.loaded + "/" + e.total;
+            }
+             
+
+        }
+        //Trả lời comment của user nào đó
+        function replyComment(idNews,idReply,userNameReply,userTokenReply){
+            var isLogin = '@ViewBag.userToken';
+           
+                if (isLogin == '') {
+                    alert("Bạn phải đăng nhập để thích bình luận này!");
+                    window.location = "/Account/Login";
+                    return;
+                }
+                document.getElementById("cmtContent_"+idNews).focus();
+                document.getElementById("idReply").value=idReply;
+                document.getElementById("userNameReplySpan_"+idNews).innerHTML=" đến "+userNameReply+"<a onclick=\"removeReply("+idNews+");\">&nbsp;<span style=\"cursor:pointer;\"><font color=red>X</font></span></a>";             
+                document.getElementById("userTokenReply").value=userTokenReply;
+                document.getElementById("userNameReply").value=userNameReply;
+           
+            }
+            //Bỏ không reply
+            function removeReply(idNews){
+                document.getElementById("idReply").value="";
+                document.getElementById("userNameReplySpan_"+idNews).innerHTML="";
+                document.getElementById("userTokenReply").value="";
+                document.getElementById("userNameReply").value="";
+            }
+            //Cập nhật thích comment nào đó
+            function likeComment(idcomment){
+                var isLogin = '@ViewBag.userToken';
+           
+            if (isLogin == '') {
+                alert("Bạn phải đăng nhập để thích bình luận này!");
+                window.location = "/Account/Login";
+                return;
+            }
+            
+            var lenDomain = 0;
+            var formdata2 = new FormData(); //FormData object
+            formdata2.append("idcomment", idcomment);            
+            formdata2.append("user", '@ViewBag.userToken');
+            //Creating an XMLHttpRequest and sending
+            var xhr = new XMLHttpRequest();
+            //xhr.open('POST', '/comment/updateLikeComment');
+            //xhr.send(formdata);
+            xhr.open('POST', '/comment/updateLikeComment');
+            xhr.send(formdata2);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    if (xhr.responseText!="0")
+                        document.getElementById("totalLike_" + idcomment).innerHTML = xhr.responseText;
+                }
+            }
+             
+           
+        }
+        //getTotalComment();
+        
+        function showTimeComment(dateComment){
+            var diff = 0;
+            var today = new Date();
+            var str_time="gần đây";
+            try{
+                diff = getMinuteDiff(new Date(dateComment).toUTCString(), today.toUTCString());
+                if (diff > 60) 
+                    str_time = " gửi " + Math.round(diff / 60) + " giờ trước";
+                else
+                    str_time = " gửi " + diff+ " phút trước";
+            } catch (err) {
+                diff = 0;
+            }
+            return str_time;
+        }
+       
+</script>
+                                         
+
+<div id="showComment" class="bgheader4">    
+    @foreach (youknow.Views.viewCommentManagerRealtime item in Model.ieViewCommentRealtime)
+    {
+        line++;
+        maindomain = item.maindomain;
+        image = item.image; 
+        title = item.title;
+        des = item.des;
+        link = item.link;
+        if (item.idNews < minId) { minId = item.idNews; }
+        <text>
+                <div class="bgheader4">
+                    <div class="Diem">
+                        <div class="Diem1">
+                            <div class="Diem11"><span class="DiemFont" id=ranking_@item.idNews>@item.ranking</span></div>
+                            <div class="Diem12"><span class="DiemFont2">điểm</span></div>
+                        </div>
+                        <div class="Diem2">
+                            <div class="Diem21"><img src="/Images/up1.png" title="Thêm điểm" onclick="voteNews(@item.idNews,1,@item.ranking,@item.uplikes,@item.downlikes);" style="cursor:pointer"><span class="DiemFontDetail" id=uplikes_@item.idNews>@if (@item.uplikes>0) {<text>+@item.uplikes</text>;}</span></div>
+                            <div class="Diem22"><img src="/Images/down1.png" title="Hạ điểm" onclick="voteNews(@item.idNews,0,@item.ranking,@item.uplikes,@item.downlikes);" style="cursor:pointer"><span class="DiemFontDetail" id=downlikes_@item.idNews>@if (@item.downlikes > 0) {<text>-@item.downlikes</text>;}</span></div>
+                        </div>
+                    </div>
+                    <div class="Anh">
+                        <img src="@item.image" width="130" height="100"/>
+                    </div>
+                    <div class="Tin">
+                        <div class="title"><a href="@item.link" class="titleFont" target="_blank"><span class="titleFont">@Html.Raw(@item.title)</span></a></div>
+                        <div class="inforTin"><span class="inforTinFont1">@item.datetime</span>&nbsp;<img src="/images/sp.jpg">&nbsp;<span class="inforTinFont2">@item.maindomain</span></div>
+                        <div class="des"><span class="desFont">@Html.Raw(@item.des)</span></div>                        
+                    </div>                    
+                </div>
+                <div id="viewPreviousComment_@item.idNews" class="viewPreviousComment"><span class="userchat" id="totalComment_@item.idNews"></span><a onclick="getNewsComment('@item.idNews');" style="cursor:pointer"><img src="/Images/xblt.jpg" border="0"></a></div>
+                <div id=dvComment_@item.idNews class="dvCommentAllRealtime">
+                        
+                </div>  
+                <div class="formbinhluan2">
+                    <input type="text" onKeydown="checkSubmit(event,@item.idNews,'@item.title');"  class="txtComment" value="" id="cmtContent_@item.idNews" placeholder="Nhập nội dung">
+                    <br />
+                    <input type="button" class="btnComment" value="Gửi bình luận" onclick="updateComment(@item.idNews,'@item.title');">
+                    <span id="userNameReplySpan_@item.idNews"></span>
+                    <span class="sendingStatus" id="sendingStatus_@item.idNews"></span>
+                    <input type="checkbox" id="checkScrollbar_@item.idNews" checked>Tự động cập nhật bình luận mới.
+                </div>
+                <div class="spaceNews">&nbsp;&nbsp;&nbsp;</div>
+                <div class="spaceNews">&nbsp;&nbsp;&nbsp;</div>                
+                <div class="bgheader4">&nbsp;&nbsp;&nbsp;</div>
+                <script>                    
+                    minIdComment=1000000;
+                    getNewsComment(@item.idNews);
+                </script>
+                
+        </text>
+    }
+</div>
+    <input type="hidden" id="idReply" value="">
+    <input type="hidden" id="userTokenReply" value="">
+    <input type="hidden" id="userNameReply" value="">
+    <script src="~/Scripts/jquery-2.1.1.js"></script>
+    <script src="/Scripts/core.js" type="text/javascript"></script>     
+    <script src="~/Scripts/jquery.signalR-1.1.3.min.js"></script>        
+    <script src="~/signalR/hubs"></script>
+    <script>
+        var chat = $.connection.ync;
+        
+        $(function () {
+            
+            chat.client.addNewAll = function (token, message) {
+                //$('#' + group).append('<li>' + message + '</li>');
+                alert("ok");
+                if (message != "") {
+                    //$('#dv' + token).append('<li>' + message + '</li>');
+                    document.getElementById("noticebox").style.display = '';
+                    $('#noticebox').append('Có bình luận mới:' + message);
+                }
+            };            
+            //Sever gọi hàm này ở các máy client để hiển thị nội dung chát
+            //Roomname ở đây vừa là room chát, được gán bằng id của news
+            chat.client.addChatMessage = function (roomName, username,usertoken,contents,title,id,idReply,userTokenReply,userNameReply) {
+                //alert(contents);
+                if (contents != "") {
+                    var strUserTokenReply="";
+                    //alert("2");
+                    //$('#dvComment').append('<div class=\"alert alert-info\"><span class=\"label label-success\">'+username+'</span>: ' + contents + '<span id="totalLike_' + id + '" class="label label-info pull-right"></span><a onclick="likeComment(' + id + ');"><span class="badge pull-right">Thích</span></a></div>');
+                    if (userTokenReply != null && userTokenReply!="") {
+                        strUserTokenReply = "<span class=\"userchat2\"> gửi " + userNameReply + ": </span> ";
+                    }
+                    //alert("3");
+                    content = "<div class=bgheader4><div class=chatLine1><span class=userchat2>" + username + "</span></div><div class=chatLine2><span class=chatcontent>" + strUserTokenReply + contents + " </span> <a onclick=\"replyComment(" + roomName + "," + id + ",'" + username + "','" + usertoken + "');\" style=\"cursor:pointer\"><span class=userchat3>Trả lời</span></a>&nbsp;<a onclick=\"likeComment(" + id + ");\" style=\"cursor:pointer\"><span class=userchat3>Thích&nbsp;<span id=\"totalLike_" + id + "\" class=chatcontent2></span></span></a></div></div>";
+                    //"<div class=\"alert alert-info\"><span class=\"label label-success\">" + username + "</span> " + strUserTokenReply +contents + " <a onclick=\"replyComment(" + id + ",'" + username + "','" + usertoken + "');\"><span class=\"badge pull-right\">Trả lời</span></a><a onclick=\"likeComment(" + id + ");\"><span class=\"badge pull-right\">Thích<span id=\"totalLike_" + id + "\" class=\"label label-info pull-right\"></span></span></a></div>"; 
+                    //alert(content);
+                    $('#dvComment_'+roomName).append(content);
+                    //alert("4");
+                    if (document.getElementById("checkScrollbar_"+roomName).checked){
+                        var elem = document.getElementById('dvComment_'+roomName);// just to scroll down the line 
+                        elem.scrollTop = elem.scrollHeight;
+                    }
+                    //alert("5");
+                    chat.server.broadCast("broadCast","1", username,usertoken,contents,title,id,-1);
+                    //alert("6");
+                   
+                }
+            };
+            $.connection.hub.start().done(function () {
+                chat.server.joinRoom("broadCast", '', '', '', '',  '', '', '', '');
+            });
+        });
+    </script>   

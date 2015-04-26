@@ -1,0 +1,11 @@
+Started at: 8/22/2014 9:27:55 PM.
+1 phút trước Loading all.
+1 phút trước Loading all Rss news to array.
+6 phút trước set ranking of all news
+7 phút trước Inserted all news to database
+3 phút trước Updated updateRankingByTime and news to trends news same topic
+0 phút trước Updated Hot News
+0 phút trước Generated all xml file
+5 phút trước Generated all hot daily keyword
+End at: 8/22/2014 9:55:25 PM.
+

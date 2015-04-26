@@ -1,0 +1,311 @@
+﻿@{
+    ViewBag.Title = "Play";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+<script src="~/Scripts/jquery-2.1.1.js"></script>
+
+<div id="menu" style="float:left;display:none;position:relative;width:90%">    
+    <div style="font-weight:bold;padding-left:2px;float: left;display: block;position: relative;background-color:blue;color:white;font-size:18px;cursor:pointer;text-align:center;border-radius: 4px;" onclick="showAll();">&nbsp;Xem Đáp Án&nbsp;</div><div style="background-color:white;float: left;display: block;position: relative;">&nbsp;</div>
+    <div style="font-weight:bold;padding-left:2px;float: left;display: block;position: relative;background-color:blue;color:white;font-size:18px;cursor:pointer;text-align:center;border-radius: 4px;" onclick="location.reload();">&nbsp;Ván mới&nbsp;</div>
+</div>
+<div id="alert" style="display:none;background-color:red;color:#ffffff;z-index:100;position:fixed;left:20%;right:10%;top:20%;bottom:20%;width:60%;height:100px;">    
+        <div style="text-align:center;" id="alertContent">Thông báo</div>
+        <div onclick="$('#alert').hide();"  style="display:none;bottom:0;float:left;width:100%;position:absolute;text-align:center;background-color:blue;color:#ffffff;cursor:pointer;">OK</div>
+</div>
+<div id="question" style="background-color:red;color:#fff;font-size:18px;font-weight:bold;float:left;display:none;position:relative;width:100%;height:100px;color: rgb(255, 255, 255); font-size: 18px; font-weight: bold; float: left; position: relative; width: 100%; height: 50px; background-color: red;padding-top:15px;">
+    Chạm vào các ô chữ sẽ xuất hiện câu hỏi và các ký tự gợi ý.
+</div>
+<div id="viewGame" style="background-color:#ffffff;float:left;display:none;position:relative;width:100%">
+</div>
+<div id="suggest" style="background-color:#ffffff;float:left;display:none;position:relative;width:100%">
+</div>
+<script>
+    var arrItem = [];
+    var rows = 0;
+    var cols = 0;
+    var L = 0;
+    var questionNow = "";
+    var keywordNow = "";
+    var directNow = 0;//0 ngang,1=doc
+    var typeNow = 0;
+    var indexMain = 0;
+    var newGame = 0;
+    function randomStr(x, y, str) {
+        var a = str.split('').sort(function () { return 0.5 - Math.random() }).join('');
+        var rs = "";
+        a = a.toUpperCase();
+        for (var l1 = 0; l1 < a.length; l1++) {
+            rs += "<div style=\"font-weight:bold;padding-left:2px;float: left;display: block;position: relative;background-color:blue;color:white;font-size:28px;cursor:pointer;width:35px;text-align:center;\" onclick=\"setOXY(" + x + "," + y + ",'" + a.charAt(l1) + "');\">" + a.charAt(l1) + "</div><div style=\"background-color:white;float: left;display: block;position: relative;\">&nbsp;</div>";
+        }
+        return rs;
+    }
+    function setOXY(x, y, str) {
+        //alert(x+y+str);
+        $("#" + x + "_" + y).html(str);
+        var yy = y + 1;
+        if ($("#" + x + "_" + yy).attr("typeValue") != -1) {
+            scan(x, yy);
+            $("#" + x + "_" + yy).css("background-color", "green");
+        }
+    }
+    function getContent() {
+        //$('#result').html('Loading.....');//contents().find('html').
+        $("#alert").show();
+        $('#alertContent').html('Loading.....');
+        $('#suggest').html('');
+        $('#question').html('Chạm vào các ô chữ sẽ xuất hiện câu hỏi và các ký tự gợi ý.');
+        $('#viewGame').html('');
+        newGame = 0;
+        //var rs = document.getElementById("rows").value;
+        //var cs = document.getElementById("cols").value;
+        //alert(rows);
+        arrItem = [];
+        var formdata = new FormData(); //FormData object
+        formdata.append("rows", 1);
+        formdata.append("cols", 1);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/OChu/getOchu');
+        xhr.send(formdata);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var news = '{"news":' + xhr.responseText + '}';
+                //alert(news);
+                var json_parsed = $.parseJSON(news);
+               
+                rows=json_parsed.news[0].rows;
+                cols = json_parsed.news[0].cols;
+                //alert(rows+"_"+cols);
+                for (var i = 0; i < json_parsed.news.length; i++) {
+                    if (json_parsed.news[i]) {
+                        var n = json_parsed.news[i];
+                        arrItem.push([rows, cols, n.keyword, n.question, n.fromX, n.fromY, n.toX, n.toY, n.type]);
+                        //alert(L + "-" + i + " dong " + arrItem[i][0] + " cot " + arrItem[i][1] + " keyword " + arrItem[i][2] + " ques " + arrItem[i][3] + " fromX " + arrItem[i][4] + " from Y " + arrItem[i][5] + " to X " + arrItem[i][6] + " to Y " + arrItem[i][7]+ " type " + arrItem[i][8]);
+                        if (n.type == 1) indexMain = L;
+                        L++;
+                    }
+                }
+                //document.getElementById("startGame").style.display = "none";
+                document.getElementById("menu").style.display = "block";
+                $('#suggest').show();
+                $('#question').show();
+                $('#viewGame').show();
+                drawBoard();                
+                //alert(getTextOnXy(0, 3, 0));
+                //alert(typeNow);
+                $("#alert").hide();
+            }
+        }
+       
+        return false;
+    }
+    function belong(x, y, x1, y1, x2, y2) {
+        //Neu la chieu ngang
+        if (x == x1 && x == x2 && y >= y1 && y <= y2) return true;
+        //Chieu doc
+        if (y == y1 && y == y2 && x >= x1 && x <= x2) return true;
+        return false;
+    }
+    function belongNgang(x,y,x1,y1,x2,y2){
+        if (x == x1 && x == x2 && y >= y1 && y <= y2) return true;
+        return false;
+    }
+    function belongDoc(x,y,x1,y1,x2,y2){
+        if (y == y1 && y == y2 && x >= x1 && x <= x2) return true;
+        return false;
+    }
+    function getTextOnXy(x, y,type) {//type=0 chi tra ve gia tri, type=1 quet va to mau cac o
+        var x1;
+        var y1;
+        var x2;
+        var y2;
+        var keyword = "";
+        //if (type == 1) alert(x + "." + y);
+        for (var k = 0; k < L; k++) {            
+            x1 = arrItem[k][4];
+            y1 = arrItem[k][5];
+            x2 = arrItem[k][6];
+            y2 = arrItem[k][7];
+            keyword = arrItem[k][2]; 
+            if (belong(x, y, x1, y1, x2, y2)) {
+                //alert(keyword);
+                //alert(questionNow);
+                keywordNow = keyword;
+                questionNow = arrItem[k][3];                
+                typeNow = arrItem[k][8];                
+                if (type == 0) {//tra ve gia tri
+                    if (belongNgang(x,y,x1,y1,x2,y2)) return keyword.charAt(y - y1);//ngang
+                    if (belongDoc(x,y,x1,y1,x2,y2)) return keyword.charAt(x - x1);//doc
+                } else {                    
+                    if (directNow == 0) {//Scan cac o ngang, to mau, scan cac o doc, bo mau{
+                        if (belongNgang(x, y, x1, y1, x2, y2)) {
+                            for (var l = y1; l <= y2; l++) {
+                                if ($("#" + x + "_" + l).attr("typeValue")==0) {
+                                    $("#" + x + "_" + l).css("background-color", "yellow");
+                                    //alert(x + "_ok11111_" + l);
+                                }
+                            }                                                       
+                            $("#question").html(questionNow);
+                            $("#suggest").html(randomStr(x, y, keywordNow));
+                            if ($("#" + x + "_" + y).attr("typeValue") == 0) $("#" + x + "_" + y).css("background-color", "yellow");
+                            //Trả về các ô khác màu bình thường
+                            for (var l1 = 0; l1 <= rows; l1++)
+                                if (l1 != x) {
+                                    for (var l2 = 0; l2 <= cols; l2++) {
+                                        if ($("#" + l1 + "_" + l2).attr("typeValue") == 0) {
+                                            $("#" + l1 + "_" + l2).css("background-color", "#ffffff");
+                                        }
+                                    }
+                                }
+                            return;
+                        }
+                        
+                        if (belongDoc(x, y, x1, y1, x2, y2)) {
+                            $("#question").html(questionNow);
+                            $("#suggest").html(randomStr(x, y, keywordNow));//hiện đầy đủ bảng chữ cái
+                            //Trả về các ô khác màu bình thường
+                            for (var l1 = 0; l1 <= rows; l1++)
+                                if (l1 != x) {
+                                    for (var l2 = 0; l2 <= cols; l2++) {
+                                        if ($("#" + l1 + "_" + l2).attr("typeValue") == 0) {
+                                            $("#" + l1 + "_" + l2).css("background-color", "#ffffff");
+                                        }
+                                    }
+                                }
+                            return "";
+                        }
+                    }
+                }//type
+            }//belong
+        }//for
+        return "&nbsp;";
+    }
+    function scan(x, y) {
+        //if (directNow == 0)
+            //directNow = 1;
+        //else
+        //directNow = 0;
+        directNow = 0;
+        var c = getTextOnXy(x, y,1);
+        
+
+        //$("#" + x + "_" + y).css({ "background-color:": "#ffffff"});
+        //$("#" + x + "_" + y).html(c);
+        //alert(c);
+        
+    }
+    function drawBoard() {
+        document.getElementById("viewGame").innerHTML = "";
+        var board = "<table width=\"100%\" style='border-color:#000000;border:1px solid white;border-collapse: collapse;'>";
+        var colorBG = "#ffffff";
+        var colorTDBD = "#ffffff";
+        var width = 100 / cols;
+        //alert(screen.height);
+        var height = screen.height/256*rows;
+        var text = "&nbsp;";
+        var typeValue = -1;//-1 khong co gia tri,=0 co o chu nam ngang, =1 co o chu nam doc
+        //alert(rows + "_" + cols);
+        for (var i = 0; i < rows; i++) {
+            board += "<tr height=\"" + height + "px;\">";
+            for (var j = 0; j < cols; j++) {
+                //if (j % 2 == 0) {
+                //    colorBG = "#ffffff";
+                //    colorTDBD = "#000000";
+                //} else {
+                //    colorBG = "#000000";
+                //    colorTDBD = "#ffffff";
+                //}
+                typeNow = 0;
+                typeValue = -1;
+                text = getTextOnXy(i, j,0);
+                if (text != "&nbsp;") {
+                    if (typeNow == 0) {
+                        colorBG = "#ffffff";
+                        typeValue = 0;
+                    }
+                    else {
+                        colorBG = "red";
+                        typeValue = 1;
+                    }
+                    colorTDBD = "#000000";
+                    text = "&nbsp;";
+                } else {
+                    typeValue = -1;
+                    text = "&nbsp;";
+                    colorBG = "#000000";
+                    colorTDBD = "#ffffff";
+                }
+                board += "<td valign=\"middle\" id=" + i + "_" + j + " typeValue=" + typeValue + " width=\"" + width + "%\"  style=\"border:1px solid " + colorTDBD + ";background-color:" + colorBG + ";padding:6px;cursor:pointer;color:black;font-size:28px;text-align:center;\" onclick=\"scan(" + i + "," + j + ");\">" + text + "</td>";
+            }
+            board += "</tr>";
+        }
+        board += "</table>";
+        //alert(board);        
+        document.getElementById("viewGame").innerHTML = board;
+        //Tô màu đỏ ô chữ chính                
+        for (var jj = arrItem[indexMain][4]; jj <= arrItem[indexMain][6]; jj++) {
+            $("#" + jj + "_" + arrItem[indexMain][5]).css("background-color", "red");
+            $("#" + jj + "_" + arrItem[indexMain][5]).attr("typeValue", "1");
+        }
+    }
+    function showAll() {
+        if (newGame == 1) return;
+        var colorBG = "#ffffff";
+        var colorTDBD = "#ffffff";
+        var width = 100 / cols;
+        var text = "&nbsp;";
+        var myWord = "";
+        var answer = "";
+        var result = "";
+        var countTrue = 0;
+        var countDoc = 0;
+        //alert(rows + "_" + cols);
+        //Kiểm tra ô chữ chính
+        myWord = "";
+        answer = "";
+        text = "&nbsp;";
+        for (var jj = arrItem[indexMain][4]; jj <= arrItem[indexMain][6]; jj++) {
+            myWord += $("#" + jj + "_" + arrItem[indexMain][5]).html();
+            text = getTextOnXy(jj, arrItem[indexMain][5], 0);
+            answer += text;            
+        }
+        if (myWord != "" && myWord.toUpperCase() == answer.toUpperCase()) {            
+            countDoc++;
+        }
+        if (countDoc >= 1)
+            result += "Bạn trả lời đúng ô chữ chính: 20 điểm <br>";
+        else
+            result += "Bạn không trả lời đúng ô chữ chính: 0 điểm <br>";
+        //Kiểm tra các ô hàng ngang
+        text = "&nbsp;";
+        for (var i = 0; i < rows; i++) {
+            myWord = "";
+            answer = "";
+            for (var j = 0; j < cols; j++) {
+                if ($("#" + i + "_" + j).attr("typeValue") != -1) {
+                    myWord += $("#" + i + "_" + j).html();                    
+                    text = getTextOnXy(i, j, 0);
+                    answer += text;
+                    //if (i==1) alert(text);
+                    if (text.toUpperCase() != $("#" + i + "_" + j).html()) {
+                        $("#" + i + "_" + j).css("background-color", "#ffffff");
+                        $("#" + i + "_" + j).css("color", "red");                       
+                    }
+                    $("#" + i + "_" + j).html(text.toUpperCase());
+                }               
+
+            }
+            if (myWord != "" && myWord.toUpperCase() == answer.toUpperCase() && myWord.toUpperCase()==arrItem[i][2].toUpperCase()) {
+                //result += myWord + ",";
+                countTrue++;
+            }
+            //board += "</tr>";          
+        }
+       
+        result += "Bạn trả lời đúng " + countTrue + " từ hàng ngang: " + countTrue * 10 + " điểm<br>";
+        result += "Tổng điểm: " + (countDoc*20+countTrue*10) + "<br>";
+        //$("#alert").show();
+        $("#suggest").html(result);
+        newGame = 1;
+    }
+    getContent();
+</script>

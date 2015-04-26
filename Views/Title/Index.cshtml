@@ -1,0 +1,75 @@
+﻿@model IEnumerable<youknow.Models.title>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Quản lý bài viết</h2>
+
+<div>
+    <input type="text" placeholder="tìm kiếm" id="keyword" name="keyword"><input type="button" value="Tìm kiếm" onclick="search();">
+</div>
+<table>
+    <tr>
+        <th>
+            Tên bài viết
+        </th>
+        <th>
+            Tóm tắt
+        </th>
+        <th>
+            Link
+        </th>
+        <th>
+            Ảnh
+        </th>
+        <th>
+            Thời gian
+        </th>        
+        <th>
+            Điểm xếp hạng
+        </th>
+        <th>
+            Từ khóa
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.Raw(@item.name)
+        </td>
+        <td>
+            @Html.Raw(@item.des)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.link)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.image)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.datetime)
+        </td>                
+        <td>
+            @Html.DisplayFor(modelItem => item.ranking)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.keyword)
+        </td>        
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>
+<script>
+    function search() {
+        var keyword = document.getElementById("keyword").value;
+        window.location = '/Title/Index?keyword=' + keyword;
+    }
+</script>

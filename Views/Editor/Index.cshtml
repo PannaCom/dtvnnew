@@ -1,0 +1,112 @@
+﻿@model IEnumerable<youknow.Models.content>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/adminLayout.cshtml";
+}
+
+<h2>Hệ thống viết bài biên tập</h2>
+
+<p>
+    @Html.ActionLink("Viết Bài Mới", "create")
+</p>
+<div class="dataTables_filter" style="position:relative; display: block;margin: 10px;float: right;">
+                                        
+                                            <span>
+                                                Tìm Kiếm:
+                                            </span>
+                                            <input id="txtSearch" type="search" placeholder="Nhập để tìm kiếm..."/>
+</div>
+<div class="box-content nopadding" style="position:relative; display: block;margin: 10px;float: left;">
+<table class="table table-hover table-nomargin table-bordered">
+    <tr>
+        <th>
+            Tiêu đề
+        </th>
+        <th>
+            Trích dẫn
+        </th>
+        <th>
+            Ảnh
+        </th>        
+        <th>
+           Chuyên mục
+        </th>
+        <th>
+           Loại tin
+        </th>
+        <th>
+           Vị trí trên trang chủ
+        </th>
+        <th>
+            Ngày
+        </th>
+        <th>Xóa/Sửa</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.des)
+        </td>
+        <td>
+            <a rel="gallery" class="fancybox" href="@item.image" title="@item.title"><img src="@item.image" width="150" height="150"></a>
+        </td>       
+        <td>
+            @youknow.Uti.getCatNameEditorFromId(@item.catid)
+        </td>
+        <td>
+            @if (item.groupid == 1) { 
+                <text>Tin chính thống</text>
+            }else{
+                <text>Tin giải trí</text>
+            }
+        </td>
+        <td>
+            @if (item.moduleid == 1) { 
+                <text>Thuộc các chuyên mục</text>
+            }else{
+                if (item.moduleid == 2){
+                    <text>Ảnh to nhất</text>
+                }else{
+                    <text>Bên cạnh ảnh to</text>
+                }
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.datetime)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |            
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>
+    </div>
+<script> $(document).ready(function () {
+     //getListNews();
+     $("#txtSearch").keypress(function (e) {
+         if (e.keyCode == 13) {
+             var keyword = $("#txtSearch").val();
+             //var catid = $("#catid").val();
+             //alert(catid);
+             //getListNews(keyword, catid);
+             window.location = "/Editor/Index?keyword=" + keyword;
+         }
+     })
+
+     $('.fancybox').fancybox({
+         openEffect: 'none',
+         closeEffect: 'none',
+         helpers: {
+             title: {
+                 type: 'float'
+             },
+         },
+     });
+ });</script>

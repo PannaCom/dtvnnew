@@ -1,0 +1,86 @@
+﻿@model youknow.Models.member
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div style="display:block;position:relative;float:left;">
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Cập nhật tên</legend>
+
+        @Html.HiddenFor(model => model.id)
+        <div style="display:none;">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.userToken)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.userToken)
+                @Html.ValidationMessageFor(model => model.userToken)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.email)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.email)
+                @Html.ValidationMessageFor(model => model.email)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.link)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.link)
+                @Html.ValidationMessageFor(model => model.link)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.avatar)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.avatar)
+                @Html.ValidationMessageFor(model => model.avatar)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.idOA)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.idOA)
+                @Html.ValidationMessageFor(model => model.idOA)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.type)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.type)
+                @Html.ValidationMessageFor(model => model.type)
+            </div>
+        </div>
+        
+        <div class="titleFont">
+                Tên hiển thị trên Điểm Tin Việt Nam<br />(dùng trong bình luận tin tức)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.fullName)
+                @Html.ValidationMessageFor(model => model.fullName)
+            </div>
+        <p>
+            <input type="submit" value="Cập nhật" />
+        </p>
+               
+    </fieldset>
+}
+
+</div> 
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

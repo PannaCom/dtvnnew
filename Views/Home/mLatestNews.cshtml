@@ -1,0 +1,246 @@
+﻿@model youknow.Views.ModelClassViewNewsManager
+@{
+    ViewBag.title = "Tin nóng và mới nhất";
+    ViewBag.url = "Home/mLatestNews";
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+    int? uplikes = 0;
+    int? downlikes = 0;
+    string upimage = "up1.png";
+    string downimage = "down1.png";
+    string diemclass = "DiemMobile";
+    int currentNo = 0;
+    string styleComment = "";
+    string title = "";
+    string titleNoMark = "";
+    string strCare = "Quan tâm";
+    int catid = 0;
+    int i=0;
+    int preID = -1; //Model.ieViewNews.ElementAt(0).id;
+    int lastID = preID;
+    string preRelatedNews = "";
+    int preCountItemRelated = 0;
+    var styleItem = "display:block;";
+    preRelatedNews = "";
+    //youknow.Views.viewNewsManager[] Aitem = (youknow.Views.viewNewsManager[])Model.ieViewNews;
+}
+ 
+<script src="~/Scripts/jquery.cookie.js"></script> 
+<script  src="/Scripts/core.js" type="text/javascript"></script> 
+<script src="/Scripts/OpenLayers.js" type="text/javascript"></script> 
+
+            
+<!--Start Main-->
+	<div data-role="main" class="ui-content">
+		<!--start tip-->
+		<div class="tip-text">
+			<ul>
+				<li class="not-active"><a href="#">Điểm tin Việt Nam</a> > </li>
+				<li class="active"><span>Tin mới nhất</span></li>
+			</ul>
+		</div>
+		<!--end tip-->
+		<!--start list-->
+		<div class="list-item">   
+    @foreach (youknow.Views.viewNewsManager item in Model.ieViewNews)
+   //@for (i=0;i<Model.ieViewNews.Count();i++)
+    {
+        //var item = Aitem[i];//Model.ieViewNews[i];
+        if (item == null || currentNo>100) { break; }
+        lastID=item.id;
+        //Nếu là các tin liên quan thì đọc và tiếp tục đọc các dòng sau.
+        if (preID == item.id)//Đây là tin liên quan, cộng vào chuỗi và bỏ qua
+        {
+            //item.topicidRelated != item.idRelated && 
+            if (item.nameRelated != null && item.nameRelated.Trim() != "")
+            {
+                preCountItemRelated++;
+                //if (preCountItemRelated >= 3) {
+                //    styleItem = "display:none;";
+                //}
+                if (item.hasContentRelated == 1)
+                {
+                    //preRelatedNews += "<div class=\\\"sametopic2\\\" id=itemRelatedNews_" + item.topicidRelated + "_" + preCountItemRelated + " style=\\\"" + styleItem + "\\\"><a  href=\\\"/comment/mReadNews/" + item.idRelated + "\\\" target=\\\"_blank\\\" style=\\\"cursor:pointer;\\\" ><span class=\\\"sameTopicTitleFont2\\\"><img src=\\\"/Images/l2.jpg\\\"/>&nbsp;" + youknow.Uti.removeQuotes(Server.HtmlDecode(item.nameRelated)) + "</span><span class=\\\"sameTopicTitleFont3\\\">&nbsp;<img src=\\\"/Images/sp2.jpg\\\"/>&nbsp;" + item.maindomainRelated.Replace("http://", "") + "</span></a></div>";
+                    preRelatedNews += "<div class=\"item\" id=item_" + item.id + "_" + preCountItemRelated + " style=\"display:none;background:#FFFFCC;\">";
+				    preRelatedNews += "<div class=\"avatar\">";
+                    if (youknow.Uti.isImage(item.imageRelated))
+                    {
+                        preRelatedNews += "<img src=\"" + item.imageRelated + "\" style=\"width: 40px; height: 40px; border-radius: 5px;\"/>";
+                    }
+                    else
+                    {
+                        preRelatedNews += "<img src=\"" + youknow.Uti.getDomainImage(@item.maindomainRelated) + "\" style=\"width: 40px; height: 40px; border-radius: 5px;\"/>";
+                    }
+				    preRelatedNews +="</div>";
+				    preRelatedNews +="<div class=\"list-deltail\">";					
+					preRelatedNews +="<div class=\"deltail\">";
+                    preRelatedNews += "<a class=\"listing-title\" href=\"/comment/mReadNews/" + item.idRelated + "\" target=\"_blank\">" + item.nameRelated + " <h2>" + youknow.Uti.smDomain(item.maindomainRelated) + "</h2></a>";
+					preRelatedNews +="</div>";		
+				    preRelatedNews +="</div>";
+				    preRelatedNews +="<div class=\"clear\"></div>";
+			        preRelatedNews +="</div>";
+                }
+                else
+                {
+                    preRelatedNews += "<div class=\"item\" id=item_" + item.id + "_" + preCountItemRelated + " style=\"display:none;background:#FFFFCC;\">";
+                    preRelatedNews += "<div class=\"avatar\">";
+                    if (youknow.Uti.isImage(item.imageRelated))
+                    {
+                        preRelatedNews += "<img src=\"" + item.imageRelated + "\" style=\"width: 40px; height: 40px; border-radius: 5px;\"/>";
+                    }
+                    else
+                    {
+                        preRelatedNews += "<img src=\"" + youknow.Uti.getDomainImage(@item.maindomainRelated) + "\" style=\"width: 40px; height: 40px; border-radius: 5px;\"/>";
+                    }
+                    preRelatedNews += "</div>";
+                    preRelatedNews += "<div class=\"list-deltail\">";
+                    preRelatedNews += "<div class=\"deltail\">";
+                    preRelatedNews += "<a class=\"listing-title\" href=\"" + item.linkRelated + "\" target=\"_blank\">" + item.nameRelated + " <h2>" + youknow.Uti.smDomain(item.maindomainRelated) + "</h2></a>";
+                    preRelatedNews += "</div>";
+                    preRelatedNews += "</div>";
+                    preRelatedNews += "<div class=\"clear\"></div>";
+                    preRelatedNews += "</div>";
+                }
+                //preRelatedNews = Server.HtmlEncode(preRelatedNews);
+
+            }
+            continue;
+
+        }
+        //Nếu chuyển sang tin khác thì ghi ra tin liên quan.
+        if (preID != item.id)
+        {
+            //if (preCountItemRelated > 3)
+            //{
+            //    preRelatedNews += "<div id=viewMoreTopicId_" + preID + " style=\\\"float:right;\\\"><span class=\\\"sameTopicTitleFont\\\"><a onclick=\\\"viewMoreTopicId(" + preID + "," + preCountItemRelated + ");\\\" style=\\\"cursor:pointer;color:#d51d01\\\">Xem tiếp&nbsp<img src=\\\"/Images/down2.png\\\"></a></span></div>";
+            //}
+            if (preRelatedNews != "")
+            {
+                <text>@Html.Raw(@preRelatedNews)</text>
+            }
+            styleItem = "display:block;";
+            preRelatedNews = "";
+            preCountItemRelated = 0;
+            preID = item.id;
+        }
+        styleComment = "";
+        uplikes = 0;
+        downlikes = 0;
+        upimage = "up1.png";
+        downimage = "down1.png";
+        diemclass = "DiemMobile";
+        title = System.Web.HttpUtility.HtmlDecode(item.title);
+        titleNoMark = youknow.Uti.unicodeToNoMark(title);
+        //styleComment = "<a  onclick=\"showDivComment("+@item.id+",'"+@item.title+"');\" style=\"cursor:pointer\">Trò chuyện</a>";
+        currentNo = currentNo + 1;
+        if (currentNo > 3)
+        {
+            upimage = "up2.png";
+            downimage = "down2.png";
+            diemclass = "Diemp2";
+        }
+        if (item.totalcomment != null && item.totalcomment != 0) { styleComment = "(" + item.totalcomment + " bình luận)"; }
+        catid = 0;
+        if (item.catid != null && item.catid != 0) { catid = (int)item.catid; }
+        if (item.uplikes != 0) { uplikes = item.uplikes; }
+        if (item.downlikes != 0) { downlikes = item.downlikes; }
+        strCare = "Quan tâm";
+        if (uplikes != 0) { strCare = "+" + uplikes; }
+         <text> 
+                <!--start item-->
+			<div class="item" id=item_@item.id>
+				<div class="avatar">
+                    @if (youknow.Uti.isImage(item.image))
+                    {
+					    <img src="@item.image" style="width: 70px; height: 80px; border-radius: 5px;" />
+                    }else{
+                        <img src="@youknow.Uti.getDomainImage(@item.maindomainRelated)" style="width: 70px; height: 80px; border-radius: 5px;" />
+                    }
+					<div class="icontool">
+						<div class="deltail" style="text-align:center"><h1>@currentNo</h1></div>						
+					</div>
+				</div>
+				<div class="list-deltail" >
+					<div class="list-fav">
+						<a onclick="hideNewsList(@item.id);"><img class="removeItem" src="/Images/remove.png"  style="width:15px;float:right;cursor: pointer;" /></a>
+					</div>
+					<div class="deltail" style="padding-left:25px;">						
+                        @if (item.hasContent == 1)
+                        {
+						    <a class="listing-title" data-ajax="false" target="_blank" href="/comment/mReadNews/@item.id">@Html.Raw(@item.title)</a>
+                        }
+                        else
+                        {
+                            <a class="listing-title" href="@item.link" target="_blank">@Html.Raw(@item.title)</a>
+                        }
+                        <h2>@youknow.Uti.smDomain(@item.maindomain) | @youknow.Uti.getCatNameFromId(catid)</h2>
+					</div>
+					<div class="listing-info">
+						<span class="price" style="padding-left:15px;">@item.ranking điểm</span>
+						<span>@youknow.Uti.getTimeDiff(@item.timediff)</span><br>										
+					</div>	
+                    @if (@item.topicid == @item.id)
+                    {
+					<div class="listing-info" id=related_@item.id>
+						<div onclick="showRelated(@item.id);" style="cursor:pointer;" >Tin liên quan<img src="/Content/mobile/css/images/expand_min.png" id="imageRelated_@item.id" height=15 width=15 ></div>																		
+					</div>	
+                    }				
+				</div>
+				<div class="clear"></div>
+			</div>
+			<!--end item-->                
+        </text>
+    }
+    @if (preRelatedNews !="")
+     {
+        <text>@Html.Raw(@preRelatedNews)</text>
+     }
+    </div>
+		<!--end list-->
+</div>
+<!--End Main-->
+<script>
+     
+    function showRelated(id){
+        var type=0;
+        for(var i=1;i<20;i++){
+            if (document.getElementById("item_"+id+"_"+i)){
+                if (document.getElementById("item_"+id+"_"+i).style.display=="none"){
+                    document.getElementById("item_"+id+"_"+i).style.display="block";
+                    type=1;
+                }else{
+                    document.getElementById("item_"+id+"_"+i).style.display="none";
+                    type=0;
+                }
+            }
+        }
+        if (type==1){
+            document.getElementById("imageRelated_"+id).src="/Content/mobile/css/images/expand_max.png";
+        }else{
+            document.getElementById("imageRelated_"+id).src="/Content/mobile/css/images/expand_min.png";
+        }
+    }
+    function hideNewsList(id) {
+        itemPost = $("#item_" + id);
+            //document.getElementById("item_" + id);//.style.display = "none";
+        itemPost.animate({ height: '0px' }, 400, 'linear', function () { itemPost.remove(); });
+        itemPost.fadeOut();
+        for (var i = 1; i <= 30; i++) {
+            if (document.getElementById("item_" + id + "_" + i) && document.getElementById("item_" + id + "_" + i).style.display == "block") {
+                itemPost = $("#item_" + id + "_" + i);
+                itemPost.animate({ height: '0px' }, 400, 'linear', function () { itemPost.remove(); });
+                itemPost.fadeOut();
+            }
+        }
+       // itemPost.style.display = "none";
+    }
+    //Hiển thị nextpage nếu thanh cuộn hết trang
+    $(window).scroll(function () {
+        if ($(window).scrollTop() + $(window).height() >= 400) {
+            $("#backTopPage").show();
+            //showNextPage();
+        }
+    });
+    
+
+    
+    </script>   

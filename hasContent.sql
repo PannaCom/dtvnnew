@@ -1,0 +1,1 @@
+select maindomain,count(*) from titles where datetimeid=20140522 and hasContent=0 group by maindomain

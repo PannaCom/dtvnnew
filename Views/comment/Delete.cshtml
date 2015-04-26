@@ -1,0 +1,54 @@
+﻿@model youknow.Models.comment
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>comment</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.usertoken)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.usertoken)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.linktoken)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.linktoken)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.link)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.link)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.contents)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.contents)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.datetime)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.datetime)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

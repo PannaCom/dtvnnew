@@ -1,0 +1,225 @@
+﻿@model youknow.Views.ModelClassViewComment
+@{
+    String localDate;
+    //ViewBag.id = Model.id;
+    //ViewBag.title = Server.HtmlDecode(Model.name);
+    
+    ViewBag.title = System.Web.HttpUtility.HtmlDecode(ViewBag.title.Replace("amp;", ""));
+    ViewBag.urltitle = System.Web.HttpUtility.HtmlDecode(ViewBag.urltitle.Replace("amp;", ""));
+    ViewBag.des = System.Web.HttpUtility.HtmlDecode(ViewBag.des.Replace("amp;", ""));
+    //ViewBag.titlenomark = youknow.Uti.unicodeToNoMark(ViewBag.title);
+    ViewBag.titlenomark = youknow.Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(ViewBag.urltitle)).ToString().Replace("--", "-");
+    //ViewBag.image = Model.image;
+    //ViewBag.link = Model.link;
+    ViewBag.url = youknow.Config.domain + "/" + ViewBag.titlenomark+"-"+ViewBag.idNews;
+    ViewBag.catname = youknow.Uti.getCatNameFromId(ViewBag.catid);
+    ViewBag.catnamenomark = youknow.Uti.unicodeToNoMark(ViewBag.catname);
+    //ViewBag.datetime = Model.datetime;
+    if (!ViewBag.datetimenews.ToString().Contains("1/1/1900"))
+    {
+        localDate = DateTime.Parse(ViewBag.datetimenews.ToString()).ToString("dd/MM/yyyy hh:mm tt");
+    }
+    else
+    {
+        localDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm");
+    }
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+
+<div id="content">
+        
+        <div class="container">
+            
+            <div class="col-md-7 padding-l-0" id="left-col">
+                <div class="article-info">
+                    <div class="breadcrumb" itemtype="http://schema.org/ImageObject">
+                        <a class="breadcrumbitem1" href="#">@youknow.Uti.getCatNameFromId(@ViewBag.catid)</a>
+                        <img src="/Content/new/images/navRow.png">
+                    </div>
+
+                    <span class="publishdate">
+                        <meta content="2014-08-13" itemprop="datePublished">@localDate
+                    </span>
+                </div>
+
+                <h1 class="title-article">@Html.Raw(ViewBag.title)</h1>
+
+                <div class="social-box">                     
+                    <div class="score-system">
+                        <span class="score">
+                            @ViewBag.uplikes <i class="fa fa-thumbs-up fa-2"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="content-article">
+                    @Html.Raw(@Server.HtmlDecode(@ViewBag.fullContent))
+                    <br/>
+                    Nguồn:<a href="@ViewBag.link" target="_blank" class="description-article">@ViewBag.maindomain</a>
+                    
+                </div>
+
+                @if (!ViewBag.topicid.Equals(-1))
+                {
+                    <div class="list-related-post2" id="relatedNewsAll">                
+                    <h3 class="related-title2">Tin liên quan</h3>
+                        <ul class="list-related-post2" id="relatedNews">
+                        
+                        </ul>
+                    </div>
+                    
+                }
+                <div class="clear-fix"></div>
+            </div>
+
+            <div class="col-md-3 padding-0" id="mid-col">
+                <div>
+                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                        <!-- Right Banner -->
+                        <ins class="adsbygoogle"
+                             style="display:inline-block;width:300px;height:250px"
+                             data-ad-client="ca-pub-6575239088642506"
+                             data-ad-slot="9661626879"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                 </div>
+                <div class="related-post" >
+                    <h3 class="related-post-title">Tin cùng chuyên mục</h3>
+                    <ul class="list-related-post" id="relatedCatNews">
+                        
+                    </ul>
+
+                    <div class="clear-fix"></div>
+                </div>
+                <div class="clear-fix"></div>
+            </div>
+
+            <div class="col-md-2 padding-r-0" id="right-col">
+                
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+        //$("img").css("height", "auto");
+        $("img").css("height", "auto");
+        $("img").css("maxWidth","95%");
+        $("img").css("align","center");
+        //$("table").css("border-color","white");
+        //$("table").css("border-spacing","0px");
+        //$("table").css("maxWidth","95%");
+        $("p").css("font-size",16);
+        //$("img").css("align","center");
+
+        function getRelated() {    
+            //Creating an XMLHttpRequest and sending
+            //$("#dvTopNewsWeekly").show();
+            var formdata = new FormData(); //FormData object
+            formdata.append("topicid", @ViewBag.topicid);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Home/getRelated');
+            xhr.send(formdata);
+            var content = "";
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var news = '{"news":' + xhr.responseText + '}';
+                    
+                    var json_parsed = $.parseJSON(news);
+                    var removeDuplicate = "";
+                    var title = "";
+                    var href="";
+                    //alert(news+json_parsed.news.length);
+                    for (var i = 0; i < 10; i++) {
+                        if (json_parsed.news[i]) {
+                            var n = json_parsed.news[i];
+                            if (n.name != "" && n.name != null && removeDuplicate.indexOf(n.name) < 0) {
+                                title = n.name.replace(/&#39;/g, "");
+                                href="href=\"/comment/mReadNews/"+n.id+"\"";
+                                if (n.hasContent == 0) {
+                                    href="href=\""+n.link+"\" target=\"_blank\"";
+                                }
+                                if (!isImage(n.image)){
+                                    continue;
+                                }
+                                content+="<li>";
+                                content+="<a "+href+" title=\""+title+"\">"+title+"</a>";
+                                content+="</li>";
+                                removeDuplicate += n.name + ",";
+                            }
+                        }
+                    }
+                    if (json_parsed.news.length>0) 
+                    {
+                        $("#relatedNews").html(content);
+                    }else{
+                        $("#relatedNewsAll").hide();
+                    }
+                }
+            }
+        }
+        @if (!ViewBag.topicid.Equals(-1))
+        {
+            <text>getRelated();</text>
+        }
+        function getRelatedCat() {    
+            //Creating an XMLHttpRequest and sending
+            //$("#dvTopNewsWeekly").show();
+            var formdata = new FormData(); //FormData object
+            formdata.append("catid", @ViewBag.catid);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Home/getRelatedCat');
+            xhr.send(formdata);
+            var content = "";
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var news = '{"news":' + xhr.responseText + '}';
+                    //alert(news);
+                    var json_parsed = $.parseJSON(news);
+                    var removeDuplicate = "";
+                    var title = "";
+                    var href="";
+                    var realTitle="";
+                    for (var i = 0; i < 10; i++) {
+                        if (json_parsed.news[i]) {
+                            var n = json_parsed.news[i];
+                            if (n.title != "" && n.title != null) {
+                                title = n.title.replace(/&#39;/g, "");                                   
+                                title =title.replace(/&quot/g, "");                                                
+                                title =title.replace(/quot/g, "");
+                                title =title.replace(/&amp;/g, "");     
+                                realTitle = title;
+                                title=removeSpecialCharater(title);
+                                //if (i==0) alert(title);
+                                if (removeDuplicate.indexOf("," + title + ",") > 0) continue;
+                                removeDuplicate += "," + title + ",";
+                                href="href=\"/comment/mReadNews/"+n.id+"\"";
+                                if (n.hasContent == 0) {
+                                    href="href=\""+n.link+"\" target=\"_blank\"";
+                                }
+                                if (!isImage(n.image)){
+                                    continue;
+                                }
+                                content+="<li>";
+                                content+="<a "+href+" title=\""+realTitle+"\">";
+                                content+="<img src=\""+n.image+"\" class=\"relate-item-img\"/>";
+                                content+="<span class=\"relate-item-title\">"+realTitle+"</span>";
+                                content+="</a>";
+                                content+="</li>";
+                                removeDuplicate += n.name + ",";
+                            }
+                        }
+                    }
+                    if (json_parsed.news.length>0) 
+                    {
+                        $("#relatedCatNews").html(content);
+                    }else{
+                        $("#right-col").hide();
+                    }
+                }
+            }
+        }
+        getRelatedCat();
+        voteNewsRead(@ViewBag.idNews,1);
+        $("table").css("maxWidth","95%");
+    </script>

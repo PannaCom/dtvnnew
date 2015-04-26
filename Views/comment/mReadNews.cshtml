@@ -1,0 +1,120 @@
+﻿@model youknow.Views.ModelClassViewComment
+@{
+    String localDate;
+    //ViewBag.id = Model.id;
+    //ViewBag.title = Server.HtmlDecode(Model.name);
+    
+    ViewBag.title = System.Web.HttpUtility.HtmlDecode(ViewBag.title.Replace("amp;", ""));
+    ViewBag.urltitle = System.Web.HttpUtility.HtmlDecode(ViewBag.urltitle.Replace("amp;", ""));
+    ViewBag.des = System.Web.HttpUtility.HtmlDecode(ViewBag.des.Replace("amp;", ""));
+    //ViewBag.titlenomark = youknow.Uti.unicodeToNoMark(ViewBag.title);
+    ViewBag.titlenomark = youknow.Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(ViewBag.urltitle)).ToString().Replace("--", "-");
+    //ViewBag.image = Model.image;
+    //ViewBag.link = Model.link;
+    ViewBag.url = youknow.Config.domain + "/" + ViewBag.titlenomark+"-"+ViewBag.idNews;
+    ViewBag.catname = youknow.Uti.getCatNameFromId(ViewBag.catid);
+    ViewBag.catnamenomark = youknow.Uti.unicodeToNoMark(ViewBag.catname);
+    //ViewBag.datetime = Model.datetime;
+    if (!ViewBag.datetimenews.ToString().Contains("1/1/1900"))
+    {
+        localDate = DateTime.Parse(ViewBag.datetimenews.ToString()).ToString("dd/MM/yyyy hh:mm tt");
+    }
+    else
+    {
+        localDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm");
+    }
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+
+<div id="content">
+        
+        <div class="container">
+            
+            <div class="col-md-7 padding-l-0" id="left-col">
+                <div class="article-info">
+                    <div class="breadcrumb" itemtype="http://schema.org/ImageObject">
+                        <a class="breadcrumbitem1" href="#">@youknow.Uti.getCatNameFromId(@ViewBag.catid)</a>
+                        <img src="/Content/new/images/navRow.png">
+                    </div>
+
+                    <span class="publishdate">
+                        <meta content="@localDate" itemprop="datePublished">@localDate
+                    </span>
+                </div>
+
+                <h1 class="title-article">@Html.Raw(ViewBag.title)</h1>
+
+                <div class="social-box">                     
+                    <div class="score-system">
+                        <span class="score">
+                            @ViewBag.uplikes <i class="fa fa-thumbs-up fa-2"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="content-article">
+                    @Html.Raw(@Server.HtmlDecode(@ViewBag.fullContent))
+                    <br/>
+                    Nguồn:<a href="@ViewBag.link" target="_blank" class="description-article">@ViewBag.maindomain</a>
+                    
+                </div>
+
+                @if (!ViewBag.topicid.Equals(-1))
+                {
+                    <div class="list-related-post2" id="relatedNewsAll">                
+                    <h3 class="related-title2">Tin liên quan</h3>
+                        <ul class="list-related-post2" id="relatedNews">
+                        
+                        </ul>
+                    </div>
+                    
+                }
+                    
+
+
+                
+                <div class="clear-fix"></div>
+            </div>
+
+            <div class="col-md-3 padding-0" id="mid-col">
+                <div class="related-post" >
+                    <h3 class="related-post-title">Tin cùng chuyên mục</h3>
+                    <ul class="list-related-post" id="relatedCatNews">
+                        
+                    </ul>
+
+                    <div class="clear-fix"></div>
+                </div>
+                <div class="clear-fix"></div>
+            </div>
+
+            <div class="col-md-2 padding-r-0" id="right-col">
+                
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+        optimizeImageMobile();
+        @if (!ViewBag.topicid.Equals(-1))
+        {
+            <text>getRelatedMobile(@ViewBag.topicid);</text>
+        }
+        getRelatedCatMobile(@ViewBag.catid);
+        voteNewsRead(@ViewBag.idNews,1);
+        //$('img').each(function(){
+        //    $(this).click(function(){
+        //        //alert("abc");
+        //        if ($(this).css('max-width')=="95%"){
+        //            $("table").css("maxWidth",$(this).width()*2+"px");
+        //            $(this).css("maxWidth", $(this).width()*2+"px");
+        //            $(this).css("width", $(this).width()*2+"px");
+                    
+        //        }else{
+        //            $(this).css("width", $(this).width()/2+"px");
+        //            $(this).css("maxWidth", "95%");
+        //            $("table").css("maxWidth","95%");
+        //        }
+        //    });
+        //});
+    </script>

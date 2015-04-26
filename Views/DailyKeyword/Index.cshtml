@@ -1,0 +1,220 @@
+﻿@model youknow.Views.ModelClassViewDailyKeywordManager
+@{
+    ViewBag.Title = "Index";
+    int no = 0;
+    string itemKeyword = "";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a href="/Admin/Index">Trở về trang Admin</a>
+</p>
+<script>
+    function countKeyword(no){
+        var formdata = new FormData(); //FormData object
+        var keyword=document.getElementById("content_"+no).innerHTML;
+        formdata.append("keyword", keyword);
+        //if (no<2) alert(keyword);
+        //$("#result_"+no).show();
+        //Creating an XMLHttpRequest and sending
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/DailyKeyword/countKeyword');
+        xhr.send(formdata);
+        var content="";
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {                
+                document.getElementById("countKeyword_"+no).innerHTML="("+xhr.responseText+" news)";                
+            }
+        }
+    }
+</script>
+<form action="/Dailykeyword/Index" method="post">
+    <input type="text" id="keyword" name="keyword">
+    <select id="type" name="type">
+        <option value="1">Hôm nay</option>
+        <option value="2" selected>Tất cả</option>
+    </select>
+    <input type="submit" value="search">
+</form>
+<table border="1">
+    <tr>
+        <th></th>
+        <th>
+            Từ khóa
+        </th> 
+        <th>
+            Điểm
+        </th>       
+        <th>
+            Trạng thái
+        </th>
+        <th>
+            Title
+        </th>        
+        <th>
+            Thời gian
+        </th>
+              
+    </tr>
+
+ @foreach (youknow.Views.viewDailyKeywordManager item in Model.ieViewDailyKeyword)
+{
+    no++;
+    itemKeyword = System.Web.HttpUtility.HtmlDecode(item.keyword);
+    <tr>
+        <td>
+            <input type="button" value="Active" onclick="active(@item.id,1);"><input type="button" value="DeActive" onclick="    active(@item.id,0);">
+        </td>
+        <td>
+            <div id="content_@no" onclick="searchKeyword(@no);" style="cursor:pointer;">@itemKeyword</div>
+            <div id="result_@no" style="width:90%;height:80%;position:fixed;display:none;left:10%;top:10px;bottom:10px;background-color:#ffffff;overflow:auto;border:1px solid;"></div>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ranking)            
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.status)
+        </td>
+        <td>
+            <input type="text" id="title_@item.id" value="@item.title" placeholder="Đặt tên chủ đề cho từ khóa này..."><input type="button" value="update" onclick="updateTitle(@item.id);">
+        </td>        
+        <td>
+            @Html.DisplayFor(modelItem => item.datetime)
+        </td>
+             
+    </tr>
+    
+}
+
+</table>
+<script src="/Scripts/jquery-2.1.1.js"></script>
+ <script src="/Scripts/core.js" type="text/javascript"></script> 
+<Script>
+    function active(id,type){
+        var formdata = new FormData(); //FormData object
+        formdata.append("id", id);
+        formdata.append("type", type);
+        //Creating an XMLHttpRequest and sending
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/DailyKeyword/Active');
+        xhr.send(formdata);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                if (xhr.responseText == "0") {
+                    alert("Chọn không thành công!");
+                } else {
+                    alert("Chọn thành công!");                    
+                    
+                }
+            }
+        }
+    }
+    function updateTitle(id){
+        var title=$("#title_"+id).val();
+        var formdata = new FormData(); //FormData object
+        formdata.append("id", id);
+        formdata.append("title", title);
+        //Creating an XMLHttpRequest and sending
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/DailyKeyword/updateTitle');
+        xhr.send(formdata);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                if (xhr.responseText == "0") {
+                    alert("Cập nhật không thành công!");
+                } else {
+                    alert("Cập nhật thành công!");                    
+                    
+                }
+            }
+        }
+    }
+    
+    function searchKeyword(no){
+        var formdata = new FormData(); //FormData object
+        var keyword=document.getElementById("content_"+no).innerHTML;
+        formdata.append("keyword", keyword);
+        $("#result_"+no).show();
+        //Creating an XMLHttpRequest and sending
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/DailyKeyword/SearchKeyword');
+        xhr.send(formdata);
+        var content="";
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                    
+                content='<table border=1><tr><th>check</th><th>Nguồn</th><th>Name</th><th>Date</th><th>Ranking</th><th>Topicid</th><td>Reset</th><tr>';
+                var news = '{"news":' + xhr.responseText + '}';
+                    
+                var json_parsed = $.parseJSON(news); 
+                for (var i = 0; i < json_parsed.news.length; i++) {
+                    if (json_parsed.news[i]) {
+                        var n = json_parsed.news[i];
+                        if (n.name != "" && n.name != null) {
+                            content+="<tr><td><input type=checkbox id=chk_"+i+" value=\""+n.id+"\" onchange=\"setMainTopicName("+i+")\">"+i+"</td><td>"+n.maindomain+"</td><td id=mainTopicName"+i+"><a href=\""+n.link+"\" target=\"_blank\">"+n.name+"</a></td><td>"+n.datetimeid+"</td><td>"+n.ranking+"</td><td id=tdtopicid_"+i+">"+n.topicid+"</td><td ><input type=button value=\"Xóa khỏi chủ đề\" onclick=\"removeTopic("+i+","+n.id+");\"></td></tr>";
+                        }
+                    }
+                }
+                content+="</table>";
+                $("#result_"+no).html(content);
+                $("#result_"+no).append("<input type=button value=\"Close\" onclick=\"$('#result_"+no+"').hide();\">");
+            }
+        }
+    }
+    function setMainTopicName(i){
+        if (!document.getElementById("chk_"+i).checked){
+            return;
+        }
+        for(var j=i-1;j>=0;j--){
+            if (document.getElementById("chk_"+j).checked){
+                return;
+            }
+        }
+        alert("Đây sẽ là tin chủ đề chính cho các tin được chọn bên dưới!\r\nTiếp tục chọn tin cùng chủ đề!");
+    }
+    function mapNews(l){
+        var listNewsId="(-1,";
+        var maxRanking=-1;
+        var topicid=-1;
+        for(var i=0;i<l;i++){
+            if (document.getElementById("chk_"+i).checked){
+                listNewsId+=document.getElementById("chk_"+i).value+",";  
+                if (topicid==-1) topicid=document.getElementById("chk_"+i).value;
+            }
+        }
+        listNewsId+="-1)";
+        var formdata = new FormData(); //FormData object
+        formdata.append("listNewsId", listNewsId);
+        formdata.append("topicid", topicid);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/DailyKeyword/updateMapNews');
+        xhr.send(formdata);
+        var content="";
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                alert("update thanh cong");
+                window.location.reload();
+            }
+        }
+    }
+    function removeTopic(i,id){
+        
+        var formdata = new FormData(); //FormData object
+        formdata.append("id", id);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/DailyKeyword/removeTopicId');
+        xhr.send(formdata);
+        var content="";
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                if(xhr.responseText=="1"){
+                    alert("Đã xóa!");
+                    //window.location.reload();
+                }else alert("Server error!");
+            }
+        }
+    }
+    document.getElementById("type").value="@Request.Form["type"]";
+</Script>

@@ -1,0 +1,147 @@
+﻿@model youknow.Views.ModelClassViewNewsManager
+@{
+    ViewBag.Title = "Tin nóng trong ngày";
+    ViewBag.Url = "Home/Test";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int? uplikes = 0;
+    int? downlikes = 0;
+    string upimage = "up1.png";
+    string downimage = "down1.png";
+    string diemclass = "Diem";
+    int currentNo = 0;
+    string styleComment = "";
+    string title = "";
+    string titleNoMark = "";
+}
+
+<script src="~/Scripts/jquery-2.1.1.js"></script>
+<script src="~/Scripts/jquery.signalR-1.1.3.min.js"></script>        
+<script src="~/signalR/hubs"></script>
+<script  src="/Scripts/core.js" type="text/javascript"></script>
+<script src="/Scripts/OpenLayers.js" type="text/javascript"></script> 
+<div class="backTopPage" id="backTopPage" style="display:none"><a href="#"><img src="/Images/toppage.png" title="Về đầu trang" height="48px" width="48px"></a></div>
+            	         
+            <div class="shareNews" id="shareNews">
+            
+            </div>
+            <div class="dvCommentHomePage" id="dvCommentHomePage"></div>
+            @Html.Partial("~/Views/Home/_formComment.cshtml")
+<div id="wrapper" class="wrapper">    
+    @foreach (youknow.Views.viewNewsManager item in Model.ieViewNews)
+    {
+         uplikes = 0;
+         downlikes = 0;
+         upimage = "up1.png";
+         downimage = "down1.png";
+         diemclass = "Diem";
+         title = System.Web.HttpUtility.HtmlDecode(item.title);
+         titleNoMark=youknow.Uti.unicodeToNoMark(title);
+         //styleComment = "<a  onclick=\"showDivComment("+@item.id+",'"+@item.title+"');\" style=\"cursor:pointer\">Trò chuyện</a>";
+         currentNo = currentNo + 1;
+                if (currentNo > 3) {
+                    upimage = "up2.png";
+                    downimage = "down2.png";
+                    diemclass = "Diemp2";
+                }
+                if (item.totalcomment != null && item.totalcomment != 0) { styleComment = "<a  onclick=\"showDivComment(" + item.id + ",\'" + item.title + "\');\" style=\"cursor:pointer\">" + item.totalcomment + " bình luận </a>"; }
+        if (item.uplikes != 0) {uplikes = item.uplikes;}
+        if (item.downlikes != 0) {downlikes = item.downlikes;}
+         <text> 
+                <div class="bgheader4">
+                    <div class="@diemclass">
+                       <div class="Diem1">
+                         <div class="Diem11"><span class="DiemFont">@currentNo</span></div>
+                         <div class="Diem12"><span class="DiemFont2" id=ranking_@item.id>@item.ranking điểm</span></div>
+                       </div>
+                       <div class="Diem2">
+                           <div class="Diem21">                
+                                <span class="DiemFontDetail" id="uplikes_@item.id"></span><img src="/Images/@upimage" title="Thêm điểm" onclick='voteNews(@item.id,1,@item.ranking,@uplikes,@downlikes);' style="cursor:pointer">
+                           </div>
+                           <div class="Diem22">
+                                <span class="DiemFontDetail" id="downlikes_@item.id"></span><img src="/Images/@downimage" title="Hạ điểm" onclick='voteNews(@item.id,0,@item.ranking,@uplikes,@downlikes);' style="cursor:pointer">
+                          </div>
+                      </div>
+                    </div>
+                    <div class="Anh">
+                        @if (item.image!="" && (item.image.ToLower().IndexOf(".jpg") > 0 || item.image.ToLower().IndexOf(".bmp") > 0)) {
+                            <img src="@item.image" width="130" height="100" id="img_@item.id" />
+                        } else {
+                            <img src="/Images/logo.png" width="130" height="100" id="img_@item.id"/>
+                        }
+                    </div>
+                    <div class="Tin">
+                        <div class="title"><a onclick="showDetailNews('@item.link','@titleNoMark',@item.id)" class="titleFont" style="cursor:pointer;"><span class="titleFont">@title</span></a></div>               
+                        <div class="inforTin"><span class="inforTinFont1">@youknow.Uti.getDiffTimeFromNow(@item.date.ToString()) </span>&nbsp;<img src="/images/sp.jpg">&nbsp;<span class="inforTinFont2">@item.maindomain.Replace("http://", "").Replace("www.", "")</span></div> 
+                        <div class="sharechat"><span class="shareFont">&nbsp;<img src="/Images/l.jpg"/>&nbsp;<a  href="/comment/readNews/@item.id/?title=@titleNoMark" class="shareFont" style="cursor:pointer;text-decoration:none;">Trò chuyện</a></span><a onclick="share('@item.link');" style="cursor:pointer"><span class="shareFont">&nbsp;<img src="/Images/l.jpg"/>&nbsp;Chia sẻ</span></a></div>
+                        @if(@item.topicid==@item.id){
+                            <div class="sametopic">
+                            <div id=topicid_@item.topicid><span class="sameTopicTitleFont">Tin cùng chủ đề</span></div>
+                                <script>viewTopicId(@item.topicid)</script>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="spaceNews">&nbsp;</div>
+                
+        </text>
+    }
+</div>
+<script>
+    isLogged = '@ViewBag.userToken';
+    currentUserToken = '@ViewBag.userToken';
+    currentUserName = '@Html.Raw(@ViewBag.userName)';
+    var percentLoading = 1;
+    var stepLoading = 7;
+    var myVar = null;
+    //isCheckNewestNew = 1;
+    currentMenu = 2;
+    function loadingDetailNews() {
+        $("#dvloadingDetail").css({ "width": percentLoading });
+        percentLoading += stepLoading;
+        if (percentLoading > 1366) {
+            clearInterval(myVar);
+            document.getElementById("dvloading").style.display = "none";
+            percentLoading = 1;
+            stepLoading = 7;
+        }
+    }
+    //Hiển thị nextpage nếu thanh cuộn hết trang
+    $(window).scroll(function () {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 10) {
+            showNextPage();
+        }
+    });
+    //Danh cho remove tin để các tin khác cuộn lên.
+    var itemPost = $("a.titleFont").parent(".title");
+    itemPost.append('<img class="removeItem" src="/Images/remove.png"  style="width:15px;float:right;cursor: pointer;" />');
+    cssRemoveTin();
+    $(function () {
+        chat.client.addChatMessage = function (roomName, username, usertoken, contents, title, id, idReply, userTokenReply, userNameReply) {
+            if (contents != "") {
+                var strUserTokenReply = "";
+
+                //$('#dvComment').append('<div class=\"alert alert-info\"><span class=\"label label-success\">'+username+'</span>: ' + contents + '<span id="totalLike_' + id + '" class="label label-info pull-right"></span><a onclick="likeComment(' + id + ');"><span class="badge pull-right">Thích</span></a></div>');
+                if (userTokenReply != null && userTokenReply != "") {
+                    strUserTokenReply = "<span class=\"userchat2HP\"> gửi " + userNameReply + ", </span> ";
+                }
+
+                content = "<div class=bgheader4><div class=chatLine1HP><span class=userchat2HP>" + username + "</span></div><div class=chatLine2HP><span class=chatcontentHP>" + strUserTokenReply + contents + " </span></div><div class=chatLine3HP><a onclick=\"replyCommentHP(" + id + ",'" + usertoken + "','" + username + "');\" style=\"cursor:pointer\"><span class=userchat3HP>Trả lời</span></a>&nbsp;<a onclick=\"likeCommentHP(" + id + ");\" style=\"cursor:pointer\"><span class=userchat3HP>Thích&nbsp;<span id=\"totalLike_" + id + "\" class=chatcontent2HP></span></span></a></div></div>";
+                //"<div class=\"alert alert-info\"><span class=\"label label-success\">" + username + "</span> " + strUserTokenReply +contents + " <a onclick=\"replyComment(" + id + ",'" + username + "','" + usertoken + "');\"><span class=\"badge pull-right\">Trả lời</span></a><a onclick=\"likeComment(" + id + ");\"><span class=\"badge pull-right\">Thích<span id=\"totalLike_" + id + "\" class=\"label label-info pull-right\"></span></span></a></div>"; 
+                //alert(content);
+                $('#dvComment').append(content);
+
+                if (document.getElementById("checkScrollbar").checked) {
+                    var elem = document.getElementById('dvComment');// just to scroll down the line 
+                    elem.scrollTop = elem.scrollHeight;
+                }
+
+                //chat.server.broadCast("broadCast","1", username,usertoken,contents,title,id,@ViewBag.idNews);
+
+
+                }
+            };
+        $.connection.hub.start().done(function () {
+            //chat.server.joinRoom("@ViewBag.idNews", '','','','','','','',''); 
+            });
+    });
+</script>

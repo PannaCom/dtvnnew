@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+     <title>@Html.Raw(Server.HtmlDecode(@ViewBag.title))</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="description" content="Điểm Tin Việt Nam, điểm tin, ranking, xếp hạng, đánh giá, thế giới, xã hội, kinh tế, kinh doanh, thể thao, văn hóa, giải trí, pháp luật, khoa học, công nghệ..." >
+        <meta name="keywords" content="điểm tin, ranking, xếp hạng, đánh giá, thế giới, xã hội, kinh tế, kinh doanh, thể thao, văn hóa, giải trí, pháp luật, khoa học, công nghệ, vnexpress, zing, vietnamnet, dantri, dan tri, thanhnien, thanh nien, laodong, lao dong, báo điện tử, Việt Nam, Hồ Chí Minh, Hà Nội, Sài Gòn, Đà Nẵng, Hạ Long...." > 
+        <meta name="robots" content="noindex,nofollow,noodp"/>
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="@ViewBag.url"/>        
+        <meta property="og:title" content="@Html.Raw(Server.HtmlDecode(@ViewBag.title))"/>
+        <meta property="og:description" content="Cập nhật, đánh giá, xếp hạng tin tức mới và nóng nhất về thế giới, xã hội, kinh tế, kinh doanh, thể thao, văn hóa, giải trí, pháp luật, khoa học, công nghệ và nhiều lĩnh vực khác…" />
+        <meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="~/Content/mobile/css/jquery.mobile-1.4.2.min.css">
+	<script src="/Content/mobile/js/jquery-1.10.2.min.js"></script>
+    <script>
+        $(document).bind("mobileinit", function () {
+            //alert("ok");
+            $.mobile.ajaxEnabled = false;
+            //alert("ok");
+        });
+    </script>
+	<script src="/Content/mobile/js/jquery.mobile-1.4.2.min.js"></script>
+    
+	<link rel="stylesheet" href="/Content/mobile/css/MobileStyle.css">
+	<script src="/Content/mobile/js/mobilecore.js"></script>
+    
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700,800&subset=latin,vietnamese' rel='stylesheet' type='text/css'>       
+               
+        @Scripts.Render("~/bundles/modernizr")
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-46524686-2']);
+            _gaq.push(['_trackPageview']);
+            (function () {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+        <script>
+            //Bắt phím gõ Enter
+            function mSearchAuto(event) {
+                if (event && event.keyCode == 13) {
+                    mSearchNewsMVC();
+                }
+            }
+            //Tìm kiếm tin tức theo keyword
+            //Cần phát triển thêm đoạn bắt phím Enter để tìm
+            function mSearchNewsMVC() {
+                //$('#wrapper').html('<span class="label label-info">Đang tìm....</span>');
+                currentPage = 1;
+                var keyword = document.getElementById("txtSearch").value;
+                if (keyword.length < 2) {
+                    alert("Độ dài từ khóa phải có từ 2 chữ cái trở lên!");
+                    //$('#wrapper').html('');
+                    return;
+                }
+                window.location = "/Home/mSearchNews?keyword=" + keyword;
+            }
+            
+        </script>
+        <style>
+            #content div {
+                width: 90%;
+            }
+            .dvLoginForm{    
+                position:fixed;
+                left: 45%;
+                bottom: 10%;
+                background-color:#ededed;
+                z-index: 100;    
+                width: 56px;
+                height: 170px;
+                display:none;
+                vertical-align:middle;
+                text-align:center;
+                opacity:2px;
+                border:1px solid #e2e2e2;
+            }
+            .btnLogin1 {
+                background-image:url("/Images/twlg.png");
+                height:56px;
+                width:56px;
+                border:0px;
+                cursor:pointer;
+            }
+            .btnLogin2 {
+                background-image:url("/Images/fblg.png");
+                height:56px;
+                width:56px;
+                border:0px;
+                cursor:pointer;
+            }
+            .btnLogin3 {
+                background-image:url("/Images/gglg.png");
+                height:56px;
+                width:56px;
+                border:0px;
+                cursor:pointer;
+            }
+        </style>
+</head>
+<body>    
+    
+        <div data-role="page" id="pageone">
+	        <!--start panel-->
+	        <div data-role="panel" id="menuBar"> 		        
+		        <ul data-role="listview" id="menuList">
+                    
+                </ul>	
+                <ul data-role="listview" id="menuList2">                    
+                    <li>
+                        <select id="menuChooseNews" class="select" onchange="mGoToDomain(this);">
+                                <option value="-100">Chọn báo bạn yêu thích</option>
+                                <option value="-1">Tất cả</option>
+                                <option value="0">Báo Vnexpress</option>
+                                <option value="1">Báo Dân trí</option>
+                                <option value="2">Báo Zing</option>
+                                <option value="3">Báo 24h</option>
+                                <option value="4">Báo Kênh 14</option>
+                                <option value="5">Báo Đời sống Pháp luật</option>
+                                <option value="6">Báo Thể thao 24/7</option>
+                                <option value="7">Báo NgôiSao.Net</option>
+                                <option value="8">Báo VietNamNet</option>
+                                <option value="9">Báo Lao động</option>
+                                <option value="10">Báo Afamily</option>
+                                <option value="11">Báo Tuổi trẻ</option>
+                                <option value="12">Báo Thanh niên</option>
+                        </select>
+                    </li>
+                    <li><a href="https://play.google.com/store/apps/details?id=com.thatvn.diemtinvietnam">Phiên bản Android Mobile</a></li> 
+                </ul>	
+	        </div> 
+	        <!--End panel-->
+	        <!--start Header-->
+	        <div class="header" data-role="header">
+		        <a href="#menuBar" class="ui-btn-left ui-btn-corner-all ui-btn ui-icon-bars ui-btn-icon-notext ui-shadow" title=" Menu " data-form="ui-icon" data-role="button" role="button"> Menu </a>
+		        <div class="search" style="width: 40%; margin: 0 auto;">
+			        <input id="txtSearch" type="text" placeholder="Gõ để tìm kiếm" data-type="search" onkeydown="mSearchAuto(event);"/>
+		        </div>
+		        <a href="#" class="ui-btn-right ui-btn-corner-all ui-btn ui-icon-home ui-btn-icon-notext ui-shadow" title=" Home " data-form="ui-icon" data-role="button" role="button"> Home </a>
+	        </div>
+	        <!--End Header-->
+	       
+    @RenderBody()
+	<!--Start Footer-->
+	<div data-role="footer">
+		<h1>Nhóm <a href="http://www.that.vn" target="_blank" style="text-decoration:none;">That.Vn</a> - Email: Diemtinvietnam@gmail.com</h1>
+	</div>
+	<!--End Footer-->	
+</div>  
+</body>
+</html>

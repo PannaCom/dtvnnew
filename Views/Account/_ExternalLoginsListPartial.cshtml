@@ -1,0 +1,26 @@
+﻿@model ICollection<AuthenticationClientData>
+
+@if (Model.Count == 0)
+{
+    <div class="message-info">
+        <p>There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkId=252166">this article</a>
+        for details on setting up this ASP.NET application to support logging in via external services.</p>
+    </div>
+}
+else
+{
+    <div id="dvLoginForm2" class="dvLoginForm2">
+        @using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }))
+        {
+                    @Html.AntiForgeryToken()
+                        <fieldset id="socialLoginList">
+                                Chọn đăng nhập bằng<br />
+                                   <img src="/Images/tw.png" />&nbsp;<button type="submit" class="btnComment" name="provider" value="twitter" title="Sử dụng Twitter account" style="cursor:pointer">Twitter</button>
+                                   <img src="/Images/fb.png" />&nbsp;<button type="submit" class="btnComment" name="provider" value="facebook" title="Sử dụng Facebook account" style="cursor:pointer">Facebook</button>
+                                   <img src="/Images/gg.png" />&nbsp;<button type="submit" class="btnComment" name="provider" value="google" title="Sử dụng Google account" style="cursor:pointer">Google</button>
+                               
+                        
+                        </fieldset>
+        }
+    </div>
+}

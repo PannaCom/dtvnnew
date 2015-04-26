@@ -1,0 +1,137 @@
+﻿@model youknow.Views.ModelClassViewNewsAlexa
+@{
+    ViewBag.Url = "Home/DanhBa";
+    ViewBag.Title = "Danh bạ Website Việt Nam: Tất cả các website hàng đầu về các lĩnh vực";
+    ViewBag.keyword = "danh bạ, website Việt Nam, giải trí, thể thao, thương mại điện tử, di động, công nghệ, ô tô xe máy, tìm kiếm, diễn đàn";
+    ViewBag.des = "Bảng xếp hạng website Việt Nam tổng hợp các chủ đề về giải trí thể thao thương mại điện tử công nghệ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int? uplikes = 0;
+    int? downlikes = 0;
+    string upimage = "up1.png";
+    string downimage = "down1.png";
+    string diemclass = "Diem";
+    int currentNo = 0;
+    int noNewsItem = -1;
+    string styleComment = "";
+    string title = "";
+    string titleNoMark = "";
+    string strCare = "Quan tâm";
+    int catid = 0;
+    int i = 0;
+    int preID = -1;// Model.ieViewNews.ElementAt(0).id;
+    int lastID = preID;
+    string preRelatedNews = "";
+    int preCountItemRelated = 0;
+    var styleItem = "display:block;";
+    string filterDomain = "";
+    string filterCat = "";
+    //string preDomain = "," + Model.ieViewNews.ElementAt(0).maindomain + ",";
+    
+    if (ViewBag.filterCat != null)
+    {
+        filterCat = ViewBag.filterCat;
+    }
+    if (ViewBag.filterDomain != null)
+    {
+        filterDomain = ViewBag.filterDomain;
+    }
+    //youknow.Views.viewNewsManager[] Aitem = (youknow.Views.viewNewsManager[])Model.ieViewNews;
+    preRelatedNews = "<span class=\\\"sameTopicTitleFont\\\">Tin liên quan</span>";
+}
+
+<script src="~/Scripts/jquery-2.1.1.js"></script>
+<script src="~/Scripts/jquery.signalR-1.1.3.min.js"></script>   
+<script src="~/Scripts/jquery.cookie.js"></script> 
+<script src="~/signalR/hubs"></script>
+<script  src="/Scripts/core.js" type="text/javascript"></script> 
+<script src="/Scripts/OpenLayers.js" type="text/javascript"></script>
+
+<div class="backTopPage" id="backTopPage" style="display:none"><a href="#"><img src="/Images/toppage.png" title="Về đầu trang" height="48px" width="48px"></a></div>
+            	         
+            <div class="shareNews" id="shareNews">
+            
+            </div>
+            <div class="dvCommentHomePage" id="dvCommentHomePage"></div>
+         
+<div id="content">
+    <div class="container">   
+        <div class="col-md-5 padding-l-0" id="left-col">  
+        <h3>Những website hàng đầu Việt Nam</h3>
+   @foreach (youknow.Views.viewNewsAlexa item in Model.ieViewNewsAlexa)
+    //@for (i=0;i<Model.ieViewNews.Count();i++)
+    {
+
+        if (item.des.ToLowerInvariant().Contains(" sex ")) { continue; }
+        styleComment = "";
+        uplikes = 0;
+        downlikes = 0;
+        upimage = "up1.png";
+        downimage = "down1.png";
+        diemclass = "Diem";
+        title = System.Web.HttpUtility.HtmlDecode(item.site.Replace("http://",""));
+        
+        //styleComment = "<a  onclick=\"showDivComment("+@item.id+",'"+@item.title+"');\" style=\"cursor:pointer\">Bình luận</a>";
+        currentNo = currentNo + 1;
+       
+        
+        strCare = "Quan tâm";
+        
+         <text> 
+                <div class="post-item" id="item_@currentNo">
+                                <a href="@item.site" title="@item.site" target="_blank" class="link-post-item">
+                                    <h3 class="post-item-title">@currentNo&nbsp;.@item.site</h3>
+                                </a>                                
+                                <div class="post-item-info">                                    
+                                    <p class="post-item-description">@Html.Raw(@item.des)</p>
+                                </div>
+                                <div class="clear-fix"></div>
+                            </div><!-- end .post-item -->              
+        </text>
+    }
+        </div>
+        <div class="col-md-4 padding-0" id="mid-col">
+                <div>
+                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                        <!-- Right Banner -->
+                        <ins class="adsbygoogle"
+                             style="display:inline-block;width:300px;height:250px"
+                             data-ad-client="ca-pub-6575239088642506"
+                             data-ad-slot="9661626879"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                 </div>
+                <div><script type="text/javascript" src="http://e.eclick.vn/delivery/zone/1958.js"></script></div>
+                <div><script type="text/javascript" src="http://paragonads.vn/www/delivery/pa_ad.js"></script> 
+                    <script type="text/javascript">
+                        PA_ShowAd(545);
+                    </script>
+                </div>
+                <a href="http://cakholangvudai.com/" title="cá kho làng vũ đại" target="_blank">
+                    <img src="/Images/Adv/cakho.gif" alt="đặc sản cá kho làng vũ đại" style="width:100%; margin-bottom:15px" />
+                </a>
+                <div class="box-list-event" id="divHaveRead">
+                    <h3 class="title-event">Đọc nhiều nhất</h3>
+                    <ul class="list-event" id="ulHaveRead">
+                    </ul>
+                    <div class="clear-fix"></div>
+                </div>
+
+                <div class="clear-fix"></div>
+            </div>
+
+            <div class="col-md-2 padding-r-0" id="right-col">
+                <div >
+                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <!-- Cat Right Banner Small -->
+                    <ins class="adsbygoogle"
+                         style="display:inline-block;width:200px;height:600px"
+                         data-ad-client="ca-pub-6575239088642506"
+                         data-ad-slot="1760133273"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+﻿User-agent: *
+Disallow: /Home/ChuyenMuc/*
+Disallow: /Home/DiemTin
+Disallow: /CP/*
+Disallow: /Admin/*
+Disallow: /dailyKeyWord

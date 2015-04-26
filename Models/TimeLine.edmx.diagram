@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ad777a5052254117a339f7efe507fd2a" Name="Diagram1" ZoomLevel="58">
+        <EntityTypeShape EntityType="tinviet_vietnamModel.cat" Width="1.5" PointX="8.50688280561328" PointY="23.475585084164322" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.content" Width="1.5" PointX="1.0807403889860681" PointY="6.0648289202083037" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.videogiaitri" Width="1.5" PointX="11.960164060797618" PointY="28.014766259125789" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.zadv" Width="1.5" PointX="2.3718314889687262" PointY="10.682999422160442" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.zalexa" Width="1.5" PointX="2.0855049221243265" PointY="21.567658970862468" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.category" Width="1.5" PointX="4.2357106712813071" PointY="25.85653908264662" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.comment" Width="1.5" PointX="3.6685587874001628" PointY="1.3803059316148543" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.dailykeyword" Width="1.5" PointX="0.53246673593878135" PointY="25.473982182086438" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.domain" Width="1.5" PointX="6.3596153773179349" PointY="14.449057481460766" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.filterkeyword" Width="1.5" PointX="0.77657930589121738" PointY="22.41451158673247" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.hotkeyword" Width="1.5" PointX="7.1820558361625553" PointY="15.55952515432589" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.like" Width="1.5" PointX="9.50268898974298" PointY="21.112835089262965" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.member" Width="1.5" PointX="9.9101062463177865" PointY="13.662905192777005" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.rss" Width="1.5" PointX="10.667079397787841" PointY="23.401700969506848" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.test" Width="1.5" PointX="5.9475061380991274" PointY="20.014668488881863" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.title" Width="1.5" PointX="3.2376903627243316" PointY="4.820646705488044" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.titlesSearch" Width="1.5" PointX="1.2533176174635616" PointY="25.871474710233265" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.userFilter" Width="1.5" PointX="6.926504779107173" PointY="23.496536653254431" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.blockurl" Width="1.5" PointX="11.796082662323528" PointY="12.070808595079374" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.user" Width="1.5" PointX="10.891792013725169" PointY="3.0869876905749494" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

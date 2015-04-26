@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "testRegex";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+<script src="~/Scripts/jquery-2.1.1.js"></script>
+<h2>test Regex</h2>
+<div>Regex:<input type="text" id="regex" value=''></div><br />
+<div>Link:<input type="text" id="link" value=""></div><br />
+<div><input type="button" value="by regex" onclick="return getContent();"></div>
+<div><input type="button" value="by all" onclick="return getContent2();"></div>
+<div><input type="button" value="get all link and image" onclick="return getContent3();"></div>
+<div id="result"></div><br />
+<script>
+    function getContent() {
+        $('#result').html('Loading.....');//contents().find('html').
+        currentPage = 1;
+        var regex = $("#regex").val();
+        var link = $("#link").val();
+        //alert(regex+link);
+        
+        var formdata = new FormData(); //FormData object
+        formdata.append("regex", regex);
+        formdata.append("link", link);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Rss/getRegex');
+        xhr.send(formdata);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                //alert(xhr.responseText);//contents().find('html').
+                $('#result').html(xhr.responseText);
+            }
+        }
+        return false;
+    }
+    function getContent2() {
+        $('#result').html('Loading.....');//contents().find('html').
+        currentPage = 1;
+        //var regex = $("#regex").val();
+        var link = $("#link").val();
+        //alert(regex+link);
+
+        var formdata = new FormData(); //FormData object
+        //formdata.append("regex", regex);
+        formdata.append("link", link);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Rss/getAllContent');
+        xhr.send(formdata);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                //alert(xhr.responseText);//contents().find('html').
+                $('#result').html(xhr.responseText);
+            }
+        }
+        return false;
+    }
+    function getContent3() {
+        $('#result').html('Loading.....');//contents().find('html').
+        currentPage = 1;
+        //var regex = $("#regex").val();
+        var link = $("#link").val();
+        //alert(regex+link);
+
+        var formdata = new FormData(); //FormData object
+        //formdata.append("regex", regex);
+        formdata.append("url", link);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Rss/getAllLink');
+        xhr.send(formdata);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                //alert(xhr.responseText);//contents().find('html').
+                $('#result').html(xhr.responseText);
+            }
+        }
+        return false;
+    }
+</script>

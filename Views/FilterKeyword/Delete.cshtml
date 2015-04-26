@@ -1,0 +1,40 @@
+﻿@model youknow.Models.filterkeyword
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>filterkeyword</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.keyword)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.keyword)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ranking)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ranking)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.datetimeid)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.datetimeid)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

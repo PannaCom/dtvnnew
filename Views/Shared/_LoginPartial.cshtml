@@ -1,0 +1,8 @@
+﻿@if (Session["userinfo"] != null)
+{
+    <text>
+        Xin chào @Html.Raw(@Session["username"])!<br /><a href="/Account/LogOff/" class="dn" style="cursor:pointer;">Thoát</a>
+    </text>
+} else {
+    
+}

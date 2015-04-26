@@ -1,0 +1,257 @@
+﻿@model youknow.Views.ModelClassViewNewsSearchManager
+@{
+   
+    ViewBag.Url = "/Home/SearchNews?keyword="+ViewBag.title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int currentNo = 0;
+    int noNewsItem = -1;
+
+    string title = "";
+    string titleNoMark = "";
+    string strCare = "Quan tâm";
+    int catid = 0;
+    int i = 0;
+    int preID = -1;// Model.ieViewNews.ElementAt(0).id;
+    int lastID = preID;
+
+    string filterHaveRead = "";
+    string image = "";
+    string href = "";
+    int totalPoint;
+    string style = "";
+    
+    if (ViewBag.haveRead != null)
+    {
+        filterHaveRead = ViewBag.haveRead;
+    }
+}
+<div id="content">        
+        <div class="container">            
+            <div class="col-md-6 padding-l-0" id="left-col">
+                <div class="list-post">
+                    @foreach (youknow.Views.viewNewsSearchManager item in Model.ieViewNews)                
+                    {
+                        if (preID!=item.id){
+                            
+                            currentNo++;
+                            title = System.Web.HttpUtility.HtmlDecode(item.title);
+                            titleNoMark = youknow.Uti.unicodeToNoMark(title);
+                            preID=item.id;
+                            totalPoint = (int)item.ranking;//(int)item.uplikes + 
+                            if (currentNo >= youknow.Config.PageSizeLoad) { style = "style=display:none;"; }
+                            
+                            if (item.hasContent == 1)
+                            {
+                                href = "href=/" + titleNoMark+"-"+item.id;
+                            }
+                            else
+                            {
+                                href = "href=\"" + item.link + "\" target=\"_blank\"";
+                            }
+                            image=item.image;
+                            if (image.Equals(""))
+                            {                               
+                                image = "/Images/logo.png";
+                            }
+                            if (currentNo==1){
+                            <text>
+                            <div class="top-post-item" >
+                                <div class="post-item-img-box">
+                                    <a @href title="@title">
+                                        <img class="post-item-img" src="@image" alt="@title" />
+                                    </a>
+                                    <div class="vote-system" >
+                                        <span class="vote-like">
+                                            <div id=ranking_@item.id>@totalPoint điểm</div> 
+                                        </span>
+                                        <span class="vote-button" onclick='LikeNews(@item.id,1,@totalPoint);'>
+                                            +1<i class="fa fa-thumbs-up fa-1"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="post-item-info">
+                                    <a @href title="@title" class="link-post-item" >
+                                        <h3 class="post-item-title">@Html.Raw(@title)</h3>
+                                    </a>
+                                    <p class="post-item-description"></p>
+                                </div>
+                                <div class="clear-fix"></div>
+                            </div><!-- end .post-item -->
+                            </text>
+                            }else{
+                                <text>
+                                    <div class="post-item" id="item_@currentNo" @style>
+                                        <a @href title="@title" class="link-post-item" >
+                                            <h3 class="post-item-title">@Html.Raw(@title)</h3>
+                                        </a>
+                                        <div class="post-item-img-box">
+                                            <a @href title="@title">
+                                                <img class="post-item-img" src="@image" alt="@title" />
+                                            </a>
+                                            <div class="vote-system" >
+                                                 <span class="vote-like">
+                                                    <div id=ranking_@item.id>@totalPoint điểm</div> <i class="fa fa-bolt fa-1 color-yellow"></i>
+                                                </span>
+                                                <span class="vote-button" onclick='LikeNews(@item.id,1,@totalPoint);'>
+                                                    +1<i class="fa fa-thumbs-up fa-1"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="post-item-info">
+                                            <span class="meta-post">
+                                                <span class="time">@youknow.Uti.getDiffTimeFromNow(@item.date.ToString())</span> | <span class="source-news">@item.maindomain.Replace("http://www.","").Replace("www.","")</span>
+                                            </span>
+                                            <p class="post-item-description"></p>
+                                        </div>
+                                        <div class="clear-fix"></div>
+                                    </div><!-- end .post-item -->
+                                </text>
+                            }
+                        }
+                    }
+                </div><!-- end .list-post  -->
+                <button type="button" class="btn btn-primary" id="loadMore">Xem thêm</button>
+                <div class="clear-fix"></div>
+            </div>
+            <div class="col-md-4 padding-0" id="mid-col">
+                <div onmousedown="window.open('http://grande.yamaha-motor.com.vn');" target="_blank" title="yamaha grande">
+                        <object data="/Images/Adv/Yamaha_300x120_20140717.swf" type="application/x-shockwave-flash" width="278" height="120" id="SWF">';
+                            <param name="movie" value="file.swf">;   
+                            <param name="wmode" value="transparent" />     
+                            <p>You need Adobe Flash Player to view this content</p>
+                        </object>
+                 </div>
+
+                <div class="clear-fix"></div>
+            </div>
+
+            <div class="col-md-2 padding-r-0" id="right-col">
+
+                <div onmousedown="window.open('http://www.samsung.com/vn/index.htm');" onclick="window.open('http://www.samsung.com/vn/index.htm');" title="Galaxy Tab S">
+                    <object data="/Images/Adv/samsung_160x600_20140818_Core.swf" type="application/x-shockwave-flash" width="160" height="600" id="SWF">';
+                        <param name="movie" value="file.swf">;  
+                        <param name="wmode" value="transparent" />                         
+                        <p>You need Adobe Flash Player to view this content</p>
+                    </object>
+                </div>
+
+                <div class="box-list-event">
+                    <h3 class="title-event">Quảng cáo</h3>
+                    <div onmousedown="window.open('https://viettelstore.vn/home/khuyen-mai/khuyen-mai-chung/?utm_source=VnExpress&utm_medium=statis&utm_campaign=C84148');" target="_blank" title="Galaxy Tab S">
+                        <object data="/Images/Adv/Viettel_160x300_120814.swf" type="application/x-shockwave-flash" width="160" height="300" id="SWF2">';
+                            <param name="movie" value="file.swf">;  
+                            <param name="wmode" value="transparent" /> 
+                            <p>You need Adobe Flash Player to view this content</p>
+                        </object>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>  
+<script>
+    function showLi(No, countItem) {
+
+        for (var i = 0; i <= 100; i++) {
+            //if (i==0) alert("a");
+            if (document.getElementById("li" + No + "_" + i)) {
+                //alert(i);
+                //$("li" + No + "_" + i).css("display", "block");
+                if (document.getElementById("li" + No + "_" + i).style.display == "none") {
+                    //document.getElementById("li" + No + "_" + i).style.display = "block";
+                    $("#li" + No + "_" + i).slideDown();
+                } else {
+                    //document.getElementById("li" + No + "_" + i).style.display = "";
+                    $("#li" + No + "_" + i).slideUp();
+                }
+            }
+        }
+    }
+    //$("#menu" + @ViewBag.catid).addClass("active");
+    //Lấy ra xu hướng đọc, xu hướng đọc này được admin chọn tại phần Admin
+    function getTrends() {    
+      
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Home/getTrendsMobile');
+        xhr.send();
+        var content = "<ul class=\"list-trend\">";
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var news = '{"news":' + xhr.responseText + '}';                    
+                var json_parsed = $.parseJSON(news);
+                var removeDuplicate = "";
+                var title = "0";
+                var href="";
+                var predId="-1";
+                var No=0;
+                var image = "";
+                var countItem = 0;
+                //alert(news+json_parsed.news.length);
+                for (var i = 0; i < json_parsed.news.length;i++) {
+                    if (json_parsed.news[i]) {
+                        var n = json_parsed.news[i];
+                        if (n.keyword != predId) {
+                            No++;
+                                
+                            if (n.title != null && n.title != "")
+                            { title = n.title; }
+                            else
+                            { title = n.keyword;}
+                            title = title.replace(/&#39;/g, "");
+                            predId = n.keyword;
+                            if (No >= 2) { 
+                                content+="<li class=\"trend-name last-list-item\">";
+                                content += "<span class=\"close-trend\" onclick=\"showLi(" + (No-1) + ");\">Đóng lại</span>";
+                                content+="</li>";
+                            }
+                            content += "</ul><ul class=\"list-trend\">";
+                            //Nếu là từ ban đầu thì hiển thị                                
+                            content += "<li class=\"trend-name\">";
+                            content+="<span class=\"title-trend-item\">"+title+"</span>";
+                            content += "<span class=\"trend-icon\" onclick=\"showLi(" + No+ ");\">";
+                            content+="Chi tiết";
+                            content+="<i class=\"fa fa-caret-square-o-down\"></i>";
+                            content+="</span>";
+                            content += "</li>";
+                            countItem = 0;
+                            //$("#item-trend-content").append(content);
+                        } else {
+                            countItem++;//Đếm số item mỗi li
+                            title = n.name.replace(/&#39;/g, ""); 
+                            href="href=\"/"+n.id+"/"+unicodeToNoMark(title)+"\"";
+                            if (n.hasContent == 0) {
+                                href="href=\""+n.link+"\" target=\"_blank\"";
+                            }
+                            image=n.image;
+                            if (!isImage(n.image)){
+                                image="/Images/logo.png";
+                            }
+                            if (No == 1) {
+                                content += "<li style=\"display:list-item;\" id=li" + No + "_" + countItem + ">";
+                            } else {
+                                content += "<li style=\"display:none;\" id=li" + No + "_" + countItem + ">";
+                            }
+                            content+="<img class=\"img-trend-item\" src=\""+image+"\" />";
+                            content+="<a "+href+" class=\"link-trend-item\" title=\""+title+"\">";
+                            content+="<span class=\"title-trend-item\">";
+                            content+=title;
+                            content+="</span>";
+                            content+="</a>";
+                            content += "</li>";
+                            //$("#item-trend-content").append(content);
+                        }//if diffrent keyword
+                    }//if exist
+                }//for   
+                content+="<li class=\"trend-name last-list-item\">";
+                content += "<span class=\"close-trend\" onclick=\"showLi(" + (No-1) + ");\">Đóng lại</span>";
+                content+="</li>";
+                content +="</ul>";
+                $("#item-trend-content").html(content);
+            }//return ajax statuc
+        }//onreadystatechange
+    }//function
+    
+    //getTrends();
+</script>

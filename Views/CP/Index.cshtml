@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+<h2>Login</h2>
+<form method="post" action="/CP/checkLogin">
+    user:<input type="text" id="name" name="name">
+    pass:<input type="password" id="pass" name="pass" >
+    <input type="button" value="Login" onclick="Login();">
+</form>
+<script>
+    function Login() {
+        var formdata = new FormData(); //FormData object
+        var name = document.getElementById("name").value;
+        var pass = document.getElementById("pass").value;
+        formdata.append("name", name);
+        formdata.append("pass", pass);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/User/Login');
+        xhr.send(formdata);
+        var content = "";
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                if (xhr.responseText == 0) {
+                    alert("Sai user hoặc mật khẩu!");
+                } else {
+                    window.location.href = "/Admin/Index";
+                }
+            }
+        }
+    }
+</script>

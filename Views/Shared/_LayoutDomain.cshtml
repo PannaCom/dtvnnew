@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>        
+        <title>@Html.Raw(@System.Web.HttpUtility.HtmlDecode(@ViewBag.Title))</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="description" content="Điểm Tin Việt Nam, điểm tin, tin nóng, ranking, xếp hạng, đánh giá, thế giới, xã hội, kinh tế, kinh doanh, thể thao, văn hóa, giải trí, pháp luật, khoa học, công nghệ..." >
+        <meta name="keywords" content="điểm tin, tin nóng, ranking, xếp hạng, đánh giá, thế giới, xã hội, kinh tế, kinh doanh, thể thao, văn hóa, giải trí, pháp luật, khoa học, công nghệ, vnexpress, zing, vietnamnet, dantri, dan tri, thanhnien, thanh nien, laodong, lao dong, báo điện tử, Việt Nam, Hồ Chí Minh, Hà Nội, Sài Gòn, Đà Nẵng, Hạ Long...." > 
+        <meta name="robots" content="noindex,nofollow,noodp"/>
+        <meta property="og:type" content="website"/>
+        <meta property="og:url" content="http://diemtinvietnam.vn/@ViewBag.Url"/>        
+        <meta property="og:title" content="@Html.Raw(@System.Web.HttpUtility.HtmlDecode(@ViewBag.Title))"/>
+        <meta property="og:description" content="Chuyên mục riêng các báo" />
+        <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />        
+        <link href="/Content/diemtin.css" type="text/css" rel="stylesheet" /> 
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700,800&subset=latin,vietnamese' rel='stylesheet' type='text/css'>       
+        <meta name="viewport" content="width=device-width"/>        
+        @Scripts.Render("~/bundles/modernizr")
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-46524686-2']);
+            _gaq.push(['_trackPageview']);
+            (function () {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>                
+    </head>
+    <body onscroll="checkScrollReadNews();">    
+        <div id="fb-root"></div>
+        <script>(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v2.0";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>    
+        <header>        
+                <div class="bgheader">
+                    <div class="logo"><a href="@ViewBag.Url"><img src="@youknow.Uti.getDomainImageMobile(@ViewBag.Domain)" width="65" height="65"></a></div>                    
+                    <div class="login">
+                        @if (Session["userinfo"] == null){  
+                                <div class="loginLabel">        
+                                    <a href="#" onclick='$("#dvLoginForm").show();' class="dn">Đăng nhập</a>
+                                </div>
+                        }
+                        <div class="datetimevn">
+                             <div id="showTime"></div>
+                             @if (Session["userinfo"] != null)
+                             {
+                                @Html.Partial("_LoginPartial")
+                             }
+                        </div>
+                    </div>                  
+                    <div class="searchForm">
+                        <input type="text" class="txtSearch" id="searchKeyWord" name="searchKeyWord" onkeydown="SearchAuto(event);">
+                        <input type="button"  class="btnSearch" value="Tìm Kiếm" onclick="SearchNewsMVC();"/>
+                    </div>
+                </div>
+                <div class="bgheader2" id="domainCategory">                    
+                </div>                
+        </header>
+        <div id="dvLoginForm" class="dvLoginForm" style="display:none;">
+             @using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl}))
+             {
+                @Html.AntiForgeryToken()
+                    <fieldset id="socialLoginList">
+                               <button type="submit" class="btnLogin1" name="provider" value="twitter" title="Sử dụng Twitter account" style="cursor:pointer">&nbsp;</button>
+                               <button type="submit" class="btnLogin2" name="provider" value="facebook" title="Sử dụng Facebook account" style="cursor:pointer">&nbsp;</button>
+                               <button type="submit" class="btnLogin3" name="provider" value="google" title="Sử dụng Google account" style="cursor:pointer">&nbsp;</button>
+                               
+                    </fieldset>
+             }
+        </div>
+        <div id="body">            
+            @RenderSection("featured", required: false)
+            <section class="content-wrapper main-content clear-fix">
+                @RenderBody()
+            </section>
+        </div>  
+        <footer>
+            <div class="bgfooter">                
+                <B>Điểm Tin Việt Nam - Phiên bản thử nghiệm đang chờ giấy phép trang tin tổng hợp.</B>
+                <br/>                
+                <img src="/Images/l2.jpg">&nbsp;Liên tục cập nhật đánh giá và xếp hạng tin tức theo nội dung và tính thời sự
+                <br/>                
+                <img src="/Images/l2.jpg">&nbsp;Bình luận trực tuyến theo các chủ đề.
+                <br />
+                <a href="https://play.google.com/store/apps/details?id=com.thatvn.diemtinvietnam" class="ui-link">
+				<img alt="Get it on Google Play" src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png">
+			    </a> 
+                <div class="fb-like" data-href="@youknow.Config.domain" data-layout="standard" data-action="like" data-show-faces="true" data-share="true" data-width="100"></div>                             
+                <br/>                
+                <B>Nhóm <a href="http://www.that.vn" target="_blank" style="text-decoration:none;">That.Vn</a> - Email: Diemtinvietnam@gmail.com</B>
+            </div>
+        </footer>     
+        @RenderSection("scripts", required: false)        
+    </body>
+</html>

@@ -1,0 +1,190 @@
+﻿@model youknow.Views.ModelClassViewTrendsManager
+@{
+    ViewBag.Title = "Xu hướng đọc trong ngày";
+    ViewBag.Url = "Home/mTrends";
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+    int preNo = 0;
+    int currentNo = 0;
+    int? groupDay = 0;
+    string title = "";
+    string preTitle = "";
+    int preId = -1;
+    string preRelated = "";
+    int lastID = 0;
+    string styleRelated = "display:block;";
+    int count = 0;
+    int itemCount = 0;
+}
+
+
+<script src="~/Scripts/jquery.cookie.js"></script>
+<script  src="/Scripts/core.js" type="text/javascript"></script>
+<script src="/Scripts/OpenLayers.js" type="text/javascript"></script>  
+<div class="backTopPage" id="backTopPage" style="display:none"><a href="#"><img src="/Images/toppage.png" title="Về đầu trang" height="48px" width="48px"></a></div>
+            	         
+<!--Start Main-->
+	<div data-role="main" class="ui-content">
+		<!--start tip-->
+		<div class="tip-text">
+			<ul>
+				<li class="not-active"><a href="#">Điểm tin Việt Nam</a> > </li>
+				<li class="active"><span>Xu hướng đọc</span></li>
+			</ul>
+		</div>
+		<!--end tip-->
+		<!--start list-->
+		<div class="list-item">  
+    @foreach (youknow.Views.viewTrendsManager item in Model.ieViewTrends)
+    {
+        if (item == null) { break; }
+        if (item.title != null && item.title != "")
+        { title = item.title; }
+        else
+        { title = item.keyword; }
+        
+        count++;
+        
+        //if (groupDay != item.datetimeid)
+        //{
+           //<text><div class="bgheader4"><div class="trend2">Ngày @youknow.Uti.getVnDate(@item.datetimeid.ToString())</div></div></text>
+            //groupDay = @item.datetimeid;
+        //}
+        if (preTitle == title || preTitle == ""){
+            itemCount++;
+            if (item.hasContent==1)
+            {
+                preRelated += "<div class=\"item\" id=item_" + currentNo + "_" + itemCount + " style=\"display:none;background:#FFFFCC;\">";
+                preRelated += "<div class=\"avatar\">";
+                if (youknow.Uti.isImage(item.image))
+                {
+                    preRelated += "<img src=\"" + item.image + "\" style=\"width: 40px; height: 40px; border-radius: 5px;\"/>";
+                }
+                else {
+                    preRelated += "<img src=\"" + youknow.Uti.getDomainImage(@item.maindomain) + "\" style=\"width: 40px; height: 40px; border-radius: 5px;\"/>";
+                }
+                preRelated += "</div>";
+                preRelated += "<div class=\"list-deltail\">";
+                preRelated += "<div class=\"deltail\">";
+                preRelated += "<a class=\"listing-title\" href=\"/comment/mReadNews/" + item.id + "\" target=\"_blank\">" + System.Web.HttpUtility.HtmlDecode(item.name) + " <h2>" + item.maindomain + "</h2></a>";
+                preRelated += "</div>";
+                preRelated += "</div>";
+                preRelated += "<div class=\"clear\"></div>";
+                preRelated += "</div>";
+            }
+            else {
+                preRelated += "<div class=\"item\" id=item_" + currentNo + "_" + itemCount + " style=\"display:none;background:#FFFFCC;\">";
+                preRelated += "<div class=\"avatar\">";
+                if (youknow.Uti.isImage(item.image))
+                {
+                    preRelated += "<img src=\"" + item.image + "\" style=\"width: 40px; height: 40px; border-radius: 5px;\"/>";
+                }
+                else
+                {
+                    preRelated += "<img src=\"" + youknow.Uti.getDomainImage(@item.maindomain) + "\" style=\"width: 40px; height: 40px; border-radius: 5px;\"/>";
+                }
+                preRelated += "</div>";
+                preRelated += "<div class=\"list-deltail\">";
+                preRelated += "<div class=\"deltail\">";
+                preRelated += "<a class=\"listing-title\" href=\"" + item.link + "\" target=\"_blank\">" + System.Web.HttpUtility.HtmlDecode(item.name) + " <h2>" + item.maindomain + "</h2></a>";
+                preRelated += "</div>";
+                preRelated += "</div>";
+                preRelated += "<div class=\"clear\"></div>";
+                preRelated += "</div>";
+            }
+            //if (count != 5) { preRelated += "<div class=spaceNews>&nbsp;</div>"; }
+        }
+        if (preTitle != title)
+        {
+            //if (count > 5) { preRelated += "<div id=viewMoreTopicId_" + currentNo + " style=\\\"float:right;\\\"><span class=\\\"sameTopicTitleFont\\\"><a onclick=\\\"viewMoreTopic(" + currentNo + "," + count + ");\\\" style=\\\"cursor:pointer;color:#d51d01\\\">Xem tiếp&nbsp<img src=\\\"/Images/down2.png\\\"></a></span></div>"; }
+            //styleRelated = "display:block;";
+            itemCount = 1;
+            preNo = currentNo;
+            currentNo = currentNo + 1;
+             <text>
+                    @Html.Raw(@preRelated)
+                    <div class="item" id=item_@currentNo>
+				        <div class="avatar">
+                            @if (youknow.Uti.isImage(item.image))
+                            {
+					            <img src="@item.image" style="width: 80px; height: 80px; border-radius: 5px;" />
+                            }else{
+                                <img src="@youknow.Uti.getDomainImage(@item.maindomain)" style="width: 80px; height: 80px; border-radius: 5px;" />
+                            }
+					        <div class="icontool">
+						        <div class="deltail" style="text-align:center"><h1>@currentNo</h1></div>						
+					        </div>
+				        </div>
+				        <div class="list-deltail">					
+					        <div class="deltail" style="padding-left:35px;">
+						        <a onclick="showRelated(@currentNo);" style="cursor:pointer;"><h2>@title</h2><img src="/Images/Next.png" height="30px" width="30px" style="float:right" alt="Xem các tin liên quan"></a>						
+					        </div>									
+				        </div>
+				        <div class="clear"></div>
+			        </div>
+            </text>
+            preRelated = "<div class=\"item\" id=item_" + currentNo + "_1 style=\"display:none;background:#FFFFCC;\">";
+            preRelated += "<div class=\"avatar\">";
+            if (item.image != "" && (item.image.ToLower().IndexOf(".jpg") > 0 || item.image.ToLower().IndexOf(".bmp") > 0 || item.image.ToLower().IndexOf(".png") > 0))
+            {
+                preRelated += "<img src=\"" + item.image + "\" style=\"width: 40px; height: 40px; border-radius: 5px;\"/>";
+            }
+            else
+            {
+                preRelated += "<img src=\"" + youknow.Uti.getDomainImage(@item.maindomain) + "\" style=\"width: 40px; height: 40px; border-radius: 5px;\"/>";
+            }
+            preRelated += "</div>";
+            preRelated += "<div class=\"list-deltail\">";
+            preRelated += "<div class=\"deltail\">";
+            preRelated += "<a class=\"listing-title\" href=\"" + item.link + "\" target=\"_blank\">" + item.name + " <h2>" + item.maindomain + "</h2></a>";
+            preRelated += "</div>";
+            preRelated += "</div>";
+            preRelated += "<div class=\"clear\"></div>";
+            preRelated += "</div>";
+            preTitle = title;
+        }
+    }
+     @Html.Raw(@preRelated)
+ </div>
+		<!--end list-->
+</div>
+<!--End Main-->
+<script>
+    isLogged = '@ViewBag.userToken';
+    currentUserToken = '@ViewBag.userToken';
+    currentUserName = '@Html.Raw(@ViewBag.userName)';
+    //alert(currentUserName);
+    var percentLoading = 1;
+    var stepLoading = 7;
+    var myVar = null;
+    //isCheckNewestNew = 1;
+    isMobileDevice = true;
+    currentMenu = 4;
+    function showRelated(id) {
+        var type = 0;
+        for (var i = 1; i < 20; i++) {
+            if (document.getElementById("item_" + id + "_" + i)) {
+                if (document.getElementById("item_" + id + "_" + i).style.display == "none") {
+                    document.getElementById("item_" + id + "_" + i).style.display = "block";
+                    type = 1;
+                } else {
+                    document.getElementById("item_" + id + "_" + i).style.display = "none";
+                    type = 0;
+                }
+            }
+        }
+        //if (type == 1) {
+        //    document.getElementById("imageRelated_" + id).src = "/Content/mobile/css/images/expand_max.png";
+        //} else {
+        //    document.getElementById("imageRelated_" + id).src = "/Content/mobile/css/images/expand_min.png";
+        //}
+    }
+
+    //Hiển thị nextpage nếu thanh cuộn hết trang
+    $(window).scroll(function () {
+        if ($(window).scrollTop() + $(window).height() >= 400) {
+            $("#backTopPage").show();
+            //showNextPage();
+        }
+    });
+    
+</script>

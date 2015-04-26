@@ -1,0 +1,130 @@
+﻿@model youknow.Models.zadv
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+<h2>Create</h2>
+<script src="/Scripts/jquery-2.1.1.js"></script>
+<script src="/Scripts/jquery-ui-1.8.24.js"></script>
+<form id="form1" runat="server">
+        
+        <input type="file" ID="FileUpload" runat="server" multiple="multiple" />
+        <br />
+        <br />
+        <input type="button" ID="Button1" runat="server" value="Upload" onclick="uploadProcess();"/>
+        <br />
+        <br />
+        <div id="progressbar" class="progressbar" style="background-color:#0094ff;width:100%;">
+            <div id="progresslabel" class="progressbarlabel" style="background-color:#f00;width:1%;"></div>
+        </div>
+        <div class="editor-label">
+            Tên quảng cáo
+        </div>
+        <div class="editor-field">
+            <input type="text" value="" id="title" name="title">
+        </div>
+       <div class="editor-label">
+            Mô tả
+        </div>
+        <div class="editor-field">
+            <input type="text" value="" id="des" name="des">
+        </div>
+        <div class="editor-label">
+            link
+        </div>
+        <div class="editor-field">
+            <input type="text" value="" id="link" name="link">
+        </div>
+        <div class="editor-label">
+            Kích cỡ
+        </div>
+        <div class="editor-field">
+            <select id="size" name="size">
+
+            </select>
+        </div>
+        <div class="editor-label">
+            Chuyên mục
+        </div>
+        <div class="editor-field">
+            <input type="text" value="" id="cat" name="cat">
+        </div>
+         <div class="editor-label">
+            Cập nhật
+        </div>
+        <div class="editor-field">
+            <input type="button" value="Cập nhật" onclick="updateAdv();">
+        </div>
+        <div id="divImgGallery"></div>
+    </form>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+<script>
+    var long;
+    var lat;
+    var i = 0;
+    var currentID = 0;
+    //Submit
+    function updateAdv() {
+        var formdata = new FormData(); //FormData object
+        formdata.append("title", document.getElementById("title").value);
+        formdata.append("des", document.getElementById("des").value);
+        formdata.append("link", document.getElementById("link").value);
+        formdata.append("size", document.getElementById("size").value);
+        formdata.append("cat", document.getElementById("cat").value);
+    }
+    //Image upload
+    function uploadProcess() {
+        var formdata = new FormData(); //FormData object
+        var fileInput = document.getElementById('FileUpload');
+        //Iterating through each files selected in fileInput
+        for (i = 0; i < fileInput.files.length; i++) {
+            //Appending each file to FormData object
+            formdata.append(fileInput.files[i].name, fileInput.files[i]);
+        }
+        //Creating an XMLHttpRequest and sending
+        var xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener("progress", function (evt) {
+            if (evt.lengthComputable) {
+                var progress = Math.round(evt.loaded * 100 / evt.total);
+                $("#progressbar").progressbar("value", progress);
+            }
+        }, false);
+        xhr.open('POST', '/Adv/Upload');
+        xhr.send(formdata);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                //alert(xhr.responseText);
+                //$('#UploadTarget').html(xhr.responseText);
+                currentID = xhr.responseText;
+                //updateDivImgGallery(xhr.responseText);
+            }
+        }
+        //xhr.onprogress = function () {
+        //i = i + 1;
+        //document.getElementById('process').innerHTML = i+"/10000";
+        //document.getElementById('process').innerHTML = 'value' + e.loaded + "/" + e.total;
+        //}
+        return false;
+    }
+    function updateDivImgGallery(content) {
+        document.getElementById('divImgGallery').innerHTML += content;
+    }
+    $("#progressbar").progressbar({
+        max: 100,
+        change: function (evt, ui) {
+            $("#progresslabel").text($("#progressbar").progressbar("value") + "%");
+            $("#progresslabel").css({ "width": $("#progressbar").progressbar("value") });
+        },
+        complete: function (evt, ui) {
+            $("#progresslabel").text("File upload successful!");
+        }
+    });
+    evt.preventDefault();
+
+        </script>

@@ -1,0 +1,71 @@
+﻿@model IEnumerable<youknow.Models.zadv>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+    int count = 1;
+}
+<script src="/Scripts/jquery-2.1.1.js"></script>
+<script src="/Scripts/jquery-ui-1.8.24.js"></script>
+<script>
+    function showAd(url,count) {
+        var content="";
+        //alert(url);
+        if (url.indexOf("swf")>0){
+            content='<object data="'+url+'" type="application/x-shockwave-flash" width="200" height="300" id="SWF">';
+            content+='<param name="movie" value="file.swf">';   
+            content+='<p>You need Adobe Flash Player to view this content</p>';
+            content+='</object>';
+        }else{
+            content="<img src="+url+"  width=\"200\" height=\"300\">";
+        }
+        $("#td_"+count).html(content);
+
+    }
+</script>
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            Tên
+        </th>
+        <th>
+            Mô tả
+        </th>
+        <th>
+            Ảnh
+        </th>       
+        <th>
+            @Html.DisplayNameFor(model => model.link)
+        </th>
+       
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    count++;
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.des)
+        </td>
+        <td id="td_@count">
+            <script>showAd('@item.filepath',@count);</script>
+        </td>       
+        <td>
+            @Html.DisplayFor(modelItem => item.link)
+        </td>        
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |            
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>

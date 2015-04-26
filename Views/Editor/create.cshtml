@@ -1,0 +1,113 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea',
+        entity_encoding: "raw",
+        plugins: ["code"],
+        height: 500,
+    });
+</script>
+<style>
+    body {
+        font-size: 14px;
+    }
+
+    input {
+        margin-left: 5px;
+    }
+
+        input#submit {
+            width : 500px;
+            height : 50px;
+        }
+    
+</style>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+
+<body>
+    <h2>Tin1.Vn Editor Content</h2>
+    <div>
+        <label>Title</label><input type="text" name="title" id="title" maxlength="250" size="100"/><br />
+        <label>Link nguồn(Tham khảo)</label><input type="text" name="link" id="link" maxlength="250" size="100"/><br />
+        <label>Trích đoạn</label><input type="text" name="des" id="des" maxlength="550" style="height:100px;width:600px;" /><br />
+        <label>Ảnh</label><input type="text" name="image" id="image" maxlength="150" /><br />
+        <label>Chuyên mục</label>
+        <select name="catid" id="catid">
+            <option value="-1">Chọn chuyên mục</option>
+            <option value="1">Xã hội</option>
+            <option value="2">Thế giới</option>
+            <option value="3">Kinh tế</option>
+            <option value="4">Giáo dục</option>
+            <option value="5">Văn hóa</option>
+            <option value="6">Giới trẻ</option>
+            <option value="7">Độc - Lạ</option>
+            <option value="8">Game</option>
+            <option value="9">Công nghệ</option>
+            <option value="10">Thể thao</option>
+            <option value="11">Video</option>
+        </select>
+        <br />
+        <label>Thể loại tin</label>
+        <select name="groupid" id="groupid">
+            <option value="1" selected>Tin chính thống</option>
+            <option value="2">Tin giật gân</option>            
+        </select>
+        <br />
+        <label>Vị trí trên trang chủ</label>
+        <select name="moduleid" id="moduleid">
+            <option value="1" selected>Thuộc các chuyên mục</option>
+                    <option value="2">Ảnh to nhất</option>  
+                    <option value="3">Bên cạnh ảnh to</option>             
+        </select>
+        <br />
+        <label>Nội dung đầy đủ</label><textarea name="fullcontent" id="fullcontent"></textarea><br/>        
+        <input type="button" name="submit" id="submit" value="gửi" />        
+
+    </div>
+
+    <div id="status"></div>
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        console.log("ready!");
+        $("#submit").click(function () {
+            console.log("click!");
+            $.ajax({
+                type: "POST",
+                url: "/editor/post",
+                data: {
+                    title: $("#title").val(),
+                    link: $("#link").val(),
+                    des: $("#des").val(),
+                    image: $("#image").val(),
+                    fullcontent: tinymce.get('fullcontent').getContent(),
+                    catid: $("#catid").val(),
+                    groupid: $("#groupid").val(),                   
+                    moduleid: $("#moduleid").val(),
+                },
+                success: function (resp) {
+                    if (resp == "0" ) {
+                        $("#status").append("lỗi");
+                        
+                    }
+                    else {
+                        window.location = "/Editor/Index";
+                        //$("#status").append('Ok => <a href="/editor/view/'+resp+'" target="_blank" >Xem thử </a>');
+                    }
+                }
+            })
+        })
+    });
+</script>

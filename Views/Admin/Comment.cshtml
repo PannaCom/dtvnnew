@@ -1,0 +1,206 @@
+﻿@{
+    ViewBag.Title = "Comment";
+    Layout = "~/Views/Shared/adminLayout.cshtml";
+}
+
+<script>
+    //submit comment
+    function submitComment() {
+        var contentComment = $('.txtEdit').val();
+        var idComment = $('.txtID').val();
+        $.ajax({
+            type: "POST",
+            url: "/Admin/editComment",
+            data: { idComment: idComment, contentComment: contentComment },
+            success: function () {
+                $.fancybox.close();
+                $('.content-' + idComment).html(contentComment);
+            },
+            error: function () {
+                alert('Không thể kết nối tới máy chủ');
+            }
+        });
+    }
+
+    //function edit Comment
+    function editComment(id,content) {
+        var html = '<textarea class="txtEdit" row="100" cols="250">' + content + '</textarea>';
+
+        $.fancybox.open({
+            content: '<input class="txtID" type="hidden" value="' + id + '"/><textarea class="txtEdit" style="width: 480px; height: 200px;">' + content + '</textarea><center><button href="javascript:void(0);" onclick="submitComment();"  class="btn btn-green">Xong</button></center>',
+            autoSize: false,
+            width: "500px",
+            height: "250px",
+            'closeBtn': false
+        });
+    }
+
+    //function delete Comment
+    function deleteComment(id,user_name) {
+        bootbox.confirm("Thím thực sự muốn xóa comment của \"<strong>" + user_name + "</strong>\" chứ?", "Không", "Có", function (r) {
+
+            if (r) {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/deleteComment",
+                    data: { id: id },
+                    success: function () {
+                        $('.comment-' + id).animate({ opacity: '0' }, 500, function () { $('.comment-' + id).remove(); });
+                        bootbox.hideAll();
+                    },
+                    error: function () {
+                        alert('mat ket noi toi may chu?');
+                    }
+                });
+            }
+
+            if (r) $.pageguide(guide, {
+                events: {
+                    close: function () {
+                        $.pageguide('unload');
+                    }
+                }
+            }).open();
+        });
+    }
+
+    //function get list comment
+    function getListComment(keyword, typeSearch) {
+        $.ajax({
+            type: "GET",
+            url: "/Admin/getComment",
+            data: { keyword: keyword, typeSearch: typeSearch },
+            success: function (resp) {
+                var jsonData = '{"jsonData":' + resp + '}';
+                var json_parse = $.parseJSON(jsonData);
+                var html = '';
+
+                for (var i = 0; i < json_parse.jsonData.length; i++) {
+                    if (json_parse.jsonData[i]) {
+                        n = json_parse.jsonData[i];
+
+                        html += '<tr class="comment-' + n.id + '">';
+                        html += '<td>' + n.id + '</td>' +
+                                '<td class="fullname-' + n.id + '">' + n.fullName + '</td>' +
+                                '<td class="newtitle-' + n.id + '">' + n.name + '</td>' +
+                                '<td class="content-' + n.id + '">' + n.contents + '</td>';
+                        html += '<td class="xoasua-' + n.id + '"><center><a class="green" href="javascript:void(0);" onclick="editComment(' + n.id + ',\'' + n.contents + '\');" ><i class="icon-pencil"></i></a> / <a href="javascript:void(0)" onclick="deleteComment(' + n.id + ',\'' + n.fullName + '\')" ><i class="glyphicon glyphicon-remove_2"></i></a></center></td>' +
+                                '</tr>';
+                    }
+                }
+
+                $('.listComment').html(html);
+            },
+            error: function () {
+                alert('fail');
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        getListComment();
+
+        $(".txtTimkiem").on("click", function () {
+
+            var keyword = $("#txtSearch").val();
+            var typeSearch = $("#cboTypeSearch").val();
+
+            getListComment(keyword, typeSearch);
+        });
+
+        $("#txtSearch").change(function () {
+            var keyword = $("#txtSearch").val();
+            var typeSearch = $("#cboTypeSearch").val();
+            getListComment(keyword, typeSearch);
+        })
+    });
+
+</script>
+<style>
+    .filterForm {
+        width: 300px;
+        display: inline;
+        position: relative;
+    }
+
+        .filterForm ul {
+            list-style: none;
+            display: inline;
+        }
+
+            .filterForm ul li {
+                float:left;
+            }
+            .filterForm ul li.left {
+                padding-left: 8px;
+            }
+</style>
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="pull-left">
+		    <h1>Danh Sách Comment</h1>    
+		</div>
+        <div class="pull-right">
+		    <ul class="minitiles">
+				<li class='grey'>
+					<a href="#"><i class="icon-cogs"></i></a>
+				</li>
+				<li class='lightgrey'>
+					<a href="#"><i class="icon-globe"></i></a>
+				</li>
+			</ul>
+			<ul class="stats">
+				<li class='lightred'>
+					<i class="icon-calendar green"></i>
+						<div class="details">
+							<span class="big">February 22, 2013</span>
+							<span>Wednesday, 13:56</span>
+						</div>
+				</li>
+			</ul>   
+		</div>
+    </div>
+    <div class="row-fluid">
+						<div class="span12">
+							<div class="box box-color box-bordered green" style="width:100%; position:relative;">
+								<div class="box-title">
+									<h3>
+										<i class="icon-table"></i>
+										Top 100 Comment mới nhất
+									</h3>
+								</div>
+						    <div class="box-content padding">
+                            <div class="filterForm">
+                                <ul>
+                                    <li><input id="txtSearch" type="search" placeholder="Nhập để tìm kiếm..."/></li>
+                                    <li class="left">
+                                        <select id="cboTypeSearch">
+                                            <option value="1" selected>-Tìm kiếm theo-</option>
+                                            <option value="1">Tên User</option>
+                                            <option value="2">Nội Dung Comment</option>
+                                            <option value="3">Theo Tên Bài Viết</option>
+                                        </select>
+                                    </li>
+                                    <li class="left"><button class="txtTimkiem btn btn-green">Tìm Kiếm</button></li>
+                                </ul>
+                            </div>
+							<table class="table table-hover table-nomargin table-bordered">
+								    <thead>
+									    <tr>
+										    <th style="width: 5%;" >#ID</th>
+                                            <th style="width: 10%">Tên</th>
+										    <th style="width: 30%;">Bài Viết</th>
+										    <th style="width: 50%;">Nội Dung</th>
+										    <th style="width: 5%;">Sửa/Xóa</th>
+									    </tr>
+								    </thead>
+							    <tbody class="listComment">
+
+						        </tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>				
+</div>

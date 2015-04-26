@@ -1,0 +1,61 @@
+﻿	 <div class="bgheader4">
+                    <div class="Diem">
+                        <div class="Diem1">
+                            <div class="Diem11"><span class="DiemFont">250</span></div>
+                            <div class="Diem12"><span class="DiemFont2">điểm</span></div>
+                        </div>
+                        <div class="Diem2">
+                            <div class="Diem21"><img src="/Images/up1.png"></div>
+                            <div class="Diem22"><span class="DiemFontDetail">-3</span></div>
+                        </div>
+                    </div>
+                    <div class="Anh">
+                        <img src="http://www.thanhnien.com.vn/Pictures201401/Hutieugo/VN8.JPG" width="130" height="100"/>
+                    </div>
+                    <div class="Tin">
+                        <div class="title"><span class="titleFont">U19 Việt Nam tự tin dự giải U19 quốc tế quốc tế quốc tế quốc tế</span></div>
+                        <div class="inforTin"><span class="inforTinFont1">Cập nhật 5 giờ trước</span>&nbsp;<img src="/images/sp.jpg">&nbsp;<span class="inforTinFont2">vnexpress</span></div>
+                        <div class="des"><span class="desFont">Hàng triệu người hâm mộ bóng đá cả nước đang vô cùng háo hức chờ đợi những màn trình diễn ấn tượng của U.19 Việt Nam trong giải giao hữu quốc tế Nutifood. Thanh Niên Online sẽ theo chân U.19 Việt Nam suốt ngày 5.1 để gửi đến bạn đọc những hình ảnh cận cảnh nhất về các cầu thủ trẻ.</span></div>
+                        <div class="sharechat"><span class="shareFont">&nbsp;<img src="/Images/l.jpg"/>&nbsp;Trò chuyện</span><span class="shareFont">&nbsp;<img src="/Images/l.jpg"/>&nbsp;Chia sẻ</span></div>
+                        <div class="sametopic">
+                            <div><span class="sameTopicTitleFont">Tin cùng chủ đề</span></div>
+                            <div><span class="sameTopicTitleFont2"><img src="/Images/l2.jpg"/>&nbsp;Tin cùng chủ đề Tin cùng chủ đề Tin cùng chủ đề </span><span class="sameTopicTitleFont3">&nbsp;<img src="/Images/sp2.jpg"/>&nbsp;vnexpress.net</span></div>
+                            <div><span class="sameTopicTitleFont2"><img src="/Images/l2.jpg"/>&nbsp;Tin cùng chủ đề Tin cùng chủ đề Tin cùng chủ đề </span><span class="sameTopicTitleFont3">&nbsp;<img src="/Images/sp2.jpg"/>&nbsp;vnexpress.net</span></div>
+                            <div><span class="sameTopicTitleFont2"><img src="/Images/l2.jpg"/>&nbsp;Tin cùng chủ đề Tin cùng chủ đề Tin cùng chủ đề </span><span class="sameTopicTitleFont3">&nbsp;<img src="/Images/sp2.jpg"/>&nbsp;vnexpress.net</span></div>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="spaceNews">
+                        &nbsp;
+                </div>            
+                <div class="bgheader4">
+                    <div class="Diem">
+                        <div class="Diem1">
+                            <div class="Diem11"><span class="DiemFont">250</span></div>
+                            <div class="Diem12"><span class="DiemFont2">điểm</span></div>
+                        </div>
+                        <div class="Diem2">
+                            <div class="Diem21"><img src="/Images/up1.png"></div>
+                            <div class="Diem22"><span class="DiemFontDetail">-3</span></div>
+                        </div>
+                    </div>
+                    <div class="Anh">
+                        <img src="http://www.thanhnien.com.vn/Pictures201401/Hutieugo/VN8.JPG" width="130" height="100"/>
+                    </div>
+                    <div class="Tin">
+                        <div class="title"><span class="titleFont">U19 Việt Nam tự tin dự giải U19 quốc tế quốc tế quốc tế quốc tế</span></div>
+                        <div class="inforTin"><span class="inforTinFont1">Cập nhật 5 giờ trước</span>&nbsp;<img src="/images/sp.jpg">&nbsp;<span class="inforTinFont2">vnexpress</span></div>
+                        <div class="des"><span class="desFont">Hàng triệu người hâm mộ bóng đá cả nước đang vô cùng háo hức chờ đợi những màn trình diễn ấn tượng của U.19 Việt Nam trong giải giao hữu quốc tế Nutifood. Thanh Niên Online sẽ theo chân U.19 Việt Nam suốt ngày 5.1 để gửi đến bạn đọc những hình ảnh cận cảnh nhất về các cầu thủ trẻ.</span></div>
+                        <div class="sharechat"><span class="shareFont">&nbsp;<img src="/Images/l.jpg"/>&nbsp;Trò chuyện</span><span class="shareFont">&nbsp;<img src="/Images/l.jpg"/>&nbsp;Chia sẻ</span></div>
+                        <div class="sametopic">
+                            <div><span class="sameTopicTitleFont">Tin cùng chủ đề</span></div>
+                            <div><span class="sameTopicTitleFont2"><img src="/Images/l2.jpg"/>&nbsp;Tin cùng chủ đề Tin cùng chủ đề Tin cùng chủ đề </span><span class="sameTopicTitleFont3">&nbsp;<img src="/Images/sp2.jpg"/>&nbsp;vnexpress.net</span></div>
+                            <div><span class="sameTopicTitleFont2"><img src="/Images/l2.jpg"/>&nbsp;Tin cùng chủ đề Tin cùng chủ đề Tin cùng chủ đề </span><span class="sameTopicTitleFont3">&nbsp;<img src="/Images/sp2.jpg"/>&nbsp;vnexpress.net</span></div>
+                            <div><span class="sameTopicTitleFont2"><img src="/Images/l2.jpg"/>&nbsp;Tin cùng chủ đề Tin cùng chủ đề Tin cùng chủ đề </span><span class="sameTopicTitleFont3">&nbsp;<img src="/Images/sp2.jpg"/>&nbsp;vnexpress.net</span></div>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="xemtiep">
+                    <span class="xemtiepFont">Xem tiếp&nbsp;<img src="/Images/xemtiep.jpg"></span>
+                </div>
+            </div> 

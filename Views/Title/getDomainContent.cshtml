@@ -1,0 +1,17 @@
+﻿@{  
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+    ViewBag.title = "@ViewBag.url";
+}
+<div id="content" class="ifrMobileContent" >
+    @Html.Raw(@Server.HtmlDecode(@ViewBag.fullContent))
+</div>
+<div style="height:200px;">
+    <br /><b>Nguồn:<a href="@ViewBag.url" target="_blank">@ViewBag.url</a></b><br/>    
+</div>
+<div style="height:200px;">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+</div>
+
+
+

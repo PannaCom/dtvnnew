@@ -1,0 +1,36 @@
+﻿@model youknow.Models.userFilter
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>userFilter</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.userId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.userId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.domain)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.domain)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.catid)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.catid)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

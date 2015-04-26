@@ -1,0 +1,73 @@
+﻿
+         <div class=dvshowDetailNews id=dvshowDetailNews >
+			    <div class=dvloading id=dvloading>
+				    <div class=dvloadingDetail id=dvloadingDetail></div>
+			    </div>			    
+                <div id="dvsourceUrl" class="dvsourceUrl"></div>
+                <div style="margin:20px auto 10px auto;width:90%;height:90%">
+                    <div class="dvShareNews" style="display:block;">
+                        <div>
+                            <img src="/Images/fb.png" style="cursor:pointer;" onclick="shareNewsFT(1);">
+                        </div>
+                        <div>
+                            <img src="/Images/tw.png" style="cursor:pointer;" onclick="shareNewsFT(2);">
+                        </div>
+                        <div style="display:none;">
+                            <img src="/Images/chat.png" style="cursor:pointer;" onclick="showChatArea();">
+                        </div>
+                    </div>
+                    <div class="dvPreNews"><img src="/Images/Previous.png" style="cursor:pointer;" onclick="showNextPreNewsItem(0);"></div>
+                    <div class="dvDetailNews" id="dvDetailNews">
+			            <div class=ifrDetailNews id=ifrDetailNews></div>
+                    </div>
+                    <div class="dvNewsCommentList" id="dvNewsCommentList" style="display:none;">
+                        <div><img src="/Images/exit.png" style="float:right;cursor:pointer;" onclick="hideDetailNews();"></div>
+                        <div id="viewPreviousComment" class="viewPreviousCommentHP" style="display:none;"><span class="userchatHP" id="totalComment">Loading..</span><a href="#" onclick="getNewsCommentHP(currentIdNews);" style="cursor:pointer;float:right"><img src="/Images/xblt.jpg" border="0"></a></div>
+                        <div id=dvComment class="dvCommentAllHP">
+                        
+                        </div>
+                        <div class="formbinhluanHP" style="display:none;">
+                            <input type="text" onKeydown="checkSubmitHP(event);" style="margin-left:5px;"  class="txtCommentHP" value="" id="cmtContent" placeholder="Nhập nội dung">
+                            <br />
+                            <input type="button" class="btnComment" style="margin-left:5px;" value="Gửi bình luận" onclick="updateCommentHP();">
+                            <span class="userNameReplySpan" id="userNameReplySpan"></span>
+                            <span class="sendingStatus" id="sendingStatus"></span>
+                            <input type="checkbox" id="checkScrollbar" checked>Tự động cập nhật bình luận mới.
+                        </div>
+                        <div class="formbinhluanHP" style="display:none;"></div>
+                        <input type="hidden" id="idReply" value="">
+                        <input type="hidden" id="userTokenReply" value="">
+                        <input type="hidden" id="userNameReply" value="">
+                    </div>
+                    <div class="dvNextNews"><img src="/Images/Next.png" style="cursor:pointer;" onclick="showNextPreNewsItem(1);"></div>
+                </div>
+		    </div>
+            <div class="dvFilterSource">
+                <img src="/Images/filter.png" border="0" style="cursor:pointer;width:64px;height:64px;" onclick="showFilterOption();">
+            </div>
+            <div class="dvFilterOption" id="dvFilterOption">
+                <div id="All" style="display:block;position:relative;">                        
+                        <select id="menuChooseNews" class="select" onchange="goToDomain(this);">
+                                <option value="-100">Chọn báo bạn yêu thích</option>
+                                <option value="-1">Tất cả</option>
+                                <option value="0">Báo Vnexpress</option>
+                                <option value="1">Báo Dân trí</option>
+                                <option value="2">Báo Zing</option>
+                                <option value="3">Báo 24h</option>
+                                <option value="4">Báo Kênh 14</option>
+                                <option value="5">Báo Đời sống Pháp luật</option>
+                                <option value="6">Báo Thể thao 24/7</option>
+                                <option value="7">Báo NgôiSao.Net</option>
+                                <option value="8">Báo VietNamNet</option>
+                                <option value="9">Báo Lao động</option>
+                                <option value="10">Báo Afamily</option>
+                                <option value="11">Báo Tuổi trẻ</option>
+                                <option value="12">Báo Thanh niên</option>
+                        </select>
+                </div>
+            </div>
+            <div class="dvNewestNewsHomePageContentAll" id="dvNewestNewsHomePageContentAll" >
+                <div style="background-image: url('/Images/bg_topnews.gif');height: 35px;color: #5e5e5e;text-align:center">Mới Nhất</div>
+                <div id="dvNewestNewsHomePageContent" style="overflow:hidden;">                    
+                </div>
+            </div>

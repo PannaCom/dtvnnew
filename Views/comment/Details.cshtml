@@ -1,0 +1,50 @@
+﻿@model youknow.Models.comment
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>comment</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.usertoken)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.usertoken)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.linktoken)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.linktoken)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.link)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.link)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.contents)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.contents)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.datetime)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.datetime)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

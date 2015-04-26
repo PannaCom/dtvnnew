@@ -1,0 +1,25 @@
+﻿@model youknow.Models.title
+@{  
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+    ViewBag.title = Model.name;
+}
+<div id="content" class="ifrMobileContent">
+    @Html.Raw(@Server.HtmlDecode(@Model.fullcontent))
+</div>
+<div style="height:200px;">
+    <br /><b>Nguồn:<a href="@Model.link">@Model.maindomain</a></b><br/>    
+</div>
+<div style="height:200px;">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+</div>
+<script src="~/Scripts/jquery-2.1.1.js"></script>
+<script>
+    //var widthImage = $(window).width() * 60 / 100;
+    //$("img").css("width", widthImage);
+    $("img").css("height", "auto");
+    $("img").css("maxWidth", "95%");
+    
+</script>
+
+

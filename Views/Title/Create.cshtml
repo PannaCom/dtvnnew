@@ -1,0 +1,132 @@
+﻿@model youknow.Models.title
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>title</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.name)
+            @Html.ValidationMessageFor(model => model.name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.des)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.des)
+            @Html.ValidationMessageFor(model => model.des)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.link)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.link)
+            @Html.ValidationMessageFor(model => model.link)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.image)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.image)
+            @Html.ValidationMessageFor(model => model.image)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.catid)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.catid)
+            @Html.ValidationMessageFor(model => model.catid)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.datetime)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.datetime)
+            @Html.ValidationMessageFor(model => model.datetime)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.tokenid)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.tokenid)
+            @Html.ValidationMessageFor(model => model.tokenid)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.domain)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.domain)
+            @Html.ValidationMessageFor(model => model.domain)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.source)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.source)
+            @Html.ValidationMessageFor(model => model.source)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ranking)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ranking)
+            @Html.ValidationMessageFor(model => model.ranking)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.keyword)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.keyword)
+            @Html.ValidationMessageFor(model => model.keyword)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.datetimeid)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.datetimeid)
+            @Html.ValidationMessageFor(model => model.datetimeid)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.maindomain)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.maindomain)
+            @Html.ValidationMessageFor(model => model.maindomain)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

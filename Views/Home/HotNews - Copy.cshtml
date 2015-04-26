@@ -1,0 +1,194 @@
+﻿@model youknow.Views.ModelClassViewNewsManager
+@{
+    //ViewBag.Title = Html.Raw(ViewBag.Title);
+    ViewBag.Title = "Tin nóng";
+    ViewBag.Url = "/tin-nong";
+    //ViewBag.des = "Tin nóng thời sự, giải trí văn hóa xã hội thể thao trong ngày từ các báo vnexpress,zing,vietnamnet, lao động, thanh niên...";    
+    //ViewBag.keyword = "đọc báo, tin nóng, tin tức, thời sự, giải trí, văn hóa, xã hội, kinh tế, thế giới, pháp luật, văn hóa, thể thao, sức khỏe,công nghệ, ô tô, xe máy, vnexpress.net,zing.vn,vietnamnet.vn,laodong.com.vn,thanhnien.com.vn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    int currentNo = 0;
+    int noNewsItem = -1;
+  
+    string title = "";
+    string titleNoMark = "";
+    string strCare = "Quan tâm";
+    int catid = 0;
+    string catname = "";
+    int i = 0;
+    int preID = -1;// Model.ieViewNews.ElementAt(0).id;
+    int lastID = preID;
+    int totalPoint = 0;
+    string filterHaveRead = "";
+    string style = "";
+    string urllink="";
+   
+    if (ViewBag.haveRead != null)
+    {
+        filterHaveRead = ViewBag.haveRead;
+    }
+    
+    
+    
+}
+
+<script src="~/Scripts/jquery-2.1.1.js"></script>   
+<script src="~/Scripts/jquery.cookie.js"></script> 
+<script  src="/Scripts/core.js" type="text/javascript"></script> 
+<script src="/Scripts/OpenLayers.js" type="text/javascript"></script>
+
+<div id="content">
+    <div class="container">   
+        <div class="col-md-5 padding-l-0" id="left-col"> 
+            @Html.Raw(@ViewBag.bigHotNew1)
+            <div class="clear-fix"></div>
+            <div class="list-post">
+                @foreach (youknow.Views.viewNewsManager item in Model.ieViewNews)                
+                {
+                    if (preID!=item.id){
+                        if(ViewBag.duplicateIdHotNews.Contains("," + item.id + ",")){
+                            continue;
+                        }
+                        currentNo++;
+                        title = System.Web.HttpUtility.HtmlDecode(item.title);
+                        titleNoMark = youknow.Uti.unicodeToNoMark(title);
+                        urllink = youknow.Uti.unicodeToNoMark(title + " " + youknow.Uti.smDomainNew(item.maindomain) + " " + youknow.Uti.getCatNameFromId(item.catid)) + "-" + item.id;
+                        catname = youknow.Uti.getCatNameFromId(item.catid);
+                        totalPoint = (int)item.ranking;//(int)item.uplikes + 
+                        if (currentNo >= youknow.Config.PageSizeLoad) { style = "style=display:none;"; }
+                        if (totalPoint==-1)
+                        {
+                        <text>
+                            <div class="top-post-item" id="item_@currentNo" @style>
+                                <div class="post-item-img-box">
+                                    <a href="/@urllink" title="@title">
+                                        <img class="post-item-img" src="@item.image" alt="@title" />
+                                    </a>
+                                    <div class="vote-system" >
+                                        <span class="vote-like">
+                                            <div id=ranking_@item.id>@totalPoint điểm</div> 
+                                        </span>
+                                        <span class="vote-button" onclick='LikeNews(@item.id,1,@totalPoint);'>
+                                            +1<i class="fa fa-thumbs-up fa-1"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="post-item-info">
+                                    <a href="/@urllink" title="@title" class="link-post-item" >
+                                        <h3 class="post-item-title">@Html.Raw(@title)</h3>
+                                    </a>
+                                    <span class="meta-post">
+                                        <span class="time">@youknow.Uti.getDiffTimeFromNow(@item.date.ToString())</span> | <span class="source-news">@item.maindomain.Replace("http://", "").Replace("www.", "")</span>
+                                    </span>
+                                    <p class="post-item-description">@Html.Raw(@youknow.Uti.smoothDes(@item.des))</p>
+                                </div>
+                                <div class="clear-fix"></div>
+                            </div><!-- end .post-item -->
+                        </text>
+                        }else{
+                        <text>
+                            <div class="post-item" id="item_@currentNo" @style>
+                                <a href="/@urllink" title="@title" class="link-post-item">
+                                    <h3 class="post-item-title">@title</h3>
+                                </a>
+                                <div class="post-item-img-box">
+                                    <a href="/@urllink" title="@title">
+                                        <img class="post-item-img" src="@item.image" alt="@title"/>
+                                    </a>
+                                    <div class="vote-system" >
+                                        <span class="vote-button" onclick='LikeNews(@item.id,1,@totalPoint);'>
+                                            +@item.ranking<i class="fa fa-thumbs-up fa-1"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="post-item-info">
+                                    <span class="meta-post">
+                                        <span class="time">@youknow.Uti.getDiffTimeFromNow(@item.date.ToString())</span> | <a class="category-link" href="/@youknow.Uti.getCatNameFromIdNoMark(@item.catid)" title="@catname"><span class="category-name">@catname</span></a> | <span class="source-news">@item.maindomain.Replace("http://", "").Replace("www.", "")</span>
+                                    </span>
+                                    <p class="post-item-description">@Html.Raw(@youknow.Uti.smoothDes(@item.des))</p>
+                                </div>
+                                <div class="clear-fix"></div>
+                            </div><!-- end .post-item -->
+                        </text>
+                        }
+                        preID = item.id;
+                    }
+                }  
+            </div>
+            <button type="button" class="btn btn-primary" id="loadMore">Xem thêm</button>
+            <div class="clear-fix"></div>
+        </div>  
+        <div class="col-md-4 padding-0" id="mid-col">
+                @Html.Raw(@ViewBag.bigHotNew2)     
+                @for (int l = 1; l <= 13; l++) {
+                    if (!ViewBag.catItem[l].view.ToString().Equals("")) { 
+                        <text><div class="box-news">@Html.Raw(@ViewBag.catItem[l].view.ToString())</div></text>
+                    }
+                }
+              
+        </div>
+        <div class="col-md-3 padding-r-0" id="right-col">
+                <script>(function(w,d,o,u){a=d.createElement(o),m=d.getElementsByTagName(o)[0];a.async=1;a.src=u;m.parentNode.insertBefore(a,m);})(window,document,'script','https://adnetwork.adtop.vn/js/325e49/6b600d');</script>
+                <div id="at_ads_zone_325e49"></div>               
+                <a href="http://solution.com.vn/" title="Việt Nam Solution thiết kế thi công nội thất" target="_blank">
+                    <img src="http://diemtinvietnam.vn/Images/Adv/solution1.gif" alt="Việt Nam Solution thiết kế thi công nội thất" style="width:100%; margin-bottom:15px" />
+                </a>  
+                <div><script type="text/javascript" src="http://e.eclick.vn/delivery/zone/1958.js"></script></div>
+                <div><script type="text/javascript" src="http://paragonads.vn/www/delivery/pa_ad.js"></script> 
+                    <script type="text/javascript"> 
+                        PA_ShowAd(545); 
+                    </script>
+                </div>
+                <a href="http://diemtinvietnam.vn/tai_tro_hosting_startup.html" title="tài trợ hosting miễn phí dự án khởi nghiệp" target="_blank">
+                    <img src="/Images/banner.jpg" alt="tài trợ hosting miễn phí dự án khởi nghiệp" style="width:100%; margin-bottom:15px" />
+                </a>  
+                <a href="http://cakholangvudai.com/" title="cá kho làng vũ đại" target="_blank">
+                    <img src="/Images/Adv/cakho.gif" alt="đặc sản cá kho làng vũ đại" style="width:100%; margin-bottom:15px" />
+                </a>
+                <div class="box-list-event" id="divHaveRead">
+                    <h3 class="title-event">Đọc nhiều nhất</h3>
+                    <ul class="list-event" id="ulHaveRead">
+                    </ul>
+                    <div class="clear-fix"></div>
+                </div>                
+                
+        </div>
+    </div>
+</div>
+<div id="androidDevice" style="width:100%;position:fixed;display:none;float:left;height:20%;top:200px;background-color:blue;color:white;">
+    
+    <p style="align-content:center;margin-left:2%;margin-top:2%;"><b>Phiên bản dành cho Android: Tốc độ nhanh cùng nhiều tính năng hấp dẫn!</b></p>
+    <div style="width:40%;position:relative;float:left;border:solid 1px yellow;margin-left:5%;"><p style="align-content:center;margin-left:50%;"><a style="color:yellow;" href="https://play.google.com/store/apps/details?id=com.thatvn.diemtinvietnam" target="_blank"><b>Cài Đặt</b></a></p></div>    
+    <div style="width:40%;position:relative;float:left;border:solid 1px yellow"><p style="align-content:center;margin-left:30%;"><a style="color:white;" href="#" onclick="$('#androidDevice').hide();"><i>Bỏ Qua</i></a></p></div>
+    
+</div>
+<script>
+    showAndroidApp();
+    $("#menuHot").addClass("active");
+    currentPageLoad=0;
+    PageSizeLoad=@youknow.Config.PageSizeLoad;
+    isLogged = '@ViewBag.userToken';
+    currentUserToken = '@ViewBag.userToken';
+    currentUserName = '@Html.Raw(@ViewBag.userName)';
+    //alert(screen.width);
+    var percentLoading = 1;
+    var stepLoading = 7;
+    var myVar = null;
+    //isCheckNewestNew = 1;
+    currentMenu = 3;    
+    currentCatName = "@ViewBag.Title";
+    //Hiển thị nextpage nếu thanh cuộn hết trang
+    $(window).scroll(function () {
+        if ($(window).scrollTop() + $(window).height() >= 400) {
+            $("#backTopPage").show();
+            //showNextPage();
+        }
+    });
+    
+    //if ($.cookie('haveRead') != null){
+    getTopRead();
+    //}else{
+        //$("#divHaveRead").hide();
+    //}
+    </script>   
+

@@ -1,0 +1,194 @@
+﻿@model youknow.Views.ModelClassViewTrendsManager
+@{
+    ViewBag.Title = "Xu hướng đọc trong ngày";
+    ViewBag.Url = "Home/Trends";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int preNo = 0;
+    int currentNo = 0;
+    int? groupDay = 0;
+    string title = "";
+    string preTitle = "";
+    int preId = -1;
+    System.Text.StringBuilder preRelated = new System.Text.StringBuilder();
+    int lastID = 0;
+    string styleRelated = "display:block;";
+    int count = 0;
+
+    if (Model.ieViewTrends.ElementAt(0).title != null && Model.ieViewTrends.ElementAt(0).title != "")
+    { title = Model.ieViewTrends.ElementAt(0).title; }
+    else
+    { title = Model.ieViewTrends.ElementAt(0).keyword; }
+    preTitle = title;
+    currentNo = 1;
+    preNo = 1;
+}
+
+<script src="~/Scripts/jquery-2.1.1.js"></script>
+<script src="~/Scripts/jquery.signalR-1.1.3.min.js"></script> 
+<script src="~/Scripts/jquery.cookie.js"></script>       
+<script src="~/signalR/hubs"></script>
+<script  src="/Scripts/core.js" type="text/javascript"></script>
+<script src="/Scripts/OpenLayers.js" type="text/javascript"></script>  
+<div class="backTopPage" id="backTopPage" style="display:none"><a href="#"><img src="/Images/toppage.png" title="Về đầu trang" height="48px" width="48px"></a></div>
+            	         
+            <div class="shareNews" id="shareNews">
+            
+            </div>
+            <div class="dvCommentHomePage" id="dvCommentHomePage"></div>
+            @Html.Partial("~/Views/Home/_formComment.cshtml")
+
+<div id="wrapper" class="wrapper">    
+                    <div class="bgheader4">
+                        <div class="trend1">@currentNo</div>
+                        <div class=trend2 >@title</div>                        
+                        <div class="trend3" id=trends_@currentNo></div>
+                    </div>
+                    <div class="spaceNews">&nbsp;</div>
+    @foreach (youknow.Views.viewTrendsManager item in Model.ieViewTrends)
+    {
+        if (item == null) { break; }
+        if (item.title != null && item.title != "")
+        { title = item.title; }
+        else
+        { title = item.keyword; }
+        
+        count++;
+        
+        //if (groupDay != item.datetimeid)
+        //{
+           //<text><div class="bgheader4"><div class="trend2">Ngày @youknow.Uti.getVnDate(@item.datetimeid.ToString())</div></div></text>
+            //groupDay = @item.datetimeid;
+        //}
+        if (preTitle == title || preTitle == ""){
+            if (count > 5) { styleRelated = "display:none;"; }
+            
+            if (item.image != null && !item.image.Equals(""))
+            {
+                preRelated = new System.Text.StringBuilder();
+                preRelated.Append("<div class=trendRL id=itemRelatedNews_" + currentNo + "_" + count + " style=\\\"" + styleRelated + "\\\"><div class=trend4><img src=\\\"" + item.image + "\\\" width=50 height=50></div><div class=trend5><a onclick=\\\"return showDetailNews('" + item.link + "','" + youknow.Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(item.name)) + "'," + item.id + ","+item.hasContent+");\\\" href=\\\"/comment/readNews/" + item.id + "\\\"  style=\\\"cursor:pointer;\\\" class=titleFont>" + item.name + "</a>&nbsp;<img src=\\\"/images/sp.jpg\\\">&nbsp;<span class=\\\"inforTinFont2\\\">" + item.maindomain + "</span></div></div>");
+                <text><script>$("#trends_@currentNo").append("@Html.Raw(@preRelated.ToString())");</script></text>
+            }
+            else {
+                preRelated = new System.Text.StringBuilder();
+                preRelated.Append("<div class=trendRL id=itemRelatedNews_" + currentNo + "_" + count + " style=\\\"" + styleRelated + "\\\"><div class=trend4></div><div class=trend5><a onclick=\\\"return showDetailNews('" + item.link + "','" + youknow.Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(item.name)) + "'," + item.id + ","+item.hasContent+");\\\" href=\\\"/comment/readNews/" + item.id + "\\\"  style=\\\"cursor:pointer;\\\" class=titleFont>" + item.name + "</a>&nbsp;<img src=\\\"/images/sp.jpg\\\">&nbsp;<span class=\\\"inforTinFont2\\\">" + item.maindomain + "</span></div></div>");
+                <text><script>$("#trends_@currentNo").append("@Html.Raw(@preRelated.ToString())");</script></text>
+            }
+            //if (count != 5) { preRelated += "<div class=spaceNews>&nbsp;</div>"; }
+        }
+        if (preTitle != title)
+        {
+            if (count > 5) {
+                preRelated = new System.Text.StringBuilder();
+                preRelated.Append("<div id=viewMoreTopicId_" + currentNo + " style=\\\"float:right;\\\"><span class=\\\"sameTopicTitleFont\\\"><a onclick=\\\"viewMoreTopic(" + currentNo + "," + count + ");\\\" style=\\\"cursor:pointer;color:#d51d01\\\">Xem Tiếp</a></span></div>");
+                <text><script>$("#trends_@currentNo").append("@Html.Raw(@preRelated.ToString())");</script></text>
+            }
+            styleRelated = "display:block;";
+            count = 1;
+            preNo = currentNo;
+            currentNo = currentNo + 1;
+            
+            //preRelated = "";
+            if (item.image != null && !item.image.Equals(""))
+            {
+                preRelated = new System.Text.StringBuilder();
+                preRelated.Append("<div class=trendRL id=itemRelatedNews_" + currentNo + "_" + 1 + " style=\\\"" + styleRelated + "\\\"><div class=trend4><img src=\\\"" + item.image + "\\\" width=50 height=50></div><div class=trend5><a onclick=\\\"return showDetailNews('" + item.link + "','" + youknow.Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(item.name)) + "'," + item.id + ","+item.hasContent+");\\\" href=\\\"" + item.link + "\\\"  style=\\\"cursor:pointer;\\\" class=titleFont>" + item.name + "</a>&nbsp;<img src=\\\"/images/sp.jpg\\\">&nbsp;<span class=\\\"inforTinFont2\\\">" + item.maindomain + "</span></div></div>");
+            }
+            else
+            {
+                preRelated = new System.Text.StringBuilder();
+                preRelated.Append("<div class=trendRL id=itemRelatedNews_" + currentNo + "_" + 1 + " style=\\\"" + styleRelated + "\\\"><div class=trend4></div><div class=trend5><a onclick=\\\"return showDetailNews('" + item.link + "','" + youknow.Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(item.name)) + "'," + item.id + ","+item.hasContent+");\\\" href=\\\"" + item.link + "\\\"  style=\\\"cursor:pointer;\\\" class=titleFont>" + item.name + "</a>&nbsp;<img src=\\\"/images/sp.jpg\\\">&nbsp;<span class=\\\"inforTinFont2\\\">" + item.maindomain + "</span></div></div>");
+            }
+             <text>                    
+                    <div class="bgheader4">
+                        <div class="trend1">@currentNo</div>
+                        <div class=trend2>@Html.Raw(@title)</div>                        
+                        <div class="trend3" id=trends_@currentNo><script>$("#trends_@currentNo").append("@Html.Raw(@preRelated.ToString())");</script></div>
+                    </div>
+                    <div class="spaceNews">&nbsp;</div>
+                    
+            </text>
+            preTitle = title;
+        }
+    }
+    
+</div>
+<script>
+    isLogged = '@ViewBag.userToken';
+    currentUserToken = '@ViewBag.userToken';
+    currentUserName = '@ViewBag.userName';
+    var percentLoading = 1;
+    var stepLoading = 7;
+    var myVar = null;
+    isMobileDevice = false;
+    currentMenu = 4;
+    function loadingDetailNews() {
+        $("#dvloadingDetail").css({ "width": percentLoading });
+        percentLoading += stepLoading;
+        if (percentLoading > 1366) {
+            clearInterval(myVar);
+            document.getElementById("dvloading").style.display = "none";
+            percentLoading = 1;
+            stepLoading = 7;
+        }
+    }
+    //Hiển thị nextpage nếu thanh cuộn hết trang
+    $(window).scroll(function () {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 10) {
+            showNextPage();
+        }
+    });
+    //Danh cho remove tin để các tin khác cuộn lên.
+    var itemPost = $("a.titleFont").parent(".title");
+    itemPost.append('<img class="removeItem" src="/Images/remove.png"  style="width:15px;float:right;cursor: pointer;" />');
+    cssRemoveTin();
+    $(function () {
+        chat.client.addChatMessage = function (roomName, username, usertoken, contents, title, id, idReply, userTokenReply, userNameReply) {
+            if (contents != "") {
+                var strUserTokenReply = "";
+                //$('#dvComment').append('<div class=\"alert alert-info\"><span class=\"label label-success\">'+username+'</span>: ' + contents + '<span id="totalLike_' + id + '" class="label label-info pull-right"></span><a onclick="likeComment(' + id + ');"><span class="badge pull-right">Thích</span></a></div>');
+                if (userTokenReply != null && userTokenReply != "") {
+                    strUserTokenReply = "<span class=\"userchat2HP\"> gửi " + userNameReply + ", </span> ";
+                }
+
+                content = "<div class=bgheader4><div class=chatLine1HP><span class=userchat2HP>" + username + "</span></div><div class=chatLine2HP><span class=chatcontentHP>" + strUserTokenReply + contents + " </span></div><div class=chatLine3HP><a onclick=\"replyCommentHP(" + id + ",'" + usertoken + "','" + username + "');\" style=\"cursor:pointer\"><span class=userchat3HP>Trả lời</span></a>&nbsp;<a onclick=\"likeCommentHP(" + id + ");\" style=\"cursor:pointer\"><span class=userchat3HP>Thích&nbsp;<span id=\"totalLike_" + id + "\" class=chatcontent2HP></span></span></a></div></div>";
+                //"<div class=\"alert alert-info\"><span class=\"label label-success\">" + username + "</span> " + strUserTokenReply +contents + " <a onclick=\"replyComment(" + id + ",'" + username + "','" + usertoken + "');\"><span class=\"badge pull-right\">Trả lời</span></a><a onclick=\"likeComment(" + id + ");\"><span class=\"badge pull-right\">Thích<span id=\"totalLike_" + id + "\" class=\"label label-info pull-right\"></span></span></a></div>"; 
+                //alert(content);
+                $('#dvComment').append(content);
+
+                if (document.getElementById("checkScrollbar").checked) {
+                    var elem = document.getElementById('dvComment');// just to scroll down the line 
+                    elem.scrollTop = elem.scrollHeight;
+                }
+
+            }
+        };   
+        $.connection.hub.start().done(function () {
+            //chat.server.joinRoom("@ViewBag.idNews", '','','','','','','',''); 
+        });
+    });
+    function viewMoreTopic(topicid, countItem) {
+        for (var i = 1; i <= countItem; i++) {
+            $("#itemRelatedNews_" + topicid + "_" + i).show();
+        }
+        $("#viewMoreTopicId_" + topicid).hide();
+    }
+    function showRelated(id) {
+        var type = 0;
+        for (var i = 1; i < 20; i++) {
+            if (document.getElementById("item_" + id + "_" + i)) {
+                if (document.getElementById("item_" + id + "_" + i).style.display == "none") {
+                    document.getElementById("item_" + id + "_" + i).style.display = "block";
+                    type = 1;
+                } else {
+                    document.getElementById("item_" + id + "_" + i).style.display = "none";
+                    type = 0;
+                }
+            }
+        }
+        if (type == 1) {
+            document.getElementById("imageRelated_" + id).src = "/Content/mobile/css/images/expand_max.png";
+        } else {
+            document.getElementById("imageRelated_" + id).src = "/Content/mobile/css/images/expand_min.png";
+        }
+    }
+</script>

@@ -1,0 +1,26 @@
+﻿@model IEnumerable<youknow.Models.content>
+@{
+    //Layout = null;
+    Layout = "~/Views/Shared/adminLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>view</title>
+</head>
+<body>
+    <div>
+        @foreach (var item in Model)
+        {
+            @item.title <br />
+            @item.datetime    <br />
+            @item.des <br /><hr />
+            <img src="@item.image" /><br/>                
+            @Html.Raw(item.fullcontent) <br />
+        }
+    </div>
+</body>
+</html>

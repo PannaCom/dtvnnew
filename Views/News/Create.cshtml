@@ -1,0 +1,288 @@
+﻿@model youknow.Models.title
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+<style>
+    .form-control {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #057ad4;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+
+}
+    input, button, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+    label {
+  display: block;
+  font-weight: bold;
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+</style>
+<h2>Thêm mới bài viết</h2>
+
+<script src="/Scripts/ckeditor/ckeditor.js"></script>
+ <script src="~/Scripts/jquery-2.1.1.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <script src="/Scripts/core.js" type="text/javascript"></script>
+<script src="/Scripts/jquery-ui.js"></script>
+<link rel="stylesheet" href="/Scripts/jquery-ui.css">
+<script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+@using (Html.BeginForm("Create", "News", FormMethod.Post, new { id = "EditForm" })) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset style="margin-left:10px;margin-right:10px;">
+        <div class="col-md-6">
+              <div class="form-group">
+                <label for="room" style="width:auto;display:block;">Tiêu đề bài viết</label>
+                <input name="name" type="text" id="name" value="" class="form-control" placeholder="Gõ tiêu đề" />                
+              </div>
+         </div>               
+        <div class="col-md-6">
+              <div class="form-group">
+                <label for="room" style="width:auto;display:block;">Upload ảnh đại diện</label>
+                <input name="imageFile" type="file" id="imageFile" value="" multiple="multiple" class="form-control" runat="server" onchange="uploadProcess();"/>                                
+                <div id="progressbar" class="progressbar">
+                    <div id="progresslabel" class="progressbarlabel"></div>
+                 </div>  
+              </div>
+         </div> 
+        <div class="col-md-6">
+              <div class="form-group">
+                <label for="room" style="width:auto;display:block;">Ảnh đại diện</label>
+                <input name="image" type="hidden" id="image" value="" class="form-control" />                  
+                  <div id="imageShow" style="width:200px;height:126px;"></div>
+              </div>
+         </div>
+        <div class="col-md-6">
+              <div class="form-group">
+                <label for="room" style="width:auto;display:block;">Tóm tắt:</label>
+                <textarea name="des" rows="3" id="des" class="form-control" maxlength="250"></textarea>
+              </div>
+        </div>
+        <div class="col-md-6">
+              <div class="form-group">
+                <label for="room" style="width:auto;display:block;">Link gốc bài viết</label>
+                <input name="link" type="text" id="link" value="" class="form-control" placeholder="Nhập link gốc bài viết" />                
+              </div>
+         </div>
+         <div class="col-md-6">
+              <div class="form-group">
+                <label for="room" style="width:auto;display:block;">Chọn chuyên mục</label>
+                <select id="catid" name="catid" ></select>
+                <script>getCategoryList("");</script>                   
+              </div>
+         </div>
+        <div class="col-md-6">
+              <div class="form-group">
+                <label for="room" style="width:auto;display:block;">Chèn ảnh vào bài viết</label>
+                <input name="imageFileContent" type="file" id="imageFileContent" value="" multiple="multiple" class="form-control" runat="server" onchange="uploadProcessContent();"/>                                
+                <div id="progressbarContent" class="progressbar">
+                    <div id="progresslabelContent" class="progressbarlabel"></div>
+                 </div>  
+              </div>
+         </div>             
+        <div class="col-md-6">
+              <div class="form-group">
+                <label for="room" style="width:auto;display:block;">List ảnh bài viết</label>
+                  <div id="imageShowContent" style="width:auto;height:auto;"></div>
+              </div>
+         </div>
+        <div class="col-md-6">
+              <div class="form-group">
+                <label for="room" style="width:auto;display:block;">Nội dung</label>                
+                 <textarea name="fullcontent" id="fullcontent" rows="20" cols="80">
+                     Gõ nội dung ở đây
+                </textarea>
+                <script>
+                    CKEDITOR.replace('fullcontent');
+                </script>                       
+              </div>
+        </div>
+         <div class="col-md-6">
+              <div class="form-group">
+                <label for="room" style="width:auto;display:block;">Độ quan trọng</label>
+                <select id="ranking" name="ranking" >
+                        <option value="1220">Luôn xếp trên trang chủ 24 tiếng - 1220 điểm</option>
+                        <option value="680">Lên top và giảm dần sau 6 tiếng  - 680 điểm</option>
+                </select>
+                                  
+              </div>
+         </div>
+        <div class="col-md-6">
+              <div class="form-group">
+                <label for="room" style="width:auto;display:block;">Từ báo nào:</label>
+                <select id="maindomain" name="maindomain" onchange="getDomainSelected();"></select>
+                <script>getDomainList("");</script>                    
+                <input type="hidden" id="domain" name="domain">
+                <input type="hidden" id="source" name="source" value="">                
+                <input type="hidden" id="keyword" name="keyword" value="">  
+                <input type="hidden" id="totalcomment" name="totalcomment" value="0">  
+                <input type="hidden" id="uplikes" name="uplikes" value="0">   
+                <input type="hidden" id="downlikes" name="downlikes" value="0"> 
+                <input type="hidden" id="topicid" name="topicid" value="">  
+                <input type="hidden" id="isHot" name="isHot" value="2">  
+                <input type="hidden" id="isNew" name="isNew" value="">     
+                <input type="hidden" id="hasContent" name="hasContent" value="1">    
+                <input type="hidden" id="fixRanking" name="fixRanking" value=""> 
+                <input type="hidden" id="totalviews" name="totalviews" value="0">              
+              </div>
+         </div>
+        <p>
+            <input type="button" value="Gửi bài" onclick="checkField();"/>
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+<script>
+    function getDomainSelected() {
+        document.getElementById("domain").value = $("#maindomain").find(':selected').attr("id");
+        //alert(document.getElementById("domain").value);
+    }
+    function checkField() {
+
+
+        if (document.getElementById("name").value == "") {
+            alert("Nhập tên bài viết!");
+            document.getElementById("name").focus();
+            return false;
+        }
+
+        if (document.getElementById("image").value == "") {
+            alert("Upload ảnh đại diện!");
+            document.getElementById("imageFile").focus();
+            return false;
+        }
+        if (document.getElementById("des").value == "") {
+            alert("Nhập tóm tắt!");
+            document.getElementById("des").focus();
+            return false;
+        }
+
+        if (document.getElementById("fullcontent").value == "") {
+            alert("Nhập nội dung!");
+            document.getElementById("fullcontent").focus();
+            return false;
+        }
+        document.getElementById("fixRanking").value = document.getElementById("ranking").value;
+        document.getElementById("domain").value = $("#maindomain").find(':selected').attr("id");
+        document.getElementById("EditForm").submit();
+    }
+    //Image upload
+    function uploadProcess() {
+        var title = unicodeToNoMark($("#name").val());
+        if (title.trim() == "") {
+            alert("Nhập tên bài viết trước");
+            document.getElementById("name").focus();
+            document.getElementById('imageFile').value = "";
+            return;
+        }
+        var formdata = new FormData(); //FormData object
+        var fileInput = document.getElementById('imageFile');
+        for (i = 0; i < fileInput.files.length; i++) {
+            //Appending each file to FormData object
+            formdata.append(fileInput.files[i].name, fileInput.files[i]);
+            break;
+        }
+        formdata.append("filename", title);
+        //showLoadingImage();
+        var xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener("progress", function (evt) {
+            if (evt.lengthComputable) {
+                var progress = Math.round(evt.loaded * 100 / evt.total);
+                $("#progressbar").progressbar("value", progress);
+            }
+        }, false);
+
+        xhr.open('POST', '/News/UploadImageProcess');
+        xhr.send(formdata);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#imageShow').html("<img src=\"" + xhr.responseText + "\" width=200 height=126>");
+                $('#image').val(xhr.responseText);
+                //hideLoadingImage();
+            }
+        }
+        return false;
+    }
+    //Image upload
+    function uploadProcessContent() {
+        var title = unicodeToNoMark($("#name").val());
+        if (title.trim() == "") {
+            alert("Nhập tên bài viết trước");
+            document.getElementById("name").focus();
+            document.getElementById('imageFileContent').value = "";
+            return;
+        }
+        var formdata = new FormData(); //FormData object
+        var fileInput = document.getElementById('imageFileContent');
+        for (i = 0; i < fileInput.files.length; i++) {
+            //Appending each file to FormData object
+            formdata.append(fileInput.files[i].name, fileInput.files[i]);
+            //break;
+        }
+        formdata.append("filename", title);
+        //showLoadingImage();
+        var xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener("progress", function (evt) {
+            if (evt.lengthComputable) {
+                var progress = Math.round(evt.loaded * 100 / evt.total);
+                $("#progressbarContent").progressbar("value", progress);
+            }
+        }, false);
+
+        xhr.open('POST', '/News/UploadImageProcessContent');
+        xhr.send(formdata);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                //$('#imageShowContent').append("<img src=\"" + xhr.responseText + "\" width=200 height=126>");
+                $('#imageShowContent').append(xhr.responseText);
+                //hideLoadingImage();
+            }
+        }
+        return false;
+    }
+    $("#progressbar").progressbar({
+        max: 100,
+        change: function (evt, ui) {
+            $("#progresslabel").text($("#progressbar").progressbar("value") + "%");
+        },
+        complete: function (evt, ui) {
+            $("#progresslabel").text("File upload successful!");
+        }
+    });
+    $("#progressbarContent").progressbar({
+        max: 100,
+        change: function (evt, ui) {
+            $("#progresslabelContent").text($("#progressbarContent").progressbar("value") + "%");
+        },
+        complete: function (evt, ui) {
+            $("#progresslabelContent").text("File upload successful!");
+        }
+    });
+    evt.preventDefault();
+</script>

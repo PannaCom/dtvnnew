@@ -1,0 +1,50 @@
+﻿@model youknow.Models.rss
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>rss</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.url)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.url)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.catid)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.catid)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.domain)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.domain)
+    </div
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.parentcatid)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.parentcatid)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

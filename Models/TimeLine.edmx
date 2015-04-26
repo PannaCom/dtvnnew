@@ -1,0 +1,874 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="tinviet_vietnamModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="tinviet_vietnamModelStoreContainer">
+          <EntitySet Name="blockurl" EntityType="tinviet_vietnamModel.Store.blockurl" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="cat" EntityType="tinviet_vietnamModel.Store.cat" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="content" EntityType="tinviet_vietnamModel.Store.content" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="user" EntityType="tinviet_vietnamModel.Store.user" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="videogiaitri" EntityType="tinviet_vietnamModel.Store.videogiaitri" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="zadv" EntityType="tinviet_vietnamModel.Store.zadv" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="zalexa" EntityType="tinviet_vietnamModel.Store.zalexa" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="category" EntityType="tinviet_vietnamModel.Store.category" store:Type="Tables" Schema="tinviet_admin" />
+          <EntitySet Name="comments" EntityType="tinviet_vietnamModel.Store.comments" store:Type="Tables" Schema="tinviet_admin" />
+          <EntitySet Name="dailykeyword" EntityType="tinviet_vietnamModel.Store.dailykeyword" store:Type="Tables" Schema="tinviet_admin" />
+          <EntitySet Name="domain" EntityType="tinviet_vietnamModel.Store.domain" store:Type="Tables" Schema="tinviet_admin" />
+          <EntitySet Name="filterkeyword" EntityType="tinviet_vietnamModel.Store.filterkeyword" store:Type="Tables" Schema="tinviet_admin" />
+          <EntitySet Name="hotkeyword" EntityType="tinviet_vietnamModel.Store.hotkeyword" store:Type="Tables" Schema="tinviet_admin" />
+          <EntitySet Name="like" EntityType="tinviet_vietnamModel.Store.like" store:Type="Tables" Schema="tinviet_admin" />
+          <EntitySet Name="members" EntityType="tinviet_vietnamModel.Store.members" store:Type="Tables" Schema="tinviet_admin" />
+          <EntitySet Name="rss" EntityType="tinviet_vietnamModel.Store.rss" store:Type="Tables" Schema="tinviet_admin" />
+          <EntitySet Name="test" EntityType="tinviet_vietnamModel.Store.test" store:Type="Tables" store:Schema="tinviet_admin" store:Name="test">
+            <DefiningQuery>SELECT 
+      [test].[id] AS [id], 
+      [test].[d] AS [d]
+      FROM [tinviet_admin].[test] AS [test]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="titles" EntityType="tinviet_vietnamModel.Store.titles" store:Type="Tables" Schema="tinviet_admin" />
+          <EntitySet Name="titlesSearch" EntityType="tinviet_vietnamModel.Store.titlesSearch" store:Type="Tables" Schema="tinviet_admin" />
+          <EntitySet Name="userFilter" EntityType="tinviet_vietnamModel.Store.userFilter" store:Type="Tables" Schema="tinviet_admin" />
+        </EntityContainer>
+        <EntityType Name="blockurl">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="url" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="cat">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="catid" Type="int" />
+          <Property Name="catname" Type="ntext" />
+          <Property Name="des" Type="ntext" />
+          <Property Name="url" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="content">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="userid" Type="int" Nullable="false" />
+          <Property Name="title" Type="ntext" Nullable="false" />
+          <Property Name="url" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="des" Type="ntext" Nullable="false" />
+          <Property Name="image" Type="ntext" Nullable="false" />
+          <Property Name="fullcontent" Type="ntext" Nullable="false" />
+          <Property Name="catid" Type="int" Nullable="false" />
+          <Property Name="datetime" Type="datetime" Nullable="false" />
+          <Property Name="views" Type="int" Nullable="false" />
+          <Property Name="tags" Type="ntext" />
+          <Property Name="comments" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="username" Type="nvarchar" MaxLength="100" />
+          <Property Name="password" Type="nvarchar" MaxLength="150" />
+          <Property Name="fullname" Type="nvarchar" MaxLength="250" />
+          <Property Name="type" Type="int" />
+        </EntityType>
+        <EntityType Name="videogiaitri">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="title" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="link" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="image" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="domain" Type="nvarchar" MaxLength="50" />
+          <Property Name="fullContent" Type="ntext" />
+          <Property Name="date" Type="datetime" />
+          <Property Name="dateid" Type="int" />
+        </EntityType>
+        <EntityType Name="zadv">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="title" Type="nvarchar" MaxLength="150" />
+          <Property Name="des" Type="ntext" />
+          <Property Name="filepath" Type="nvarchar" Nullable="false" MaxLength="150" />
+          <Property Name="filetype" Type="tinyint" Nullable="false" />
+          <Property Name="link" Type="nvarchar" MaxLength="350" />
+          <Property Name="views" Type="int" />
+          <Property Name="datetime" Type="datetime" />
+          <Property Name="enddate" Type="datetime" />
+          <Property Name="size" Type="nvarchar" MaxLength="50" />
+          <Property Name="cat" Type="nvarchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="zalexa">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="site" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="keyword" Type="nvarchar" MaxLength="1000" />
+          <Property Name="des" Type="ntext" />
+          <Property Name="rank" Type="int" />
+        </EntityType>
+        <EntityType Name="category">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="nvarchar" MaxLength="20" />
+          <Property Name="groupid" Type="int" />
+          <Property Name="groupname" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="comments">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="usertoken" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="idnews" Type="int" />
+          <Property Name="contents" Type="nvarchar" Nullable="false" MaxLength="1000" />
+          <Property Name="datetime" Type="datetime" Nullable="false" />
+          <Property Name="datetimeid" Type="int" Nullable="false" />
+          <Property Name="replyid" Type="int" />
+          <Property Name="usertokenreplyid" Type="nvarchar" MaxLength="100" />
+          <Property Name="fullName" Type="nvarchar" MaxLength="50" />
+          <Property Name="fullNameReply" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="dailykeyword">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="keyword" Type="nvarchar" MaxLength="250" />
+          <Property Name="title" Type="nvarchar" MaxLength="100" />
+          <Property Name="length" Type="int" />
+          <Property Name="ranking" Type="int" />
+          <Property Name="status" Type="tinyint" />
+          <Property Name="datetime" Type="datetime" />
+          <Property Name="datetimeid" Type="int" />
+          <Property Name="active" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="domain">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" />
+          <Property Name="status" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="filterkeyword">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="keyword" Type="nvarchar" MaxLength="250" />
+          <Property Name="ranking" Type="int" Nullable="false" />
+          <Property Name="datetimeid" Type="int" />
+        </EntityType>
+        <EntityType Name="hotkeyword">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="keyword" Type="nvarchar" MaxLength="250" />
+          <Property Name="ranking" Type="int" Nullable="false" />
+          <Property Name="datetimeid" Type="int" />
+        </EntityType>
+        <EntityType Name="like">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="idcomment" Type="bigint" />
+          <Property Name="usertoken" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="members">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="userToken" Type="nvarchar" MaxLength="100" />
+          <Property Name="email" Type="nvarchar" MaxLength="100" />
+          <Property Name="fullName" Type="nvarchar" MaxLength="200" />
+          <Property Name="link" Type="nvarchar" MaxLength="250" />
+          <Property Name="avatar" Type="nvarchar" MaxLength="50" />
+          <Property Name="idOA" Type="nvarchar" MaxLength="150" />
+          <Property Name="type" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="rss">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="url" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="catid" Type="int" />
+          <Property Name="domain" Type="int" />
+          <Property Name="parentcatid" Type="int" />
+          <Property Name="groupid" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'tinviet_vietnam.tinviet_admin.test' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="test">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="d" Type="datetime" />
+        </EntityType>
+        <EntityType Name="titles">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="550" />
+          <Property Name="des" Type="nvarchar" MaxLength="3000" />
+          <Property Name="fullcontent" Type="ntext" />
+          <Property Name="link" Type="nvarchar" MaxLength="400" />
+          <Property Name="image" Type="nvarchar" MaxLength="300" />
+          <Property Name="domain" Type="nvarchar" MaxLength="55" />
+          <Property Name="maindomain" Type="nvarchar" MaxLength="50" />
+          <Property Name="catid" Type="int" />
+          <Property Name="source" Type="nvarchar" MaxLength="150" />
+          <Property Name="datetime" Type="datetime" />
+          <Property Name="ranking" Type="int" />
+          <Property Name="keyword" Type="nvarchar" MaxLength="300" />
+          <Property Name="datetimeid" Type="int" />
+          <Property Name="totalcomment" Type="int" />
+          <Property Name="uplikes" Type="int" />
+          <Property Name="downlikes" Type="int" />
+          <Property Name="topicid" Type="int" />
+          <Property Name="isHot" Type="tinyint" />
+          <Property Name="isNew" Type="smallint" />
+          <Property Name="hasContent" Type="tinyint" />
+          <Property Name="fixRanking" Type="int" />
+          <Property Name="lastUpdateRanking" Type="datetime" />
+          <Property Name="totalviews" Type="int" />
+        </EntityType>
+        <EntityType Name="titlesSearch">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="550" />
+          <Property Name="des" Type="nvarchar" MaxLength="3000" />
+          <Property Name="fullcontent" Type="ntext" />
+          <Property Name="link" Type="nvarchar" MaxLength="400" />
+          <Property Name="image" Type="nvarchar" MaxLength="300" />
+          <Property Name="domain" Type="nvarchar" MaxLength="55" />
+          <Property Name="maindomain" Type="nvarchar" MaxLength="50" />
+          <Property Name="catid" Type="int" />
+          <Property Name="source" Type="nvarchar" MaxLength="150" />
+          <Property Name="datetime" Type="datetime" />
+          <Property Name="ranking" Type="int" />
+          <Property Name="keyword" Type="nvarchar" MaxLength="300" />
+          <Property Name="datetimeid" Type="int" />
+          <Property Name="totalcomment" Type="int" />
+          <Property Name="uplikes" Type="int" />
+          <Property Name="downlikes" Type="int" />
+          <Property Name="topicid" Type="int" />
+          <Property Name="isHot" Type="tinyint" />
+          <Property Name="isNew" Type="smallint" />
+          <Property Name="hasContent" Type="tinyint" />
+          <Property Name="fixRanking" Type="int" />
+          <Property Name="lastUpdateRanking" Type="datetime" />
+          <Property Name="totalviews" Type="int" />
+        </EntityType>
+        <EntityType Name="userFilter">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="userId" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="domain" Type="int" />
+          <Property Name="catid" Type="int" />
+        </EntityType>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="tinviet_vietnamModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Entities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="cats" EntityType="tinviet_vietnamModel.cat" />
+          <EntitySet Name="contents" EntityType="tinviet_vietnamModel.content" />
+          <EntitySet Name="videogiaitris" EntityType="tinviet_vietnamModel.videogiaitri" />
+          <EntitySet Name="zadvs" EntityType="tinviet_vietnamModel.zadv" />
+          <EntitySet Name="zalexas" EntityType="tinviet_vietnamModel.zalexa" />
+          <EntitySet Name="categories" EntityType="tinviet_vietnamModel.category" />
+          <EntitySet Name="comments" EntityType="tinviet_vietnamModel.comment" />
+          <EntitySet Name="dailykeywords" EntityType="tinviet_vietnamModel.dailykeyword" />
+          <EntitySet Name="domains" EntityType="tinviet_vietnamModel.domain" />
+          <EntitySet Name="filterkeywords" EntityType="tinviet_vietnamModel.filterkeyword" />
+          <EntitySet Name="hotkeywords" EntityType="tinviet_vietnamModel.hotkeyword" />
+          <EntitySet Name="likes" EntityType="tinviet_vietnamModel.like" />
+          <EntitySet Name="members" EntityType="tinviet_vietnamModel.member" />
+          <EntitySet Name="rsses" EntityType="tinviet_vietnamModel.rss" />
+          <EntitySet Name="tests" EntityType="tinviet_vietnamModel.test" />
+          <EntitySet Name="titles" EntityType="tinviet_vietnamModel.title" />
+          <EntitySet Name="titlesSearches" EntityType="tinviet_vietnamModel.titlesSearch" />
+          <EntitySet Name="userFilters" EntityType="tinviet_vietnamModel.userFilter" />
+          <EntitySet Name="blockurls" EntityType="tinviet_vietnamModel.blockurl" />
+          <EntitySet Name="users" EntityType="tinviet_vietnamModel.user" />
+        </EntityContainer>
+        <EntityType Name="cat">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="catid" />
+          <Property Type="String" Name="catname" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="des" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="url" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="content">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="userid" Nullable="false" />
+          <Property Type="String" Name="title" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="url" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="des" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="image" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="fullcontent" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="catid" Nullable="false" />
+          <Property Type="DateTime" Name="datetime" Nullable="false" Precision="3" />
+          <Property Type="Int32" Name="views" Nullable="false" />
+          <Property Type="String" Name="tags" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="comments" Nullable="false" />
+        </EntityType>
+        <EntityType Name="videogiaitri">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="title" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="link" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="image" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="domain" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="fullContent" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="date" Precision="3" />
+          <Property Type="Int32" Name="dateid" />
+        </EntityType>
+        <EntityType Name="zadv">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="title" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="des" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="filepath" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Type="Byte" Name="filetype" Nullable="false" />
+          <Property Type="String" Name="link" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="views" />
+          <Property Type="DateTime" Name="datetime" Precision="3" />
+          <Property Type="DateTime" Name="enddate" Precision="3" />
+          <Property Type="String" Name="size" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="cat" MaxLength="150" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="zalexa">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="site" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="keyword" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="des" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="rank" />
+        </EntityType>
+        <EntityType Name="category">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="name" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="groupid" />
+          <Property Type="String" Name="groupname" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="comment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="usertoken" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="idnews" />
+          <Property Type="String" Name="contents" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="datetime" Nullable="false" Precision="3" />
+          <Property Type="Int32" Name="datetimeid" Nullable="false" />
+          <Property Type="Int32" Name="replyid" />
+          <Property Type="String" Name="usertokenreplyid" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="fullName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="fullNameReply" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="dailykeyword">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="keyword" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="title" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="length" />
+          <Property Type="Int32" Name="ranking" />
+          <Property Type="Byte" Name="status" />
+          <Property Type="DateTime" Name="datetime" Precision="3" />
+          <Property Type="Int32" Name="datetimeid" />
+          <Property Type="Byte" Name="active" />
+        </EntityType>
+        <EntityType Name="domain">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="name" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Byte" Name="status" />
+        </EntityType>
+        <EntityType Name="filterkeyword">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="keyword" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="ranking" Nullable="false" />
+          <Property Type="Int32" Name="datetimeid" />
+        </EntityType>
+        <EntityType Name="hotkeyword">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="keyword" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="ranking" Nullable="false" />
+          <Property Type="Int32" Name="datetimeid" />
+        </EntityType>
+        <EntityType Name="like">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int64" Name="idcomment" />
+          <Property Type="String" Name="usertoken" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="member">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="userToken" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="email" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="fullName" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="link" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="avatar" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="idOA" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="type" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="rss">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="url" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="catid" />
+          <Property Type="Int32" Name="domain" />
+          <Property Type="Int32" Name="parentcatid" />
+          <Property Type="Int32" Name="groupid" />
+        </EntityType>
+        <EntityType Name="test">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="DateTime" Name="d" Precision="3" />
+        </EntityType>
+        <EntityType Name="title">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="name" Nullable="false" MaxLength="550" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="des" MaxLength="3000" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="fullcontent" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="link" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="image" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="domain" MaxLength="55" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="maindomain" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="catid" />
+          <Property Type="String" Name="source" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="datetime" Precision="3" />
+          <Property Type="Int32" Name="ranking" />
+          <Property Type="String" Name="keyword" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="datetimeid" />
+          <Property Type="Int32" Name="totalcomment" />
+          <Property Type="Int32" Name="uplikes" />
+          <Property Type="Int32" Name="downlikes" />
+          <Property Type="Int32" Name="topicid" />
+          <Property Type="Byte" Name="isHot" />
+          <Property Type="Int16" Name="isNew" />
+          <Property Type="Byte" Name="hasContent" />
+          <Property Type="Int32" Name="fixRanking" />
+          <Property Type="DateTime" Name="lastUpdateRanking" Precision="3" />
+          <Property Type="Int32" Name="totalviews" />
+        </EntityType>
+        <EntityType Name="titlesSearch">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="name" Nullable="false" MaxLength="550" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="des" MaxLength="3000" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="fullcontent" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="link" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="image" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="domain" MaxLength="55" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="maindomain" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="catid" />
+          <Property Type="String" Name="source" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="datetime" Precision="3" />
+          <Property Type="Int32" Name="ranking" />
+          <Property Type="String" Name="keyword" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="datetimeid" />
+          <Property Type="Int32" Name="totalcomment" />
+          <Property Type="Int32" Name="uplikes" />
+          <Property Type="Int32" Name="downlikes" />
+          <Property Type="Int32" Name="topicid" />
+          <Property Type="Byte" Name="isHot" />
+          <Property Type="Int16" Name="isNew" />
+          <Property Type="Byte" Name="hasContent" />
+          <Property Type="Int32" Name="fixRanking" />
+          <Property Type="DateTime" Name="lastUpdateRanking" Precision="3" />
+          <Property Type="Int32" Name="totalviews" />
+        </EntityType>
+        <EntityType Name="userFilter">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="userId" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="domain" />
+          <Property Type="Int32" Name="catid" />
+        </EntityType>
+        <EntityType Name="blockurl">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="url" MaxLength="250" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="username" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="password" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="fullname" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="type" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="tinviet_vietnamModelStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="cats">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.cat">
+              <MappingFragment StoreEntitySet="cat">
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="des" ColumnName="des" />
+                <ScalarProperty Name="catname" ColumnName="catname" />
+                <ScalarProperty Name="catid" ColumnName="catid" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="contents">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.content">
+              <MappingFragment StoreEntitySet="content">
+                <ScalarProperty Name="comments" ColumnName="comments" />
+                <ScalarProperty Name="tags" ColumnName="tags" />
+                <ScalarProperty Name="views" ColumnName="views" />
+                <ScalarProperty Name="datetime" ColumnName="datetime" />
+                <ScalarProperty Name="catid" ColumnName="catid" />
+                <ScalarProperty Name="fullcontent" ColumnName="fullcontent" />
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="des" ColumnName="des" />
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="userid" ColumnName="userid" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="videogiaitris">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.videogiaitri">
+              <MappingFragment StoreEntitySet="videogiaitri">
+                <ScalarProperty Name="dateid" ColumnName="dateid" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="fullContent" ColumnName="fullContent" />
+                <ScalarProperty Name="domain" ColumnName="domain" />
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="link" ColumnName="link" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="zadvs">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.zadv">
+              <MappingFragment StoreEntitySet="zadv">
+                <ScalarProperty Name="cat" ColumnName="cat" />
+                <ScalarProperty Name="size" ColumnName="size" />
+                <ScalarProperty Name="enddate" ColumnName="enddate" />
+                <ScalarProperty Name="datetime" ColumnName="datetime" />
+                <ScalarProperty Name="views" ColumnName="views" />
+                <ScalarProperty Name="link" ColumnName="link" />
+                <ScalarProperty Name="filetype" ColumnName="filetype" />
+                <ScalarProperty Name="filepath" ColumnName="filepath" />
+                <ScalarProperty Name="des" ColumnName="des" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="zalexas">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.zalexa">
+              <MappingFragment StoreEntitySet="zalexa">
+                <ScalarProperty Name="rank" ColumnName="rank" />
+                <ScalarProperty Name="des" ColumnName="des" />
+                <ScalarProperty Name="keyword" ColumnName="keyword" />
+                <ScalarProperty Name="site" ColumnName="site" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="categories">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.category">
+              <MappingFragment StoreEntitySet="category">
+                <ScalarProperty Name="groupname" ColumnName="groupname" />
+                <ScalarProperty Name="groupid" ColumnName="groupid" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="comments">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.comment">
+              <MappingFragment StoreEntitySet="comments">
+                <ScalarProperty Name="fullNameReply" ColumnName="fullNameReply" />
+                <ScalarProperty Name="fullName" ColumnName="fullName" />
+                <ScalarProperty Name="usertokenreplyid" ColumnName="usertokenreplyid" />
+                <ScalarProperty Name="replyid" ColumnName="replyid" />
+                <ScalarProperty Name="datetimeid" ColumnName="datetimeid" />
+                <ScalarProperty Name="datetime" ColumnName="datetime" />
+                <ScalarProperty Name="contents" ColumnName="contents" />
+                <ScalarProperty Name="idnews" ColumnName="idnews" />
+                <ScalarProperty Name="usertoken" ColumnName="usertoken" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dailykeywords">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.dailykeyword">
+              <MappingFragment StoreEntitySet="dailykeyword">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="datetimeid" ColumnName="datetimeid" />
+                <ScalarProperty Name="datetime" ColumnName="datetime" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="ranking" ColumnName="ranking" />
+                <ScalarProperty Name="length" ColumnName="length" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="keyword" ColumnName="keyword" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="domains">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.domain">
+              <MappingFragment StoreEntitySet="domain">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="filterkeywords">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.filterkeyword">
+              <MappingFragment StoreEntitySet="filterkeyword">
+                <ScalarProperty Name="datetimeid" ColumnName="datetimeid" />
+                <ScalarProperty Name="ranking" ColumnName="ranking" />
+                <ScalarProperty Name="keyword" ColumnName="keyword" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="hotkeywords">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.hotkeyword">
+              <MappingFragment StoreEntitySet="hotkeyword">
+                <ScalarProperty Name="datetimeid" ColumnName="datetimeid" />
+                <ScalarProperty Name="ranking" ColumnName="ranking" />
+                <ScalarProperty Name="keyword" ColumnName="keyword" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="likes">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.like">
+              <MappingFragment StoreEntitySet="like">
+                <ScalarProperty Name="usertoken" ColumnName="usertoken" />
+                <ScalarProperty Name="idcomment" ColumnName="idcomment" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="members">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.member">
+              <MappingFragment StoreEntitySet="members">
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="idOA" ColumnName="idOA" />
+                <ScalarProperty Name="avatar" ColumnName="avatar" />
+                <ScalarProperty Name="link" ColumnName="link" />
+                <ScalarProperty Name="fullName" ColumnName="fullName" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="userToken" ColumnName="userToken" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="rsses">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.rss">
+              <MappingFragment StoreEntitySet="rss">
+                <ScalarProperty Name="groupid" ColumnName="groupid" />
+                <ScalarProperty Name="parentcatid" ColumnName="parentcatid" />
+                <ScalarProperty Name="domain" ColumnName="domain" />
+                <ScalarProperty Name="catid" ColumnName="catid" />
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tests">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.test">
+              <MappingFragment StoreEntitySet="test">
+                <ScalarProperty Name="d" ColumnName="d" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="titles">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.title">
+              <MappingFragment StoreEntitySet="titles">
+                <ScalarProperty Name="totalviews" ColumnName="totalviews" />
+                <ScalarProperty Name="lastUpdateRanking" ColumnName="lastUpdateRanking" />
+                <ScalarProperty Name="fixRanking" ColumnName="fixRanking" />
+                <ScalarProperty Name="hasContent" ColumnName="hasContent" />
+                <ScalarProperty Name="isNew" ColumnName="isNew" />
+                <ScalarProperty Name="isHot" ColumnName="isHot" />
+                <ScalarProperty Name="topicid" ColumnName="topicid" />
+                <ScalarProperty Name="downlikes" ColumnName="downlikes" />
+                <ScalarProperty Name="uplikes" ColumnName="uplikes" />
+                <ScalarProperty Name="totalcomment" ColumnName="totalcomment" />
+                <ScalarProperty Name="datetimeid" ColumnName="datetimeid" />
+                <ScalarProperty Name="keyword" ColumnName="keyword" />
+                <ScalarProperty Name="ranking" ColumnName="ranking" />
+                <ScalarProperty Name="datetime" ColumnName="datetime" />
+                <ScalarProperty Name="source" ColumnName="source" />
+                <ScalarProperty Name="catid" ColumnName="catid" />
+                <ScalarProperty Name="maindomain" ColumnName="maindomain" />
+                <ScalarProperty Name="domain" ColumnName="domain" />
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="link" ColumnName="link" />
+                <ScalarProperty Name="fullcontent" ColumnName="fullcontent" />
+                <ScalarProperty Name="des" ColumnName="des" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="titlesSearches">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.titlesSearch">
+              <MappingFragment StoreEntitySet="titlesSearch">
+                <ScalarProperty Name="totalviews" ColumnName="totalviews" />
+                <ScalarProperty Name="lastUpdateRanking" ColumnName="lastUpdateRanking" />
+                <ScalarProperty Name="fixRanking" ColumnName="fixRanking" />
+                <ScalarProperty Name="hasContent" ColumnName="hasContent" />
+                <ScalarProperty Name="isNew" ColumnName="isNew" />
+                <ScalarProperty Name="isHot" ColumnName="isHot" />
+                <ScalarProperty Name="topicid" ColumnName="topicid" />
+                <ScalarProperty Name="downlikes" ColumnName="downlikes" />
+                <ScalarProperty Name="uplikes" ColumnName="uplikes" />
+                <ScalarProperty Name="totalcomment" ColumnName="totalcomment" />
+                <ScalarProperty Name="datetimeid" ColumnName="datetimeid" />
+                <ScalarProperty Name="keyword" ColumnName="keyword" />
+                <ScalarProperty Name="ranking" ColumnName="ranking" />
+                <ScalarProperty Name="datetime" ColumnName="datetime" />
+                <ScalarProperty Name="source" ColumnName="source" />
+                <ScalarProperty Name="catid" ColumnName="catid" />
+                <ScalarProperty Name="maindomain" ColumnName="maindomain" />
+                <ScalarProperty Name="domain" ColumnName="domain" />
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="link" ColumnName="link" />
+                <ScalarProperty Name="fullcontent" ColumnName="fullcontent" />
+                <ScalarProperty Name="des" ColumnName="des" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="userFilters">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.userFilter">
+              <MappingFragment StoreEntitySet="userFilter">
+                <ScalarProperty Name="catid" ColumnName="catid" />
+                <ScalarProperty Name="domain" ColumnName="domain" />
+                <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="blockurls">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.blockurl">
+              <MappingFragment StoreEntitySet="blockurl">
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.user">
+              <MappingFragment StoreEntitySet="user">
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="fullname" ColumnName="fullname" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
