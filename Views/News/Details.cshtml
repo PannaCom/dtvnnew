@@ -1,0 +1,9 @@
+﻿@model youknow.Models.title
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+<h2>@Model.name</h2>
+<b>@Model.des</b>
+@Html.Raw(@HttpUtility.HtmlDecode(@Model.fullcontent))

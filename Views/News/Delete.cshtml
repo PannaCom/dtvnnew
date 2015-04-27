@@ -1,0 +1,21 @@
+﻿@model youknow.Models.title
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+<h2>Xóa bài viết</h2>
+
+<h3>Bạn có chắc chắn xóa bài viết @Model.name?</h3>
+
+@using (Html.BeginForm("DeleteConfirmed", "News", FormMethod.Post, new { id = "EditForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <p>
+        <input type="submit" value="Delete" /> |
+        <input type="hidden" id="id" name="id" value="@Model.id">
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

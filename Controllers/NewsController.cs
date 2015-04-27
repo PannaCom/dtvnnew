@@ -20,7 +20,7 @@ namespace youknow.Controllers
 
             if (Config.getCookie("logged") == "") return RedirectToAction("Index", "Cp");
             if (keyword == null) keyword = "";
-            var p = (from q in db.titles where q.name.Contains(keyword) && q.isHot>=2 select q).OrderByDescending(o => o.id).Take(10000);
+            var p = (from q in db.titles where q.name.Contains(keyword) && (q.isHot>=1 || q.catid==0 || q.ranking>=500) select q).OrderByDescending(o => o.id).Take(10000);
             int pageSize = 30;
             int pageNumber = (page ?? 1);
             ViewBag.page = page;

@@ -1,7 +1,7 @@
 ﻿@model youknow.Models.title
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_LayoutBlank.cshtml";
 }
 <style>
@@ -39,7 +39,7 @@
 }
 
 </style>
-<h2>Thêm mới bài viết</h2>
+<h2>Sửa bài viết</h2>
 
 <script src="/Scripts/ckeditor/ckeditor.js"></script>
  <script src="~/Scripts/jquery-2.1.1.js"></script>
@@ -48,7 +48,7 @@
 <script src="/Scripts/jquery-ui.js"></script>
 <link rel="stylesheet" href="/Scripts/jquery-ui.css">
 <script src="~/Scripts/jquery-ui-1.8.24.js"></script>
-@using (Html.BeginForm("Create", "News", FormMethod.Post, new { id = "EditForm" })) {
+@using (Html.BeginForm("Edit", "News", FormMethod.Post, new { id = "EditForm" })) {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
@@ -56,7 +56,7 @@
         <div class="col-md-6">
               <div class="form-group">
                 <label for="room" style="width:auto;display:block;">Tiêu đề bài viết</label>
-                <input name="name" type="text" id="name" value="" class="form-control" placeholder="Gõ tiêu đề" />                
+                <input name="name" type="text" id="name" value="@Model.name" class="form-control" placeholder="Gõ tiêu đề" />                
               </div>
          </div>               
         <div class="col-md-6">
@@ -71,27 +71,27 @@
         <div class="col-md-6">
               <div class="form-group">
                 <label for="room" style="width:auto;display:block;">Ảnh đại diện</label>
-                <input name="image" type="hidden" id="image" value="" class="form-control" />                  
-                  <div id="imageShow" style="width:200px;height:126px;"></div>
+                <input name="image" type="hidden" id="image" value="@Model.image" class="form-control" />                  
+                  <div id="imageShow" style="width:200px;height:126px;"><img src="@Model.image" style="width:200px;height:126px;"></div>
               </div>
          </div>
         <div class="col-md-6">
               <div class="form-group">
                 <label for="room" style="width:auto;display:block;">Tóm tắt:</label>
-                <textarea name="des" rows="3" id="des" class="form-control" maxlength="250"></textarea>
+                <textarea name="des" rows="3" id="des" class="form-control" maxlength="250">@Html.Raw(@Model.des)</textarea>
               </div>
         </div>
         <div class="col-md-6">
               <div class="form-group">
                 <label for="room" style="width:auto;display:block;">Link gốc bài viết</label>
-                <input name="link" type="text" id="link" value="" class="form-control" placeholder="Nhập link gốc bài viết" />                
+                <input name="link" type="text" id="link" value="@Model.link" class="form-control" placeholder="Nhập link gốc bài viết" />                
               </div>
          </div>
          <div class="col-md-6">
               <div class="form-group">
                 <label for="room" style="width:auto;display:block;">Chọn chuyên mục</label>
                 <select id="catid" name="catid" ></select>
-                <script>getCategoryList("");</script>                   
+                <script>getCategoryList(@Model.catid);</script>                   
               </div>
          </div>
         <div class="col-md-6">
@@ -113,7 +113,7 @@
               <div class="form-group">
                 <label for="room" style="width:auto;display:block;">Nội dung</label>                
                  <textarea name="fullcontent" id="fullcontent" rows="20" cols="80">
-                     Gõ nội dung ở đây
+                     @Html.Raw(@Model.fullcontent)
                 </textarea>
                 <script>
                     CKEDITOR.replace('fullcontent');
@@ -126,27 +126,31 @@
                 <select id="ranking" name="ranking" >
                         <option value="1220">Luôn xếp trên tin nóng và điểm tin 12 tiếng - 1220 điểm</option>
                         <option value="880">Luôn xếp trên tin nóng và điểm tin 6 tiếng - 880 điểm</option>
+                        <option value="@Model.ranking">@Model.ranking điểm</option>
                 </select>
-                                  
+                <script>document.getElementById("ranking").value=@Model.ranking;</script>                  
               </div>
          </div>
         <div class="col-md-6">
               <div class="form-group">
                 <label for="room" style="width:auto;display:block;">Từ báo nào:</label>
                 <select id="maindomain" name="maindomain" onchange="getDomainSelected();"></select>
-                <script>getDomainList("");</script>                    
-                <input type="hidden" id="domain" name="domain">
-                <input type="hidden" id="source" name="source" value="">                
+                <script>getDomainList("@Html.Raw(@Model.maindomain)");</script>                    
+                <input type="hidden" id="domain" name="domain" value="@Model.domain">
+                <input type="hidden" id="source" name="source" value="@Model.source">                 
                 <input type="hidden" id="keyword" name="keyword" value="">  
-                <input type="hidden" id="totalcomment" name="totalcomment" value="0">  
-                <input type="hidden" id="uplikes" name="uplikes" value="0">   
-                <input type="hidden" id="downlikes" name="downlikes" value="0"> 
-                <input type="hidden" id="topicid" name="topicid" value="">  
+                <input type="hidden" id="totalcomment" name="totalcomment" value="@Model.totalcomment">  
+                <input type="hidden" id="uplikes" name="uplikes" value="@Model.uplikes">   
+                <input type="hidden" id="downlikes" name="downlikes" value="@Model.downlikes"> 
+                <input type="hidden" id="topicid" name="topicid" value="@Model.topicid">  
                 <input type="hidden" id="isHot" name="isHot" value="2">  
                 <input type="hidden" id="isNew" name="isNew" value="">     
                 <input type="hidden" id="hasContent" name="hasContent" value="1">    
-                <input type="hidden" id="fixRanking" name="fixRanking" value=""> 
-                <input type="hidden" id="totalviews" name="totalviews" value="0">              
+                <input type="hidden" id="fixRanking" name="fixRanking" value="@Model.fixRanking"> 
+                <input type="hidden" id="totalviews" name="totalviews" value="@Model.totalviews">
+                <input type="hidden" id="datetime" name="datetime" value="@Model.datetime">
+                <input type="hidden" id="datetimeid" name="datetimeid" value="@Model.datetimeid"> 
+                <input type="hidden" id="lastUpdateRanking" name="lastUpdateRanking" value="@Model.lastUpdateRanking">                     
               </div>
          </div>
         <p>
@@ -161,7 +165,7 @@
 <script>
     function getDomainSelected() {
         document.getElementById("domain").value = $("#maindomain").find(':selected').attr("id");
-        //alert(document.getElementById("domain").value);
+        
     }
     function checkField() {
 
@@ -174,7 +178,7 @@
 
         if (document.getElementById("image").value == "") {
             alert("Upload ảnh đại diện!");
-            document.getElementById("imageFile").focus();
+            document.getElementById("image").focus();
             return false;
         }
         if (document.getElementById("des").value == "") {

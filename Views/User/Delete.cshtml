@@ -1,0 +1,19 @@
+﻿@model youknow.Models.user
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+<h2>Xóa</h2>
+
+<h3>Bạn có chắc chắn xóa user là @Model.username ?</h3>
+
+@using (Html.BeginForm("DeleteConfirmed", "User", FormMethod.Post, new { id = "EditForm" })){
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        <input type="hidden" id="id" name="id" value="@Model.id">
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

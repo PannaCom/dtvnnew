@@ -1,0 +1,44 @@
+﻿@model youknow.Models.user
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>user</legend>
+
+        @Html.HiddenFor(model => model.id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.username)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.username)
+            @Html.ValidationMessageFor(model => model.username)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.password)
+        </div>
+        <div class="editor-field">
+            <input type="password" id="password" name="password" value="">
+        </div>
+
+
+        <p>
+            <input type="submit" value="Cập nhật" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
