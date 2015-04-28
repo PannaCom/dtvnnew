@@ -130,7 +130,10 @@
                         <option value="30">Hạ xuống - 30 điểm</option>
                 </select>
                 <input type="checkbox" id="chkIsHot" onchange="changeIsHot();">Là tin nóng (bỏ chọn nếu là tin thường)
-                <script>document.getElementById("ranking").value=@Model.ranking;</script>                  
+                <script>
+                    document.getElementById("ranking").value=@Model.ranking;
+                    if ("@Model.isHot"=="2") {document.getElementById("chkIsHot").checked=true;}
+                </script>                  
               </div>
          </div>
         <div class="col-md-6">
