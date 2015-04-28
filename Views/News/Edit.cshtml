@@ -127,7 +127,9 @@
                         <option value="1220">Luôn xếp trên tin nóng và điểm tin 12 tiếng - 1220 điểm</option>
                         <option value="880">Luôn xếp trên tin nóng và điểm tin 6 tiếng - 880 điểm</option>
                         <option value="@Model.ranking">@Model.ranking điểm</option>
+                        <option value="30">Hạ xuống - 30 điểm</option>
                 </select>
+                <input type="checkbox" id="chkIsHot" onchange="changeIsHot();">Là tin nóng (bỏ chọn nếu là tin thường)
                 <script>document.getElementById("ranking").value=@Model.ranking;</script>                  
               </div>
          </div>
@@ -166,6 +168,14 @@
     function getDomainSelected() {
         document.getElementById("domain").value = $("#maindomain").find(':selected').attr("id");
         
+    }
+    function changeIsHot(){
+        if (document.getElementById("chkIsHot").checked){
+            document.getElementById("isHot").value=2;
+        }else{
+            document.getElementById("isHot").value=0;
+        }
+        //alert(document.getElementById("isHot").value);
     }
     function checkField() {
 

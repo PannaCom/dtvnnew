@@ -576,7 +576,7 @@ namespace youknow
                     //Nếu đã tồn tại tin trong DB thì kiểm tra điều kiện cập nhật, cập nhật nếu thỏa mãn (ranking mới >ranking cũ), nếu không thì chèn mới
                     if (arr[i].catid != 0)
                     {
-                        condition = " where catid<>0 and link=" + vN(arr[i].link.Trim()) + " and isHot<>2 ";
+                        condition = " where catid<>0 and link=" + vN(arr[i].link.Trim()) + " ";
                         if (titleCrawled.ContainsKey(arr[i].link.Trim()))
                         {
                         //    if (youknow.Uti.isImage(arr[i].image))
@@ -624,7 +624,7 @@ namespace youknow
                         query += "end ";
                     }
                     else {
-                        condition = " where catid=0 and link=" + vN(arr[i].link.Trim()) + " and isHot<>2 ";
+                        condition = " where catid=0 and link=" + vN(arr[i].link.Trim()) + " ";
                         //Chỉ cập nhật tin khi ranking mới cao hơn ranking cũ trong Database.
                         query = "if exists(select * from tinviet_admin.titles " + condition + ")";
                         query += " begin ";
@@ -782,17 +782,21 @@ namespace youknow
                 DateTime datetimenow = DateTime.Now;
                 //int minRaking = 0;// Uti.getMinRanking();
                 //reset hot
-                cmd.CommandText = "update tinviet_admin.titles set isHot=0 where isHot<>2 and datetimeid>=" + datetimeid;
+                cmd.CommandText = "update tinviet_admin.titles set isHot=0 where isHot<2 and datetimeid>=" + datetimeid;
                 cmd.ExecuteNonQuery();
                 //Cap nhat tin nao dung dau chu de
-                cmd.CommandText = "update tinviet_admin.titles set isHot=1 where isHot<>2 and datetimeid>=" + datetimeid2 + " and ranking>=30 and topicid=id and datediff(hour,datetime,getdate())<=" + Config.minHourHotNews;
+                cmd.CommandText = "update tinviet_admin.titles set isHot=1 where isHot<2 and datetimeid>=" + datetimeid2 + " and topicid=id and datediff(hour,datetime,getdate())<=" + Config.minHourHotNews;
                 cmd.ExecuteNonQuery();
                 //Cap nhat tin nao khong thuoc chu de nao ca
-                cmd.CommandText = "update tinviet_admin.titles set isHot=1 where isHot<>2 and datetimeid>=" + datetimeid2 + " and ranking>=30 and topicid is null and datediff(hour,datetime,getdate())<=" + Config.minHourHotNews;
+                cmd.CommandText = "update tinviet_admin.titles set isHot=1 where isHot<2 and datetimeid>=" + datetimeid2 + " and topicid is null and datediff(hour,datetime,getdate())<=" + Config.minHourHotNews;
                 cmd.ExecuteNonQuery();
 
                 //Cap nhat tin trong vong 3 tieng
-                cmd.CommandText = "update tinviet_admin.titles set isHot=1 where isHot<>2 and datetimeid>=" + datetimeid2 + " and ranking>=30 and datediff(hour,datetime,getdate())<=3";
+                cmd.CommandText = "update tinviet_admin.titles set isHot=1 where isHot<2 and datetimeid>=" + datetimeid2 + " and datediff(hour,datetime,getdate())<=3";
+                cmd.ExecuteNonQuery();
+
+                //Cap nhat tin co diem>=100
+                cmd.CommandText = "update tinviet_admin.titles set isHot=1 where isHot<2 and datetimeid>=" + datetimeid + " and ranking>=100";
                 cmd.ExecuteNonQuery();
 
                 //Cap nhat tin nao lay tu homepage
@@ -812,7 +816,7 @@ namespace youknow
                 hotNewsListId += "-1)";
                 cmd.CommandText = "update tinviet_admin.titles set isHot=1  where datetimeid>=" + datetimeid + " and hasContent=1 and catid=0 and id in "+hotNewsListId+" and datediff(hour,datetime,getdate())<=" + Config.minHourHotNews;
                 cmd.ExecuteNonQuery();
-                cmd.CommandText = "update tinviet_admin.titles set isHot=0,ranking=ranking-5  where isHot<>2 and datetimeid>=" + datetimeid + " and hasContent=1 and catid=0 and id not in " + hotNewsListId;
+                cmd.CommandText = "update tinviet_admin.titles set isHot=0,ranking=ranking-5  where isHot<2 and datetimeid>=" + datetimeid + " and hasContent=1 and catid=0 and id not in " + hotNewsListId;
                 cmd.ExecuteNonQuery();
                 cmd.Dispose();
                 closeConn();
@@ -888,7 +892,7 @@ namespace youknow
                 //CurrentBatchRun.getInfo = "OK" + DateTime.Now.ToString();
                 //return;                
                 //setNewsSameTopic();
-                //updateHotNews();
+                updateHotNews();
                 //return;
                 generateHotNew();
                 generateAllNew();
@@ -2145,16 +2149,16 @@ namespace youknow
                         CurrentBatchRun.getInfo = "Ghi ra 100 tin nóng nhất ra file xml của chuyên mục " + Uti.getCatNameFromId(catid);
                         showProcessCrawl();
                         string query = "select top 200 ";
-                        query += " A.id,title=A.name,des=A.des,source=A.source,date=A.datetime,datetimeid=A.datetimeid,isHot=A.isHot,";
+                        query += " A.id,title=A.name,des=A.des,source=A.source,date=A.datetime,datetimeid=A.datetimeid,";
                         query += " ranking=A.ranking,link=A.link,";
                         query += " image=A.image,totalcomment=A.totalcomment,maindomain=A.maindomain,";
                         query += " uplikes=A.uplikes,downlikes=A.downlikes,";
                         query += " topicid=A.topicid,catid=A.catid,hasContent=A.hasContent,datediff(minute,A.datetime,GETDATE()) as timediff, ";
                         query += " nameRelated=B.nameRelated,topicidRelated=B.topicidRelated,idRelated=B.idRelated,";
                         query += " linkRelated=B.linkRelated,maindomainRelated=B.maindomainRelated,rankingRelated=B.rankingRelated,hasContentRelated=B.hasContentRelated,imageRelated=B.imageRelated from ";
-                        query += " (select top 100 name,des,datetimeid,isHot,datetime,source,ranking,topicid,catid,id,link,image,totalcomment,maindomain,uplikes,downlikes,hasContent from tinviet_admin.titles where datetimeid>=" + Uti.datetimeidByDay(-4) + " and catid=" + catid + " and (topicid=id or topicid is null) order by  datetimeid desc, ranking desc, id desc) as A left join ";
+                        query += " (select top 100 name,des,datetimeid,datetime,source,ranking,topicid,catid,id,link,image,totalcomment,maindomain,uplikes,downlikes,hasContent from tinviet_admin.titles where datetimeid>=" + Uti.datetimeidByDay(-4) + " and catid=" + catid + " and (topicid=id or topicid is null) order by  datetimeid desc, ranking desc, id desc) as A left join ";
                         query += " (select datetimeid,name as nameRelated,topicid as topicidRelated,id as idRelated,link as linkRelated,maindomain as maindomainRelated,ranking as rankingRelated,hasContent as hasContentRelated,image as imageRelated,catid as catidRelated from tinviet_admin.titles where datetimeid>=" + Uti.datetimeidByDay(-4) + " and id=-1) as B on (A.topicid=B.topicidRelated and A.topicid=A.id and A.catid=B.catidRelated) ";//(A.id=B.topicidRelated and A.maindomain<>B.maindomainRelated) or (A.id=B.topicidRelated and A.id=A.topicid and A.maindomain=B.maindomainRelated) or (A.id=B.topicidRelated and A.datetimeid>B.datetimeid and A.maindomain=B.maindomainRelated) or 
-                        query += " order by A.datetimeid desc,A.isHot desc,A.datetime desc,B.idRelated desc,B.rankingRelated desc";//A.ranking desc,
+                        query += " order by A.datetimeid desc,A.datetime desc,B.idRelated desc,B.rankingRelated desc";//A.ranking desc,
 
                         //SC = new SqlCommand();
                         SC.CommandText = query;
