@@ -784,6 +784,8 @@ namespace youknow
                 //reset hot
                 cmd.CommandText = "update tinviet_admin.titles set isHot=0 where isHot<2 and datetimeid>=" + datetimeid;
                 cmd.ExecuteNonQuery();
+                cmd.CommandText = "update tinviet_admin.titles set isHot=0 where isHot is NULL and datetimeid>=" + datetimeid;
+                cmd.ExecuteNonQuery();
                 //Cap nhat tin nao dung dau chu de
                 cmd.CommandText = "update tinviet_admin.titles set isHot=1 where isHot<2 and datetimeid>=" + datetimeid2 + " and topicid=id and datediff(hour,datetime,getdate())<=" + Config.minHourHotNews;
                 cmd.ExecuteNonQuery();
@@ -2149,16 +2151,16 @@ namespace youknow
                         CurrentBatchRun.getInfo = "Ghi ra 100 tin nóng nhất ra file xml của chuyên mục " + Uti.getCatNameFromId(catid);
                         showProcessCrawl();
                         string query = "select top 200 ";
-                        query += " A.id,title=A.name,des=A.des,source=A.source,date=A.datetime,datetimeid=A.datetimeid,";
+                        query += " A.id,title=A.name,des=A.des,source=A.source,date=A.datetime,datetimeid=A.datetimeid,isHot=A.isHot,";
                         query += " ranking=A.ranking,link=A.link,";
                         query += " image=A.image,totalcomment=A.totalcomment,maindomain=A.maindomain,";
                         query += " uplikes=A.uplikes,downlikes=A.downlikes,";
                         query += " topicid=A.topicid,catid=A.catid,hasContent=A.hasContent,datediff(minute,A.datetime,GETDATE()) as timediff, ";
                         query += " nameRelated=B.nameRelated,topicidRelated=B.topicidRelated,idRelated=B.idRelated,";
                         query += " linkRelated=B.linkRelated,maindomainRelated=B.maindomainRelated,rankingRelated=B.rankingRelated,hasContentRelated=B.hasContentRelated,imageRelated=B.imageRelated from ";
-                        query += " (select top 100 name,des,datetimeid,datetime,source,ranking,topicid,catid,id,link,image,totalcomment,maindomain,uplikes,downlikes,hasContent from tinviet_admin.titles where datetimeid>=" + Uti.datetimeidByDay(-4) + " and catid=" + catid + " and (topicid=id or topicid is null) order by  datetimeid desc, ranking desc, id desc) as A left join ";
+                        query += " (select top 100 name,des,datetimeid,isHot,datetime,source,ranking,topicid,catid,id,link,image,totalcomment,maindomain,uplikes,downlikes,hasContent from tinviet_admin.titles where datetimeid>=" + Uti.datetimeidByDay(-4) + " and catid=" + catid + " and (topicid=id or topicid is null) order by  datetimeid desc, ranking desc, id desc) as A left join ";
                         query += " (select datetimeid,name as nameRelated,topicid as topicidRelated,id as idRelated,link as linkRelated,maindomain as maindomainRelated,ranking as rankingRelated,hasContent as hasContentRelated,image as imageRelated,catid as catidRelated from tinviet_admin.titles where datetimeid>=" + Uti.datetimeidByDay(-4) + " and id=-1) as B on (A.topicid=B.topicidRelated and A.topicid=A.id and A.catid=B.catidRelated) ";//(A.id=B.topicidRelated and A.maindomain<>B.maindomainRelated) or (A.id=B.topicidRelated and A.id=A.topicid and A.maindomain=B.maindomainRelated) or (A.id=B.topicidRelated and A.datetimeid>B.datetimeid and A.maindomain=B.maindomainRelated) or 
-                        query += " order by A.datetimeid desc,A.datetime desc,B.idRelated desc,B.rankingRelated desc";//A.ranking desc,
+                        query += " order by A.datetimeid desc,A.isHot desc,A.datetime desc,B.idRelated desc,B.rankingRelated desc";//A.ranking desc,
 
                         //SC = new SqlCommand();
                         SC.CommandText = query;
