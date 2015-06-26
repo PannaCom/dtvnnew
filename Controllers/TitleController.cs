@@ -33,6 +33,7 @@ namespace youknow.Controllers
 
         public ActionResult Details(int id = 0)
         {
+            return RedirectToAction("Pause", "Home");
             try
             {
                 //if (Request.Browser.IsMobileDevice) {

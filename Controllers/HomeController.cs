@@ -462,6 +462,7 @@ namespace youknow.Controllers
         //Dùng khi user click vào Điểm tin trong ngày
         public ActionResult CatNews(int id)
         {
+            return RedirectToAction("Pause", "Home");
             //return RedirectToAction("ChuyenMuc", "Home", new {id=id});
             ViewBag.userToken = Session["usertoken"];
             ViewBag.userInfo = Session["userinfo"];
@@ -598,6 +599,7 @@ namespace youknow.Controllers
         //Dùng khi user click vào Điểm tin trong ngày
         public ActionResult News()
         {
+            return RedirectToAction("Pause", "Home");
             ViewBag.userToken = Session["usertoken"];
             ViewBag.userInfo = Session["userinfo"];
             ViewBag.userName = Session["username"];
@@ -913,10 +915,14 @@ namespace youknow.Controllers
         public class catItem {
             public string view;
         }
+        public ActionResult Pause() {
+            return View();
+        }
         //Lấy ra các tin nóng, có isHot=1, dùng mô hình MVC        
         //Dùng khi user click vào tin nóng
         public ActionResult HotNews()
         {
+            return RedirectToAction("Pause", "Home");
             //return RedirectToAction("TinNong", "Home");
             ViewBag.userToken = Session["usertoken"];
             ViewBag.userInfo = Session["userinfo"];            
