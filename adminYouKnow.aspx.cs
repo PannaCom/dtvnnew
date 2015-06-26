@@ -894,11 +894,11 @@ namespace youknow
                 //CurrentBatchRun.getInfo = "OK" + DateTime.Now.ToString();
                 //return;                
                 //setNewsSameTopic();
-                updateHotNews();
+                //updateHotNews();
                 //return;
-                generateHotNew();
-                generateAllNew();
-                generateCategoryNews();                
+                //generateHotNew();
+                //generateAllNew();
+                //generateCategoryNews();                
                 //return;
                 //generateCategoryNews();                
                 //generateAllNew();
