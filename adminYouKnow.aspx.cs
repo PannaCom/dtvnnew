@@ -556,18 +556,18 @@ namespace youknow
                     if (hasContent == 0) { arr[i].ranking = 1; continue; }
                     if (arr[i].image.Equals("")) arr[i].ranking = arr[i].ranking/2;
 
-                    if (Uti.isImage(arr[i].image)) {
-                        try
-                        {
-                            string url = arr[i].image;
-                            if (arr[i].maindomain.Contains("vtc.vn")) url = url.Replace(".jpg", ".JPG");
-                            string fileName = Uti.unicodeToNoMark(arr[i].title) + "-" + Uti.smDomain(arr[i].maindomain).Replace(".", "") + "-" + arr[i].datetimeid + ".jpg";
-                            string file_name = Server.MapPath(".") + "\\Images\\News\\" + fileName;
-                            Uti.save_file_from_url(file_name, url);
-                            arr[i].image = Config.domain + "/Images/News/" + fileName;
-                        }
-                        catch (Exception dlimage) { }
-                    }
+                    //if (Uti.isImage(arr[i].image)) {
+                    //    try
+                    //    {
+                    //        string url = arr[i].image;
+                    //        if (arr[i].maindomain.Contains("vtc.vn")) url = url.Replace(".jpg", ".JPG");
+                    //        string fileName = Uti.unicodeToNoMark(arr[i].title) + "-" + Uti.smDomain(arr[i].maindomain).Replace(".", "") + "-" + arr[i].datetimeid + ".jpg";
+                    //        string file_name = Server.MapPath(".") + "\\Images\\News\\" + fileName;
+                    //        Uti.save_file_from_url(file_name, url);
+                    //        arr[i].image = Config.domain + "/Images/News/" + fileName;
+                    //    }
+                    //    catch (Exception dlimage) { }
+                    //}
                     
                     string condition = "";// where datetimeid=" + datetimeid + " and (name like " + vN(arr[i].title) + " or link=" + vN(arr[i].link) + ")";
                     string condition1 = " where tokenid=" + vN(arr[i].token.Trim());
@@ -729,31 +729,31 @@ namespace youknow
 
             }            
             //Chèn vào bảng backup để search và lưu trữ cho Google tìm thấy
-            int maxid = 0;
-            query = "select max(id) as maxid from tinviet_admin.titlesSearch";
-            try
-            {
-                cmd.CommandText = query;
-                SqlDataReader DR = cmd.ExecuteReader();
-                if (DR.Read()) {
-                    maxid =int.Parse(DR["maxid"].ToString());
-                }
-                DR.Close();
-            }
-            catch (Exception ex3)
-            {
+            //int maxid = 0;
+            //query = "select max(id) as maxid from tinviet_admin.titlesSearch";
+            //try
+            //{
+            //    cmd.CommandText = query;
+            //    SqlDataReader DR = cmd.ExecuteReader();
+            //    if (DR.Read()) {
+            //        maxid =int.Parse(DR["maxid"].ToString());
+            //    }
+            //    DR.Close();
+            //}
+            //catch (Exception ex3)
+            //{
 
-            }
-            query = "insert into tinviet_admin.titlesSearch select * from tinviet_admin.titles where id>"+maxid;
-            try
-            {
-                cmd.CommandText = query;
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception ex4)
-            {
+            //}
+            //query = "insert into tinviet_admin.titlesSearch select * from tinviet_admin.titles where id>"+maxid;
+            //try
+            //{
+            //    cmd.CommandText = query;
+            //    cmd.ExecuteNonQuery();
+            //}
+            //catch (Exception ex4)
+            //{
 
-            }
+            //}
             query = "delete from tinviet_admin.titles where datetimeid<" + Uti.datetimeidByDay(-7);
             try
             {
@@ -1222,20 +1222,20 @@ namespace youknow
                 string callService = "";
                 try
                 {
-                    string abc=Rss.getContent("http://hayhayvuivui.com/crawlImage.aspx");
+                    string abc = Rss.getContent("http://tinnhanhtonghop.com/crawlImage.aspx");
                     if (abc.Contains("Batch Runner Example")) {
-                        callService = "call service hayhayvuivui ok";
+                        callService = "call service tinnhanhtonghop ok";
                     }
-                    abc = Rss.getContent("http://thetopnews.net/crawl.aspx");
-                    if (abc.Contains("Batch Runner Example"))
-                    {
-                        callService += ", call service thetopnews ok";
-                    }
-                    abc = Rss.getContent("http://tingting.vn/crawlImage.aspx");
-                    if (abc.Contains("Batch Runner Example"))
-                    {
-                        callService += ", call service tingting.vn ok";
-                    }
+                    //abc = Rss.getContent("http://thetopnews.net/crawl.aspx");
+                    //if (abc.Contains("Batch Runner Example"))
+                    //{
+                    //    callService += ", call service thetopnews ok";
+                    //}
+                    //abc = Rss.getContent("http://tingting.vn/crawlImage.aspx");
+                    //if (abc.Contains("Batch Runner Example"))
+                    //{
+                    //    callService += ", call service tingting.vn ok";
+                    //}
                 }
                 catch (Exception ex) { 
 
