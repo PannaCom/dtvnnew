@@ -754,7 +754,7 @@ namespace youknow
             //{
 
             //}
-            query = "delete from tinviet_admin.titles where datetimeid<" + Uti.datetimeidByDay(-7);
+            query = "delete from tinviet_admin.titles where datetimeid<" + Uti.datetimeidByDay(-3);
             try
             {
                 cmd.CommandText = query;
@@ -1226,11 +1226,12 @@ namespace youknow
                     if (abc.Contains("Batch Runner Example")) {
                         callService = "call service tinnhanhtonghop ok";
                     }
-                    //abc = Rss.getContent("http://thetopnews.net/crawl.aspx");
-                    //if (abc.Contains("Batch Runner Example"))
-                    //{
-                    //    callService += ", call service thetopnews ok";
-                    //}
+
+                    abc = Rss.getContent("http://vuithe.net/Home/crawl");
+                    if (abc.Contains("Done"))
+                    {
+                        callService += ", call service vuithe.net ok";
+                    }
                     //abc = Rss.getContent("http://tingting.vn/crawlImage.aspx");
                     //if (abc.Contains("Batch Runner Example"))
                     //{
