@@ -42,80 +42,60 @@ namespace youknow.Controllers
         }
         public string getAllLink(string url)
         {
-            //if (url.Contains("giaoduc.net.vn"))
-            //{
-                
-            //    return "";
-            //}
-
-            string allLink = "";
-            string allImage = "";
-            string slink = "";
-            string stitle = "";
-            string simage = "";
-            
-            string html;
-            string sdes = "";
-            string sdate="";
-            //using (var wc = new GZipWebClient())
-            //    html = wc.DownloadString(url);
-            WebClient client = new WebClient();
-            var data = client.DownloadData(url);
-            html = Encoding.UTF8.GetString(data);
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
-            string content = "";
-            content = doc.DocumentNode.SelectSingleNode("//div[contains(@id,'cnn_maintt1imgbul')]").InnerHtml;
-            content += doc.DocumentNode.SelectSingleNode("//div[contains(@class,'cnn_relpostn')]").InnerHtml;
-            content += doc.DocumentNode.SelectSingleNode("//div[contains(@class,'cnn_mc2nodecntr')]").InnerHtml;
-            return content;
-            foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@id,'cnn_maintt1imgbul')]"))
+            string allLinked = "";
+            try
             {
-                return link.InnerHtml;
-                //HtmlAttribute att = link.Attributes["href"];
-                foreach (HtmlNode link2 in link.SelectNodes(".//div[contains(@class,'clearfix')]"))
+                var doc = new HtmlDocument();
+                string html;
+                using (var wc = new Config.GZipWebClient())
+                    html = wc.DownloadString(url);
+                //html = DecodeFromUtf8(html);
+                doc.LoadHtml(html);
+                
+                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//article[contains(@class,'')]"))
                 {
-
-                    slink = "";
-                    slink = link2.SelectSingleNode(".//a[contains(@class,'')]").Attributes["href"].Value;
+                    string stitle = link.SelectSingleNode(".//h1[contains(@class,'')]").SelectSingleNode(".//a[contains(@class,'')]").InnerText;
+                    stitle = stitle.Replace("\n", "");
+                    allLinked += stitle + "\r\n<br>";
+                    string slink = link.SelectSingleNode(".//h1[contains(@class,'')]").SelectSingleNode(".//a[contains(@class,'')]").Attributes["href"].Value;
+                    string simage = "";
+                    string sdatetime = "";
                     try
                     {
-                        simage = link2.SelectSingleNode(".//a[contains(@class,'')]").SelectSingleNode(".//img[contains(@class,'')]").Attributes["src"].Value;
-                    }
-                    catch (Exception eximage) { 
-                    }
-                    stitle = link2.SelectSingleNode(".//h3[contains(@class,'')]").SelectSingleNode(".//a[contains(@class,'')]").Attributes["title"].Value;
-                    sdate = "";
-                    try
-                    {
-                        sdate = link2.SelectSingleNode(".//p[contains(@class,'datetime')]").InnerText;
+                        simage = link.SelectSingleNode(".//div[contains(@class,'cover')]").Attributes["style"].Value;
+                        sdatetime = link.SelectSingleNode(".//time[contains(@class,'')]").Attributes["datetime"].Value;
+                        allLinked += simage + "\r\n<br>";
+                        allLinked += sdatetime + "\r\n<br>";
                     }
                     catch (Exception ex)
                     {
-                    }
-                    if (stitle.Equals("") || slink.Equals("")) continue;
 
-                    if (!slink.Contains("http://nld.com.vn")) slink = "http://nld.com.vn" + slink;
-                    //if (image.Equals("")) continue;
-                    //image = image.Replace("background-image: ", "").Replace(")", "").Replace("url(", "").Replace(";", "");
-                    //string link = link.SelectSingleNode(".//li[contains(@class,'nameAuPost')]").InnerText;
-                    if (!sdate.Equals(""))
+                    }
+                    if (stitle.Equals("") || slink.Equals("") || simage.Equals("")) continue;
+                    simage = simage.Replace("background-image: ", "").Replace(")", "").Replace("url(", "").Replace(";", "");
+                    simage = simage.Replace("background-image:", "").Replace(")", "").Replace("url(", "").Replace(";", "");
+                    slink = "http://news.zing.vn" + slink;
+                    if (!allLinked.Contains("," + slink + ","))
                     {
-                        sdate = sdate.Substring(3, 2) + "/" + sdate.Substring(0, 2) + "/" + DateTime.Now.Year.ToString()+" "+DateTime.Now.ToShortTimeString();
-                        sdate = Uti.isDate(sdate);
-                        if (sdate.Equals(""))
-                        {
-                            sdate = DateTime.Now.ToString();
-                        }
-
+                        allLinked += "," + slink + ",";
                     }
-                    allLink += stitle + "<img src=" + simage + ">" + sdate;
-
+                    else continue;
+                    sdatetime = Uti.isDate(sdatetime);
+                    if (sdatetime.Equals("")) sdatetime = DateTime.Now.ToString();
+                    allLinked += simage + "\r\n<br>";
+                    allLinked += sdatetime + "\r\n<br>";
+                    if (Uti.dateDiff(sdatetime, DateTime.Now.ToString()) > 4)
+                    {
+                        continue;
+                    }
+                    
                 }
             }
+            catch (Exception ex)
+            {
+            }
+            return allLinked;
            
-            //ViewBag.allLink = allLink + allImage;
-            return allLink;
         }
         //
         // GET: /rss/Details/5
