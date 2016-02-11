@@ -556,7 +556,7 @@ namespace youknow
         }
         public static string getDantri(string url)
         {
-            return "";
+            //return "";
             string fullContent = "";
             try
             {
@@ -574,9 +574,9 @@ namespace youknow
                 var doc = new HtmlDocument();
                 doc.LoadHtml(html);
 
-                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@class,'fl wid470')]"))
+                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@id,'ctl00_IDContent_ctl00_divContent')]"))
                 {
-                    fullContent = link.SelectSingleNode(".//div[contains(@class,'fon34 mt3 mr2 fon43')]").InnerHtml;
+                    fullContent = link.SelectSingleNode(".//div[contains(@id,'divNewsContent')]").InnerHtml;
                     break;
                 }
             }
@@ -642,14 +642,14 @@ namespace youknow
                 var doc = new HtmlDocument();
                 doc.LoadHtml(html);
 
-                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@id,'body')]"))
+                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@class,'primary left')]"))
                 {
-                    fullContent = link.SelectSingleNode(".//div[contains(@class,'copy post-body')]").InnerHtml;
+                    fullContent = link.SelectSingleNode(".//div[contains(@id,'abdf')]").InnerHtml;
                     string span = "";
                     //Remove tin lien quan
                     try
                     {
-                        foreach (HtmlNode linkspan in link.SelectSingleNode(".//div[contains(@class,'media-body-detail tz-view')]").SelectNodes(".//div[contains(@class,'news-relation-top-detail')]"))
+                        foreach (HtmlNode linkspan in link.SelectSingleNode(".//div[contains(@id,'abdf')]").SelectNodes(".//div[contains(@class,'news-relation-top-detail')]"))
                         {
                             try
                             {
@@ -856,10 +856,10 @@ namespace youknow
                 //html = DecodeFromUtf8(html);
                 doc.LoadHtml(html);
 
-                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//section[contains(@class,'article-content clearfix')]"))
+                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@class,'article-content')]"))
                 {
                     //Lay ra content chinh.
-                    fullContent = link.SelectSingleNode(".//div[contains(@class,'main-contents')]").InnerHtml;
+                    fullContent = link.SelectSingleNode(".//div[contains(@class,'content')]").InnerHtml;
                     //Remove tin lien quan
                     string span = "";
                     try
@@ -1147,15 +1147,15 @@ namespace youknow
                 HtmlDocument doc = hw.Load(url);
                 try
                 {
-                    foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@id,'BodyContent')]"))
+                    foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@id,'pageContent')]"))
                     {
-                        fullContent = link.SelectSingleNode(".//div[contains(@id,'pageContent')]").InnerHtml;
+                        fullContent = link.InnerHtml;//SelectSingleNode(".//div[contains(@id,'pageContent')]")
                         //return fullContent;
                         //bo cac the tin lien quan di
                         string span = "";
                         try
                         {
-                            foreach (HtmlNode linkspan in link.SelectSingleNode(".//div[contains(@id,'pageContent')]").SelectNodes(".//a[contains(@class,'tinlienquan')]"))
+                            foreach (HtmlNode linkspan in link.SelectNodes(".//a[contains(@class,'related_articles_container')]"))
                             {
                                 try
                                 {
@@ -1265,7 +1265,7 @@ namespace youknow
                 html = Encoding.UTF8.GetString(data);
                 var doc = new HtmlDocument();
                 doc.LoadHtml(html);
-                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@id,'mainDetail')]"))
+                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@class,'newscontent_right')]"))
                 {
                     //try
                     //{
@@ -1273,7 +1273,7 @@ namespace youknow
                     //}
                     //catch (Exception ex) { 
                     //}
-                    fullContent += link.SelectSingleNode(".//div[contains(@id,'contentv2')]").InnerHtml;
+                    fullContent += link.InnerHtml;//SelectSingleNode(".//div[contains(@id,'contentv2')]").
                     //return fullContent;
                     break;
                 }
@@ -1348,9 +1348,9 @@ namespace youknow
                 HtmlDocument doc = hw.Load(url);
                 try
                 {
-                    foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@class,'detail_sao_colleft')]"))
+                    foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@id,'vmccontent')]"))
                     {
-                        fullContent = link.SelectSingleNode(".//div[contains(@class,'detail_content')]").InnerHtml;
+                        fullContent = link.InnerHtml;//SelectSingleNode(".//div[contains(@class,'detail_content')]").
                         //return fullContent;
                         break;
                     }
@@ -1604,9 +1604,9 @@ namespace youknow
             {
                 HtmlWeb hw = new HtmlWeb();
                 HtmlDocument doc = hw.Load(url);
-                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@class,'postpadding')]"))
+                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@class,'knd-content')]"))
                 {
-                    string content = link.SelectSingleNode(".//div[contains(@class,'content')]").InnerHtml;
+                    string content = link.InnerHtml;//SelectSingleNode(".//div[contains(@class,'content')]").
                     return content;
                 }
             }
@@ -1648,9 +1648,9 @@ namespace youknow
             {
                 HtmlWeb hw = new HtmlWeb();
                 HtmlDocument doc = hw.Load(url);
-                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@class,'temp_left_2')]"))
+                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//div[contains(@id,'NewsGallery')]"))
                 {
-                    fullContent = link.SelectSingleNode(".//div[contains(@class,'AD_body')]").InnerHtml;
+                    fullContent = link.InnerHtml;//SelectSingleNode(".//div[contains(@class,'AD_body')]").
                     //return fullContent;
                     break;
                 }
