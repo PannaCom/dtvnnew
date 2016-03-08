@@ -138,6 +138,8 @@
           <Property Name="usertokenreplyid" Type="nvarchar" MaxLength="100" />
           <Property Name="fullName" Type="nvarchar" MaxLength="50" />
           <Property Name="fullNameReply" Type="nvarchar" MaxLength="50" />
+          <Property Name="likes" Type="int" />
+          <Property Name="unlikes" Type="int" />
         </EntityType>
         <EntityType Name="dailykeyword">
           <Key>
@@ -300,7 +302,6 @@
           <EntitySet Name="zadvs" EntityType="tinviet_vietnamModel.zadv" />
           <EntitySet Name="zalexas" EntityType="tinviet_vietnamModel.zalexa" />
           <EntitySet Name="categories" EntityType="tinviet_vietnamModel.category" />
-          <EntitySet Name="comments" EntityType="tinviet_vietnamModel.comment" />
           <EntitySet Name="dailykeywords" EntityType="tinviet_vietnamModel.dailykeyword" />
           <EntitySet Name="domains" EntityType="tinviet_vietnamModel.domain" />
           <EntitySet Name="filterkeywords" EntityType="tinviet_vietnamModel.filterkeyword" />
@@ -314,6 +315,7 @@
           <EntitySet Name="userFilters" EntityType="tinviet_vietnamModel.userFilter" />
           <EntitySet Name="blockurls" EntityType="tinviet_vietnamModel.blockurl" />
           <EntitySet Name="users" EntityType="tinviet_vietnamModel.user" />
+          <EntitySet Name="comments" EntityType="tinviet_vietnamModel.comment" />
         </EntityContainer>
         <EntityType Name="cat">
           <Key>
@@ -389,21 +391,6 @@
           <Property Type="String" Name="name" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="groupid" />
           <Property Type="String" Name="groupname" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="comment">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="usertoken" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="Int32" Name="idnews" />
-          <Property Type="String" Name="contents" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="datetime" Nullable="false" Precision="3" />
-          <Property Type="Int32" Name="datetimeid" Nullable="false" />
-          <Property Type="Int32" Name="replyid" />
-          <Property Type="String" Name="usertokenreplyid" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="fullName" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="fullNameReply" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="dailykeyword">
           <Key>
@@ -569,6 +556,23 @@
           <Property Type="String" Name="fullname" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="type" />
         </EntityType>
+        <EntityType Name="comment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="usertoken" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="idnews" />
+          <Property Type="String" Name="contents" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="datetime" Nullable="false" Precision="3" />
+          <Property Type="Int32" Name="datetimeid" Nullable="false" />
+          <Property Type="Int32" Name="replyid" />
+          <Property Type="String" Name="usertokenreplyid" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="fullName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="fullNameReply" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="likes" />
+          <Property Type="Int32" Name="unlikes" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -652,22 +656,6 @@
                 <ScalarProperty Name="groupname" ColumnName="groupname" />
                 <ScalarProperty Name="groupid" ColumnName="groupid" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="comments">
-            <EntityTypeMapping TypeName="tinviet_vietnamModel.comment">
-              <MappingFragment StoreEntitySet="comments">
-                <ScalarProperty Name="fullNameReply" ColumnName="fullNameReply" />
-                <ScalarProperty Name="fullName" ColumnName="fullName" />
-                <ScalarProperty Name="usertokenreplyid" ColumnName="usertokenreplyid" />
-                <ScalarProperty Name="replyid" ColumnName="replyid" />
-                <ScalarProperty Name="datetimeid" ColumnName="datetimeid" />
-                <ScalarProperty Name="datetime" ColumnName="datetime" />
-                <ScalarProperty Name="contents" ColumnName="contents" />
-                <ScalarProperty Name="idnews" ColumnName="idnews" />
-                <ScalarProperty Name="usertoken" ColumnName="usertoken" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -845,6 +833,24 @@
                 <ScalarProperty Name="fullname" ColumnName="fullname" />
                 <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="comments">
+            <EntityTypeMapping TypeName="tinviet_vietnamModel.comment">
+              <MappingFragment StoreEntitySet="comments">
+                <ScalarProperty Name="unlikes" ColumnName="unlikes" />
+                <ScalarProperty Name="likes" ColumnName="likes" />
+                <ScalarProperty Name="fullNameReply" ColumnName="fullNameReply" />
+                <ScalarProperty Name="fullName" ColumnName="fullName" />
+                <ScalarProperty Name="usertokenreplyid" ColumnName="usertokenreplyid" />
+                <ScalarProperty Name="replyid" ColumnName="replyid" />
+                <ScalarProperty Name="datetimeid" ColumnName="datetimeid" />
+                <ScalarProperty Name="datetime" ColumnName="datetime" />
+                <ScalarProperty Name="contents" ColumnName="contents" />
+                <ScalarProperty Name="idnews" ColumnName="idnews" />
+                <ScalarProperty Name="usertoken" ColumnName="usertoken" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

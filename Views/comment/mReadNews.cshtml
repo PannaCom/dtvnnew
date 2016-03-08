@@ -30,7 +30,7 @@
         
         <div class="container">
             
-            <div class="col-md-7 padding-l-0" id="left-col">
+            <div class="col-md-12 padding-l-0" id="left-col">
                 <div class="article-info">
                     <div class="breadcrumb" itemtype="http://schema.org/ImageObject">
                         <a class="breadcrumbitem1" href="#">@youknow.Uti.getCatNameFromId(@ViewBag.catid)</a>
@@ -58,7 +58,7 @@
                     
                 </div>
 
-                @if (!ViewBag.topicid.Equals(-1))
+               @* @if (!ViewBag.topicid.Equals(-1))
                 {
                     <div class="list-related-post2" id="relatedNewsAll">                
                     <h3 class="related-title2">Tin liên quan</h3>
@@ -67,7 +67,7 @@
                         </ul>
                     </div>
                     
-                }
+                }*@
                     
 
 
@@ -75,32 +75,35 @@
                 <div class="clear-fix"></div>
             </div>
 
-            <div class="col-md-3 padding-0" id="mid-col">
+            <div class="col-md-12 padding-0" id="mid-col">
                 <div class="related-post" >
-                    <h3 class="related-post-title">Tin cùng chuyên mục</h3>
+                    <h3 class="related-post-title">Bình luận</h3>
                     <ul class="list-related-post" id="relatedCatNews">
                         
                     </ul>
-
+                    <ul class="list-related-post">
+                        Tên bạn<input type="text" id="user_name" style="width:100%">
+                        Nội dung bình luận<textarea id="user_comment" style="width:100%" rows="10"></textarea>
+                        <input type="button" style="width:100%" value="Gửi bình luận" onclick="send();">
+                    </ul>
+                    <ul class="list-related-post" style="height:100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ul>
                     <div class="clear-fix"></div>
                 </div>
                 <div class="clear-fix"></div>
             </div>
 
-            <div class="col-md-2 padding-r-0" id="right-col">
-                
-            </div>
 
         </div>
 
     </div>
     <script>
         optimizeImageMobile();
-        @if (!ViewBag.topicid.Equals(-1))
+        @*@if (!ViewBag.topicid.Equals(-1))
         {
             <text>getRelatedMobile(@ViewBag.topicid);</text>
         }
-        getRelatedCatMobile(@ViewBag.catid);
+        getRelatedCatMobile(@ViewBag.catid);*@
+
         voteNewsRead(@ViewBag.idNews,1);
         //$('img').each(function(){
         //    $(this).click(function(){
@@ -117,4 +120,89 @@
         //        }
         //    });
         //});
+        //Lấy ra tin đọc nhiều nhất
+        function send() {
+            var formdata = new FormData(); //FormData object
+            var contents=document.getElementById("user_comment").value;
+            var fullName=document.getElementById("user_name").value;
+            var idnews=@ViewBag.idNews;
+            if (contents.trim()==""){
+                alert("Bạn chưa nhập nội dung!");
+                document.getElementById("user_comment").focus();
+                return;
+            }
+            if (fullName.trim()==""){
+                alert("Bạn chưa nhập tên!");
+                document.getElementById("user_name").focus();
+                return;
+            }
+            formdata.append("contents", contents);
+            formdata.append("fullName", fullName);
+            formdata.append("idnews", idnews);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/comment/addNew');
+            xhr.send(formdata);
+            
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    if (xhr.responseText=="1"){
+                        alert("Gửi bình luận thành công!\r\nCảm ơn bạn đã đóng góp ý kiến!");
+                        window.location.reload();
+                    }
+                }//return ajax statuc
+            }//onreadystatechange
+        }//function
+        function getAllComment() {    
+            //Creating an XMLHttpRequest and sending
+            //$("#dvTopNewsWeekly").show();
+            var formdata = new FormData(); //FormData object
+            formdata.append("idnews", @ViewBag.idNews);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/comment/getAllComment');
+            xhr.send(formdata);
+            var content = "";
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var news = '{"news":' + xhr.responseText + '}';
+                    
+                    var json_parsed = $.parseJSON(news);
+                    
+                    for (var i = 0; i < json_parsed.news.length; i++) {
+                        if (json_parsed.news[i]) {
+                            content+="<div style='width:100%;background:#f8f8f8;margin-top:5px;position:relative;float:left;'>";
+                            content+="<div style='width:100%;background:#f8f8f8;position:relative;float:left;'><span style='float:left;'><b>"+json_parsed.news[i].fullName+"</b> gửi lúc "+json_parsed.news[i].datetime+"</span><span style='float:right;cursor:pointer;' onclick='updatelikes("+json_parsed.news[i].id+","+json_parsed.news[i].likes+");'>Thích&nbsp;<img src='/Images/care.png'>&nbsp;<span id=likes"+json_parsed.news[i].id+">"+json_parsed.news[i].likes+"</span></span></div>";
+                            content+="<div style='width:100%;background:#f8f8f8;position:relative;float:left;'>"+json_parsed.news[i].contents+"</div>";
+                            content+="</div>";
+                        }
+                    }
+                    
+                    if (json_parsed.news.length>0) 
+                    {
+                        $("#relatedCatNews").html(content);
+                    }else{
+                        
+                    }
+                }
+            }
+        }
+        getAllComment();
+        function updatelikes(id,value){
+            var formdata = new FormData(); //FormData object
+            formdata.append("id", id);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/comment/updatelikes');
+            xhr.send(formdata);
+            var content = "";
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    if (xhr.responseText=="1"){
+                        value++;
+                        document.getElementById("likes"+id).innerHTML=value;       
+                        //alert(value);
+                    }else{
+                        //alert(value);
+                    }
+                }
+            }
+        }
     </script>

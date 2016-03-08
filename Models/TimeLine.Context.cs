@@ -31,7 +31,6 @@ namespace youknow.Models
         public DbSet<zadv> zadvs { get; set; }
         public DbSet<zalexa> zalexas { get; set; }
         public DbSet<category> categories { get; set; }
-        public DbSet<comment> comments { get; set; }
         public DbSet<dailykeyword> dailykeywords { get; set; }
         public DbSet<domain> domains { get; set; }
         public DbSet<filterkeyword> filterkeywords { get; set; }
@@ -45,5 +44,6 @@ namespace youknow.Models
         public DbSet<userFilter> userFilters { get; set; }
         public DbSet<blockurl> blockurls { get; set; }
         public DbSet<user> users { get; set; }
+        public DbSet<comment> comments { get; set; }
     }
 }

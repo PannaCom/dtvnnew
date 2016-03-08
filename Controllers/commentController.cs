@@ -533,5 +533,51 @@ namespace youknow.Controllers
             db.Dispose();
             base.Dispose(disposing);
         }
+        public string addNew(string contents, string fullName, int idnews)
+        {
+            try
+            {
+                comment cm = new comment();
+                cm.contents = contents;
+                cm.fullName = fullName;
+                cm.idnews = idnews;
+                cm.datetime = DateTime.Now;
+                cm.datetimeid = Uti.datetimeid();
+                cm.likes = 0;
+                cm.unlikes = 0;
+                cm.usertoken = "";
+                db.comments.Add(cm);
+                db.SaveChanges();
+            }
+            catch (Exception ex) {
+                return "0";
+            }
+            return "1";
+        }
+        [HttpPost]
+        public string getAllComment(int idnews)
+        {
+            try
+            {
+                var p = (from q in db.comments where q.idnews == idnews select q).OrderByDescending(o => o.likes).ThenByDescending(o => o.id);
+                return JsonConvert.SerializeObject(p.ToList());
+            }
+            catch (Exception ex) {
+                return "";
+            }            
+        }
+        [HttpPost]
+        public string updatelikes(int id)
+        {
+            try
+            {
+                db.Database.ExecuteSqlCommand("update [tinviet_vietnam].[tinviet_admin].[comments] set likes=likes+1 where id=" + id);
+                return "1";
+            }
+            catch (Exception ex)
+            {
+                return "0";
+            }  
+        }
     }
 }

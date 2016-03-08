@@ -553,7 +553,7 @@ namespace youknow
                     if (!fullContent.Trim().Equals("")) {
                         hasContent = 1;
                     }
-                    if (hasContent == 0) { arr[i].ranking = 1; continue; }
+                    if (hasContent == 0) { arr[i].ranking = 1;  }//continue;
                     if (arr[i].image.Equals("")) arr[i].ranking = arr[i].ranking/2;
 
                     //if (Uti.isImage(arr[i].image)) {
@@ -1231,6 +1231,11 @@ namespace youknow
                     if (abc.Contains("Done"))
                     {
                         callService += ", call service vuithe.net ok";
+                    }
+                    abc = Rss.getContent("http://billgate.org/Home/crawl");
+                    if (abc.Contains("Done"))
+                    {
+                        callService += ", call service billgate.org ok";
                     }
                     //abc = Rss.getContent("http://tingting.vn/crawlImage.aspx");
                     //if (abc.Contains("Batch Runner Example"))

@@ -24,5 +24,7 @@ namespace youknow.Models
         public string usertokenreplyid { get; set; }
         public string fullName { get; set; }
         public string fullNameReply { get; set; }
+        public Nullable<int> likes { get; set; }
+        public Nullable<int> unlikes { get; set; }
     }
 }

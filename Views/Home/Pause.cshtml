@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "Pause";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+<h2>Website tạm dừng hoạt động để chờ giấy phép trang tin điện tử</h2>
+<a href="https://play.google.com/store/apps/details?id=com.tinnhanh.tonghop">Phiên bản dành cho android: Tin nhanh tổng hợp</a>
+<script>
+    function redirect() {
+        window.location.href = "https://play.google.com/store/apps/details?id=com.tinnhanh.tonghop";
+    }
+    setTimeout(redirect, 2000);
+</script>

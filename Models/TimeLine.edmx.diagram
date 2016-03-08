@@ -11,7 +11,6 @@
         <EntityTypeShape EntityType="tinviet_vietnamModel.zadv" Width="1.5" PointX="2.3718314889687262" PointY="10.682999422160442" />
         <EntityTypeShape EntityType="tinviet_vietnamModel.zalexa" Width="1.5" PointX="2.0855049221243265" PointY="21.567658970862468" />
         <EntityTypeShape EntityType="tinviet_vietnamModel.category" Width="1.5" PointX="4.2357106712813071" PointY="25.85653908264662" />
-        <EntityTypeShape EntityType="tinviet_vietnamModel.comment" Width="1.5" PointX="3.6685587874001628" PointY="1.3803059316148543" />
         <EntityTypeShape EntityType="tinviet_vietnamModel.dailykeyword" Width="1.5" PointX="0.53246673593878135" PointY="25.473982182086438" />
         <EntityTypeShape EntityType="tinviet_vietnamModel.domain" Width="1.5" PointX="6.3596153773179349" PointY="14.449057481460766" />
         <EntityTypeShape EntityType="tinviet_vietnamModel.filterkeyword" Width="1.5" PointX="0.77657930589121738" PointY="22.41451158673247" />
@@ -25,6 +24,7 @@
         <EntityTypeShape EntityType="tinviet_vietnamModel.userFilter" Width="1.5" PointX="6.926504779107173" PointY="23.496536653254431" />
         <EntityTypeShape EntityType="tinviet_vietnamModel.blockurl" Width="1.5" PointX="11.796082662323528" PointY="12.070808595079374" />
         <EntityTypeShape EntityType="tinviet_vietnamModel.user" Width="1.5" PointX="10.891792013725169" PointY="3.0869876905749494" />
+        <EntityTypeShape EntityType="tinviet_vietnamModel.comment" Width="1.5" PointX="7.0480947173424511" PointY="19.197723010181321" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
