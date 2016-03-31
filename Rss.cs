@@ -2066,6 +2066,9 @@ namespace youknow
                                 string imgsrc = RSSSubNode != null ? RSSSubNode.InnerText : "";
                                 arrItem[Length].image = "http://24h-img.24hstatic.com" + imgsrc;
                             }
+                            if (Url.Contains("vcmedia.vn") && Url.StartsWith("autopro.com.vn")) {
+                                arrItem[Length].image = arrItem[Length].image.Replace("autopro.com.vn", "");
+                            }
                             if (arrItem[Length].image.Contains("http://hanoimoi.com.vn")) arrItem[Length].image = arrItem[Length].image.Replace("http://admin.hanoimoi.com.vn", "");// http://admin.hanoimoi.com.vnhttp://hanoimoi.com.vn/Uploads/honghai/2014/4/22/DUNG-1-52edb.jpg)
                             if (arrItem[Length].image.Contains("autopro2.vcmedia.vn")) arrItem[Length].image = arrItem[Length].image.Replace("autopro2.vcmedia.vn", "autopro2.vcmedia.vn/");
                             if (!arrItem[Length].image.StartsWith("http://") && !arrItem[Length].image.StartsWith("www"))

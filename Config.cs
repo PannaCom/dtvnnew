@@ -1777,14 +1777,14 @@ namespace youknow
                     html = wc.DownloadString(url);
                 //html = DecodeFromUtf8(html);
                 doc.LoadHtml(html);
-                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//section[contains(@id,'content')]"))
+                foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//section[contains(@class,'main')]"))
                 {
-                    fullContent = link.SelectSingleNode(".//div[contains(@class,'content')]").InnerHtml;
+                    fullContent = link.SelectSingleNode(".//div[contains(@class,'the-article-body')]").InnerHtml;
                     string span = "";
                     //Remove tin lien quan
                     try
                     {
-                        foreach (HtmlNode linkspan in link.SelectSingleNode(".//div[contains(@class,'content')]").SelectNodes(".//div[contains(@class,'inner-article')]"))
+                        foreach (HtmlNode linkspan in link.SelectSingleNode(".//div[contains(@class,'main')]").SelectNodes(".//div[contains(@class,'inner-article')]"))
                         {
                             try
                             {
