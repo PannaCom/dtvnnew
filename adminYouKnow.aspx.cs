@@ -1222,12 +1222,12 @@ namespace youknow
                 string callService = "";
                 try
                 {
-                    string abc = Rss.getContent("http://tinnhanhtonghop.com/crawlImage.aspx");
-                    if (abc.Contains("Batch Runner Example")) {
-                        callService = "call service tinnhanhtonghop ok";
-                    }
+                    //string abc = Rss.getContent("http://tinnhanhtonghop.com/crawlImage.aspx");
+                    //if (abc.Contains("Batch Runner Example")) {
+                    //    callService = "call service tinnhanhtonghop ok";
+                    //}
 
-                    abc = Rss.getContent("http://vuithe.net/Home/crawl");
+                    string abc = Rss.getContent("http://vuithe.net/Home/crawl");
                     if (abc.Contains("Done"))
                     {
                         callService += ", call service vuithe.net ok";
@@ -1236,6 +1236,11 @@ namespace youknow
                     if (abc.Contains("Done"))
                     {
                         callService += ", call service billgate.org ok";
+                    }
+                    abc = Rss.getContent("http://report.seahub.org/home/scan");
+                    if (abc.Contains("done"))
+                    {
+                        callService += ", call service seahub.org ok";
                     }
                     //abc = Rss.getContent("http://tingting.vn/crawlImage.aspx");
                     //if (abc.Contains("Batch Runner Example"))
