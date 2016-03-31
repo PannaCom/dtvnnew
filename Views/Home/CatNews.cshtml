@@ -64,7 +64,7 @@
                             <text>
                             <div class="top-post-item" >
                                 <div class="post-item-img-box">
-                                    <a @urllink title="@title">
+                                    <a href="@item.link" title="@title" target="_blank">
                                         <img class="post-item-img" src="@image" alt="@title" />
                                     </a>
                                     <div class="vote-system">
@@ -74,7 +74,7 @@
                                     </div>
                                 </div>
                                 <div class="post-item-info">
-                                    <a @urllink title="@title" class="link-post-item" >
+                                    <a href="@item.link" title="@title" target="_blank" class="link-post-item" >
                                         <h3 class="post-item-title">@Html.Raw(@title)</h3>
                                     </a>
                                     <span class="meta-post">
@@ -88,11 +88,11 @@
                             }else{
                                 <text>
                                     <div class="post-item" id="item_@currentNo" @style>
-                                        <a @urllink title="@title" class="link-post-item" >
+                                        <a href="@item.link" title="@title" target="_blank" class="link-post-item" >
                                             <h3 class="post-item-title">@Html.Raw(@title)</h3>
                                         </a>
                                         <div class="post-item-img-box">
-                                            <a @urllink title="@title">
+                                            <a href="@item.link" title="@title" target="_blank">
                                                 <img class="post-item-img" src="@image" alt="@title"/>
                                             </a>
                                             <div class="vote-system">

@@ -462,7 +462,7 @@ namespace youknow.Controllers
         //Dùng khi user click vào Điểm tin trong ngày
         public ActionResult CatNews(int id)
         {
-            return RedirectToAction("Pause", "Home");
+            //return RedirectToAction("Pause", "Home");
             //return RedirectToAction("ChuyenMuc", "Home", new {id=id});
             ViewBag.userToken = Session["usertoken"];
             ViewBag.userInfo = Session["userinfo"];
@@ -599,7 +599,7 @@ namespace youknow.Controllers
         //Dùng khi user click vào Điểm tin trong ngày
         public ActionResult News()
         {
-            return RedirectToAction("Pause", "Home");
+            //return RedirectToAction("Pause", "Home");
             ViewBag.userToken = Session["usertoken"];
             ViewBag.userInfo = Session["userinfo"];
             ViewBag.userName = Session["username"];
@@ -837,7 +837,7 @@ namespace youknow.Controllers
         public string getTopNewsRead()
         {
             //haveReadId += "-1";
-            string query = "select top 10 name as title,id,totalviews,maindomain,catid from tinviet_admin.titles where datetimeid>=" + Uti.datetimeidByDay(-1) + " and totalviews>0 order by datetimeid desc,totalviews desc";
+            string query = "select top 10 name as title,id,totalviews,link,maindomain,catid from tinviet_admin.titles where datetimeid>=" + Uti.datetimeidByDay(-1) + " and totalviews>0 order by datetimeid desc,totalviews desc";
             var rs = db.Database.SqlQuery<viewNewsManager>(query).Distinct();
             string json = JsonConvert.SerializeObject(rs.ToList());
             //json = Server.HtmlDecode(json);
@@ -922,7 +922,7 @@ namespace youknow.Controllers
         //Dùng khi user click vào tin nóng
         public ActionResult HotNews()
         {
-            return RedirectToAction("Pause", "Home");
+            //return RedirectToAction("Pause", "Home");
             //return RedirectToAction("TinNong", "Home");
             ViewBag.userToken = Session["usertoken"];
             ViewBag.userInfo = Session["userinfo"];            
@@ -945,12 +945,12 @@ namespace youknow.Controllers
             {
                 Rs = new Rss(HttpRuntime.AppDomainAppPath + "TopHotNew.xml", 0, "", 0, 7);
                 var bigRl = Rs.arrNewsManager.ToList();
-                urllink = Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(bigRl[0].title) + " " + Uti.smDomainNew(bigRl[0].maindomain) + " " + Uti.getCatNameFromId(bigRl[0].catid)) + "-" + bigRl[0].id;
+                urllink = bigRl[0].link;//Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(bigRl[0].title) + " " + Uti.smDomainNew(bigRl[0].maindomain) + " " + Uti.getCatNameFromId(bigRl[0].catid)) + "-" + bigRl[0].id;
                 ViewBag.bigHotNew1 = "";
                 ViewBag.bigHotNew1 += "<div id=hotnews1 class=hotnews1>";
                 ViewBag.bigHotNew1 += "  <div class=row>";
                 ViewBag.bigHotNew1 += "  <div class=bighotnews>";
-                ViewBag.bigHotNew1 += "		<a href=\"/" + urllink + "\" title=\"" + bigRl[0].title + "\">";//Uti.unicodeToNoMark(bigRl[0].title) + "-" + bigRl[0].id
+                ViewBag.bigHotNew1 += "		<a href=\"" + urllink + "\" title=\"" + bigRl[0].title + "\">";//Uti.unicodeToNoMark(bigRl[0].title) + "-" + bigRl[0].id
                 ViewBag.bigHotNew1 += "<img src=\"" + bigRl[0].image + "\" width=\"100%\" alt=\"" + bigRl[0].title + "\" style=\"max-height:349px;\">";
                 ViewBag.bigHotNew1 += "<span class=bighottitle>" + bigRl[0].title + "<span>";
                 ViewBag.bigHotNew1 += "  </a>";
@@ -967,10 +967,10 @@ namespace youknow.Controllers
                 ViewBag.bigHotNew2 +="   <ul class=\"list-content\">";
 
                 for (int k = 1; k < bigRl.Count; k++) {
-                    urllink = Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(bigRl[k].title) + " " + Uti.smDomainNew(bigRl[k].maindomain) + " " + Uti.getCatNameFromId(bigRl[k].catid)) + "-" + bigRl[k].id;
+                    urllink = bigRl[k].link;//Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(bigRl[k].title) + " " + Uti.smDomainNew(bigRl[k].maindomain) + " " + Uti.getCatNameFromId(bigRl[k].catid)) + "-" + bigRl[k].id;
                     ViewBag.duplicateIdHotNews += "," + bigRl[k].id + ",";
                     ViewBag.bigHotNew2 += "<li>";
-                    ViewBag.bigHotNew2 += "<a href=\"/" + urllink + "\" class=\"link-image-box-news\" title=\"" + bigRl[k].title + "\">";//Uti.unicodeToNoMark(bigRl[k].title) + "-" + bigRl[k].id 
+                    ViewBag.bigHotNew2 += "<a href=\"" + urllink + "\" class=\"link-image-box-news\" title=\"" + bigRl[k].title + "\">";//Uti.unicodeToNoMark(bigRl[k].title) + "-" + bigRl[k].id 
                     ViewBag.bigHotNew2 +=  "<img src=\""+bigRl[k].image+"\" class=\"images-box-news\" alt=\""+bigRl[k].title+"\"/>";
                     ViewBag.bigHotNew2 += " </a>";
                     ViewBag.bigHotNew2 += " <a href=\"" + urllink + "\" class=\"link-box-news\" title=\"" + bigRl[k].title + "\">" + bigRl[k].title + "</a>";//Uti.unicodeToNoMark(bigRl[k].title) + "-" + bigRl[k].id 
@@ -999,10 +999,10 @@ namespace youknow.Controllers
                         for (int j = 0; j < Rs.LengthCatNewsLatest; j++)
                         {
                             //ViewBag.catItem[i].view += Rs.arrCatNewsLatestManager[j].title;
-                            urllink = Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(Rs.arrCatNewsLatestManager[j].title) + " " + Uti.smDomainNew(Rs.arrCatNewsLatestManager[j].maindomain) + " " + Uti.getCatNameFromId(Rs.arrCatNewsLatestManager[j].catid)) + "-" + Rs.arrCatNewsLatestManager[j].id;
+                            urllink = Rs.arrCatNewsLatestManager[j].link;//Uti.unicodeToNoMark(System.Web.HttpUtility.HtmlDecode(Rs.arrCatNewsLatestManager[j].title) + " " + Uti.smDomainNew(Rs.arrCatNewsLatestManager[j].maindomain) + " " + Uti.getCatNameFromId(Rs.arrCatNewsLatestManager[j].catid)) + "-" + Rs.arrCatNewsLatestManager[j].id;
                             if (Rs.arrCatNewsLatestManager[j].hasContent == 1)
                             {
-                                href = "href=\"/" + urllink + "\"";//Uti.unicodeToNoMark(Rs.arrCatNewsLatestManager[j].title) + "-" + Rs.arrCatNewsLatestManager[j].id 
+                                href = "href=\"" + urllink + "\"";//Uti.unicodeToNoMark(Rs.arrCatNewsLatestManager[j].title) + "-" + Rs.arrCatNewsLatestManager[j].id 
                             }
                             else
                             {
